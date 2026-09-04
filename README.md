@@ -1,6 +1,6 @@
 # Bengali Blush
 
-A Next.js, TypeScript, Sass, and PWA storefront for Bengali Blush Atelier.
+A Next.js, TypeScript, Sass, and PWA storefront for Bengali Blush Atelier. Lash & Beauty Studio.
 
 ## Run Locally
 
