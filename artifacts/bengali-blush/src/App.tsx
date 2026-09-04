@@ -1,9 +1,11 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import {
+  Armchair,
   ArrowDown,
   ArrowUpRight,
   CalendarDays,
   Check,
+  ChevronLeft,
   ChevronRight,
   Clock3,
   Heart,
@@ -13,8 +15,11 @@ import {
   Plus,
   Quote,
   ShoppingBag,
+  Sparkles,
   Trash2,
+  WandSparkles,
   X,
+  type LucideIcon,
 } from 'lucide-react';
 
 type Service = {
@@ -35,6 +40,13 @@ type Product = {
   shade: string;
 };
 
+type ProductCategory = {
+  id: string;
+  name: string;
+  shade: string;
+  products: Product[];
+};
+
 const services: Service[] = [
   { id: 'signature-set', number: '01', name: 'Signature lash set', description: 'Lightweight, fluttery extensions tailored to your eye shape.', duration: '1 hr 45 min', price: '$145' },
   { id: 'lash-fill', number: '02', name: 'Lash fill', description: 'A tidy refresh that keeps your signature set looking full.', duration: '60 min', price: '$78' },
@@ -43,10 +55,47 @@ const services: Service[] = [
   { id: 'party-makeup', number: '05', name: 'Party makeup', description: 'A luminous, camera-ready face for your best kind of night.', duration: '90 min', price: '$135' },
 ];
 
-const products: Product[] = [
-  { id: 'lash-luxe', name: 'Lash Luxe Serum', description: 'A nightly ritual for stronger, softer-looking lashes.', price: 34, label: 'Bestseller', shade: 'gold' },
-  { id: 'rose-comb', name: 'Rose Gold Lash Comb', description: 'The final little detail for a feathery finish.', price: 16, label: 'Studio essential', shade: 'rose' },
-  { id: 'silk-mist', name: 'Silk + Shine Mist', description: 'A fine veil of gloss for party-ready hair.', price: 28, label: 'New in', shade: 'coral' },
+const productCategories: ProductCategory[] = [
+  {
+    id: 'lash-care',
+    name: 'Lash Care',
+    shade: 'gold',
+    products: [
+      { id: 'lash-luxe', name: 'Lash Luxe Serum', description: 'A nightly ritual for stronger, softer-looking lashes.', price: 34, label: 'Bestseller', shade: 'gold' },
+      { id: 'cloud-cleanser', name: 'Cloud Lash Cleanser', description: 'A weightless foam that keeps every flutter fresh.', price: 22, label: 'Daily ritual', shade: 'pearl' },
+      { id: 'night-bloom', name: 'Night Bloom Conditioner', description: 'An overnight veil of moisture for soft, glossy lashes.', price: 30, label: 'After dark', shade: 'plum' },
+    ],
+  },
+  {
+    id: 'beauty-tools',
+    name: 'Beauty Tools',
+    shade: 'rose',
+    products: [
+      { id: 'rose-comb', name: 'Rose Gold Lash Comb', description: 'The final little detail for a feathery finish.', price: 16, label: 'Studio essential', shade: 'rose' },
+      { id: 'precision-wand', name: 'Precision Lash Wand', description: 'A slim studio brush for lifting and separating every lash.', price: 12, label: 'Artist pick', shade: 'berry' },
+      { id: 'satin-pouch', name: 'Satin Beauty Pouch', description: 'A softly structured home for your getting-ready favorites.', price: 26, label: 'Giftable', shade: 'cream' },
+    ],
+  },
+  {
+    id: 'hair-ritual',
+    name: 'Hair Ritual',
+    shade: 'coral',
+    products: [
+      { id: 'silk-mist', name: 'Silk + Shine Mist', description: 'A fine veil of gloss for party-ready hair.', price: 28, label: 'New in', shade: 'coral' },
+      { id: 'gloss-veil', name: 'Gloss Veil Oil', description: 'A polished finish with shine that never feels heavy.', price: 32, label: 'Finishing touch', shade: 'amber' },
+      { id: 'soft-hold', name: 'Soft Hold Styling Balm', description: 'Flexible definition for smooth buns, waves, and flyaways.', price: 24, label: 'Backstage favorite', shade: 'green' },
+    ],
+  },
+  {
+    id: 'party-edit',
+    name: 'Party Edit',
+    shade: 'berry',
+    products: [
+      { id: 'golden-hour', name: 'Golden Hour Highlighter', description: 'A candlelit sheen made to catch every camera flash.', price: 36, label: 'Party favorite', shade: 'gold' },
+      { id: 'rose-lip', name: 'Bengali Rose Lip Tint', description: 'A buildable berry flush with a soft, balmy finish.', price: 25, label: 'Signature shade', shade: 'berry' },
+      { id: 'midnight-kajal', name: 'Midnight Kajal', description: 'Deep, creamy definition for a look that stays out late.', price: 20, label: 'Icon', shade: 'plum' },
+    ],
+  },
 ];
 
 function BrandMark() {
@@ -55,6 +104,27 @@ function BrandMark() {
       <span className="bb-logo-mark" aria-hidden="true">b</span>
       <span className="bb-logo-text">Bengali Blush</span>
     </a>
+  );
+}
+
+function SectionMarker({
+  icon: Icon,
+  index,
+  title,
+  inverse = false,
+}: {
+  icon: LucideIcon;
+  index: string;
+  title: string;
+  inverse?: boolean;
+}) {
+  return (
+    <div className={`bb-section-marker${inverse ? ' is-inverse' : ''}`}>
+      <span className="bb-section-marker-icon" aria-hidden="true"><Icon size={14} strokeWidth={1.7} /></span>
+      <span className="bb-section-marker-name">{title}</span>
+      <span className="bb-section-marker-line" aria-hidden="true" />
+      <span className="bb-section-marker-index" aria-hidden="true">{index}</span>
+    </div>
   );
 }
 
@@ -107,6 +177,7 @@ function Hero({ onBook }: { onBook: () => void }) {
       <div className="bb-hero-image" aria-hidden="true" />
       <div className="bb-hero-content">
         <div className="bb-hero-copy">
+          <SectionMarker icon={Sparkles} index="01" title="Welcome" inverse />
           <span className="bb-eyebrow" style={{ color: 'hsl(38 75% 67%)' }}>Beauty, with feeling</span>
           <h1>Come for the<br /><em>glow.</em> Stay<br />for the feeling.</h1>
           <p>Modern glam, Bengali warmth, and a little extra time in the mirror. Your beauty ritual starts here.</p>
@@ -127,6 +198,7 @@ function Intro() {
     <section className="bb-section bb-intro" id="intro">
       <div className="bb-container bb-intro-grid">
         <div className="bb-intro-copy">
+          <SectionMarker icon={Heart} index="02" title="Our Story" />
           <span className="bb-eyebrow">The Bengali Blush feeling</span>
           <h2>Soft glam.<br /><em>Big energy.</em><br />Always you.</h2>
           <p>There is no one way to be beautiful. We create looks that feel like you on your very best day: considered, expressive, and impossible to forget.</p>
@@ -148,6 +220,7 @@ function Services({ onBook }: { onBook: (service?: Service) => void }) {
       <div className="bb-container">
         <div className="bb-section-heading">
           <div>
+            <SectionMarker icon={WandSparkles} index="03" title="Services" />
             <div className="bb-services-heading-top">
               <span className="bb-eyebrow">Choose your moment</span>
               <span className="bb-flag-mark" aria-hidden="true"><span /></span>
@@ -211,27 +284,68 @@ function ProductBottle({ shade }: { shade: string }) {
 }
 
 function Shop({ onAdd }: { onAdd: (product: Product) => void }) {
+  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
+  const showCategory = (direction: number) => {
+    setActiveCategoryIndex((current) => (current + direction + productCategories.length) % productCategories.length);
+  };
   return (
     <section className="bb-section bb-shop" id="shop">
       <div className="bb-container">
         <div className="bb-section-heading">
-          <div><span className="bb-eyebrow">The beauty shelf</span><h2>Little luxuries<br />for your ritual.</h2></div>
+          <div><SectionMarker icon={ShoppingBag} index="04" title="Shop" /><span className="bb-eyebrow">The beauty shelf</span><h2>Little luxuries<br />for your ritual.</h2></div>
           <p>Take the studio feeling home. A tight edit of things we actually reach for, gift-wrapped with a little Bengali Blush energy.</p>
         </div>
-        <div className="bb-product-grid">
-          {products.map((product) => (
-            <article className="bb-product-card" key={product.id} data-testid={`card-product-${product.id}`}>
-              <div className="bb-product-visual">
-                <span className="bb-mono" style={{ position: 'absolute', top: 19, left: 19, zIndex: 2, color: 'hsl(345 56% 35%)' }}>{product.label}</span>
-                <ProductBottle shade={product.shade} />
+        <div className="bb-product-slider-viewport">
+          <div className="bb-product-slider-track" style={{ transform: `translateX(-${activeCategoryIndex * 100}%)` }}>
+            {productCategories.map((category, categoryIndex) => (
+              <div
+                className="bb-product-grid bb-product-slide"
+                id={`category-panel-${category.id}`}
+                key={category.id}
+                role="tabpanel"
+                aria-hidden={categoryIndex !== activeCategoryIndex}
+                aria-labelledby={`category-tab-${category.id}`}
+              >
+                {category.products.map((product) => (
+                  <article className="bb-product-card" key={product.id} data-testid={`card-product-${product.id}`}>
+                    <div className="bb-product-visual">
+                      <span className="bb-mono" style={{ position: 'absolute', top: 19, left: 19, zIndex: 2, color: 'hsl(345 56% 35%)' }}>{product.label}</span>
+                      <ProductBottle shade={product.shade} />
+                    </div>
+                    <div className="bb-product-info">
+                      <h3>{product.name}</h3>
+                      <p>{product.description}</p>
+                      <div className="bb-product-bottom"><span className="bb-product-price">${product.price.toFixed(2)}</span><button className="bb-add-button" tabIndex={categoryIndex === activeCategoryIndex ? 0 : -1} onClick={() => onAdd(product)} data-testid={`button-add-${product.id}`}>Add to bag <Plus size={14} /></button></div>
+                    </div>
+                  </article>
+                ))}
               </div>
-              <div className="bb-product-info">
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <div className="bb-product-bottom"><span className="bb-product-price">${product.price.toFixed(2)}</span><button className="bb-add-button" onClick={() => onAdd(product)} data-testid={`button-add-${product.id}`}>Add to bag <Plus size={14} /></button></div>
-              </div>
-            </article>
-          ))}
+            ))}
+          </div>
+          <div className="bb-shop-slider-nav">
+            <div className="bb-category-tabs" role="tablist" aria-label="Shop categories">
+              {productCategories.map((category, index) => (
+                <button
+                  type="button"
+                  role="tab"
+                  className={`bb-category-tab${index === activeCategoryIndex ? ' is-active' : ''}`}
+                  id={`category-tab-${category.id}`}
+                  key={category.id}
+                  aria-selected={index === activeCategoryIndex}
+                  aria-controls={`category-panel-${category.id}`}
+                  onClick={() => setActiveCategoryIndex(index)}
+                  data-testid={`button-category-${category.id}`}
+                >
+                  <span className="bb-category-thumb" aria-hidden="true"><ProductBottle shade={category.shade} /></span>
+                  <span className="bb-category-tab-copy"><small>{String(index + 1).padStart(2, '0')}</small><strong>{category.name}</strong></span>
+                </button>
+              ))}
+            </div>
+            <div className="bb-shop-slider-arrows">
+              <button type="button" onClick={() => showCategory(-1)} aria-label="Previous shop category" data-testid="button-shop-previous"><ChevronLeft size={18} /></button>
+              <button type="button" onClick={() => showCategory(1)} aria-label="Next shop category" data-testid="button-shop-next"><ChevronRight size={18} /></button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -244,6 +358,7 @@ function Studio() {
       <div className="bb-container bb-story-grid">
         <div className="bb-story-image" role="img" aria-label="Polished Bengali Blush hair styling" />
         <div className="bb-story-copy">
+          <SectionMarker icon={Armchair} index="05" title="Studio" inverse />
           <span className="bb-eyebrow" style={{ color: 'hsl(38 75% 67%)' }}>A note from the chair</span>
           <h2>This is your<br /><em>getting-ready</em><br />friend.</h2>
           <p>Bengali Blush began with a lash bed, a playlist, and a belief that beauty appointments should feel like a deep exhale. Sadia brings the detail-obsession; you bring the plans.</p>
@@ -292,6 +407,7 @@ function BookingSection({ onSuccess, confirmation }: { onSuccess: (name: string,
     <section className="bb-section bb-booking" id="contact">
       <div className="bb-container bb-booking-layout">
         <div className="bb-booking-copy">
+          <SectionMarker icon={CalendarDays} index="06" title="Book A Visit" />
           <span className="bb-eyebrow">Your turn to shine</span>
           <h2>Let's make<br />a plan.</h2>
           <p>Share a few details and I’ll be in touch within one studio day to confirm your spot.</p>

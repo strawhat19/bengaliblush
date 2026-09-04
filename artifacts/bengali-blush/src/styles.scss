@@ -69,6 +69,30 @@ $ease-bloom: cubic-bezier(.2, .75, .2, 1);
   background: linear-gradient(100deg, #f0a087, $blush-gold);
 }
 
+.bb-product-bottle.pearl {
+  background: linear-gradient(100deg, #fffaf1, #dfc9bd);
+}
+
+.bb-product-bottle.plum {
+  background: linear-gradient(100deg, #72324e, $blush-ink);
+}
+
+.bb-product-bottle.berry {
+  background: linear-gradient(100deg, #cb6574, $bengal-red);
+}
+
+.bb-product-bottle.cream {
+  background: linear-gradient(100deg, $blush-cream, #d5ab8e);
+}
+
+.bb-product-bottle.amber {
+  background: linear-gradient(100deg, #f1c468, #c96d3f);
+}
+
+.bb-product-bottle.green {
+  background: linear-gradient(100deg, #43846b, $bengal-green);
+}
+
 @media (max-width: 800px) {
   .bb-mobile-booking {
     @include tactile-hover;
