@@ -32,6 +32,7 @@ export default function BlushLoader() {
     let completionStartedAt: number | null = null;
     let resourcesReady = document.readyState === `complete`;
     let lastStatus: string = loaderStatuses[0].label;
+    let lastRounded = -1;
     let frame = 0;
     let hideTimer = 0;
 
@@ -49,16 +50,16 @@ export default function BlushLoader() {
       const value = String(rounded).padStart(2, `0`);
       const nextStatus = getLoaderStatus(rounded);
       overlay.style.setProperty(`--bb-loader-progress`, `${progress / 100}`);
+
+      if (rounded === lastRounded) return;
+      lastRounded = rounded;
       overlay.setAttribute(`aria-valuenow`, String(rounded));
       number.dataset.value = value;
       number.textContent = value;
 
       if (nextStatus !== lastStatus) {
         lastStatus = nextStatus;
-        status.classList.remove(`is-changing`);
-        void status.offsetWidth;
         status.textContent = nextStatus;
-        status.classList.add(`is-changing`);
       }
     };
 
@@ -131,7 +132,6 @@ export default function BlushLoader() {
         <span className="bb-loader-track" aria-hidden="true"><span /></span>
       </div>
       <span className="bb-loader-rail bb-loader-rail-bottom">Soft Glam / Big Energy / Always You</span>
-      <span className="bb-loader-tail" aria-hidden="true" />
     </div>
   );
 }

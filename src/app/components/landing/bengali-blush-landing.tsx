@@ -384,7 +384,7 @@ function Footer() {
           <div><h4>Find us</h4><div className="bb-footer-links"><span><MapPin size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />Toronto, ON</span><a href="mailto:hello@bengaliblush.ca" data-testid="link-email">hello@bengaliblush.ca</a><a href="https://www.instagram.com" target="_blank" rel="noreferrer" data-testid="link-instagram"><Instagram size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />@bengaliblush</a></div></div>
           <div><h4>Say hello</h4><div className="bb-footer-links"><a href="#services" data-testid="footer-link-services">Services</a><a href="#shop" data-testid="footer-link-shop">The beauty shelf</a><a href="#contact" data-testid="footer-link-book">Book an appointment</a></div></div>
         </div>
-        <div className="bb-footer-bottom"><span>© 2024 Bengali Blush Atelier</span><span>Made for your main character moment</span></div>
+        <div className="bb-footer-bottom"><span>© {new Date()?.getFullYear()} Bengali Blush Atelier</span><span>Made for your main character moment</span></div>
       </div>
     </footer>
   );

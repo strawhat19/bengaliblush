@@ -73,7 +73,7 @@ export default function Header({
           <a href="#contact" data-testid="link-contact">Contact</a>
         </nav>
         <div className="bb-header-actions">
-          <button className="bb-ghost-button" onClick={onBook} data-testid="button-header-book">Book a glow-up</button>
+          <button className="bb-ghost-button" onClick={onBook} data-testid="button-header-book">Book Now</button>
           <button className="bb-bag-button" onClick={onBag} aria-label="Open shopping bag" data-testid="button-open-bag">
             <ShoppingBag size={19} strokeWidth={1.5} />
             {bagCount > 0 && <span className="bb-bag-count" data-testid="text-bag-count">{bagCount}</span>}
