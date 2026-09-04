@@ -93,7 +93,7 @@ export default function Header({
       <div id="mobile-navigation" className={`bb-mobile-panel ${mobileOpen ? `is-open` : ``}`} data-testid="mobile-navigation">
         <a href="#services" onClick={closeMobile} data-testid="mobile-link-services">Services</a>
         <a href="#shop" onClick={closeMobile} data-testid="mobile-link-shop">Shop</a>
-        <a href="#studio" onClick={closeMobile} data-testid="mobile-link-studio">The studio</a>
+        <a href="#studio" onClick={closeMobile} data-testid="mobile-link-studio">Studio</a>
         <a href="#contact" onClick={closeMobile} data-testid="mobile-link-contact">Contact</a>
         <button className="bb-button bb-button-primary" onClick={() => { closeMobile(); onBook(); }} data-testid="button-mobile-book">Book an appointment <ArrowUpRight size={16} /></button>
       </div>
