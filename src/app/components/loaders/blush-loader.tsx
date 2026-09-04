@@ -116,10 +116,14 @@ export default function BlushLoader() {
       aria-valuemax={100}
       aria-valuenow={0}
     >
-      <span className="bb-loader-rail bb-loader-rail-top">Beauty, With Feeling</span>
+      <span className="bb-loader-rail bb-loader-rail-top">
+        Beauty, With Feeling
+      </span>
       <div className="bb-loader-core">
         <div className="bb-loader-brand" aria-hidden="true">
-          <span className="bb-loader-mark">b</span>
+          <span className="bb-loader-mark">
+            b
+          </span>
           <span className="bb-loader-name">
             Bengali Blush
           </span>
@@ -129,8 +133,12 @@ export default function BlushLoader() {
             Preparing Your Glow
           </span>
           <span className="bb-loader-percent" aria-hidden="true">
-            <span ref={numberRef} className="bb-loader-number" data-value="00">00</span>
-            <span className="bb-loader-unit">%</span>
+            <span ref={numberRef} className="bb-loader-number" data-value="00">
+              00
+            </span>
+            <span className="bb-loader-unit">
+              %
+            </span>
           </span>
         </div>
         <span className="bb-loader-track" aria-hidden="true"><span /></span>
