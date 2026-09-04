@@ -66,7 +66,7 @@
 body.bb-page-loading { overflow: hidden; }
 
 .bb-motion-ready .bb-header[data-hero-reveal] { opacity: 0; transform: translate3d(0, -8px, 0); }
-.bb-page-ready .bb-header[data-hero-reveal] { opacity: 1; transform: translate3d(0, 0, 0); transition: opacity .4s ease .16s, transform .48s cubic-bezier(.2, .75, .2, 1) .16s; }
+.bb-page-ready .bb-header[data-hero-reveal] { opacity: 1; transform: translate3d(0, 0, 0); transition: opacity .4s ease .16s, transform .48s cubic-bezier(.2, .75, .2, 1) .16s, color .3s ease, background-color .36s ease, border-color .36s ease, box-shadow .36s ease, backdrop-filter .42s cubic-bezier(.2,.85,.25,1), -webkit-backdrop-filter .42s cubic-bezier(.2,.85,.25,1); }
 .bb-motion-ready .bb-hero-copy[data-hero-reveal] { opacity: 1; transform: none; }
 .bb-motion-ready .bb-hero-copy > .bb-section-marker,
 .bb-motion-ready .bb-hero-copy > .bb-eyebrow { opacity: 0; transform: translate3d(0, 14px, 0); }

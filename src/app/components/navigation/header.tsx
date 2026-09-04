@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Armchair, CalendarDays, MapPin, Menu, ShoppingBag, WandSparkles, X } from 'lucide-react';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { Armchair, ArrowUpRight, CalendarDays, MapPin, ShoppingBag, WandSparkles } from 'lucide-react';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 
 export type HeaderWidth = 'boxed' | 'full';
@@ -15,10 +15,10 @@ type HeaderProps = {
 };
 
 const navigationItems = [
-  { icon: WandSparkles, label: `Services`, locator: `services` },
-  { icon: ShoppingBag, label: `Shop`, locator: `shop` },
-  { icon: Armchair, label: `Studio`, locator: `studio` },
-  { icon: MapPin, label: `Contact`, locator: `contact` },
+  { icon: WandSparkles, label: `Services`, locator: `services`, description: `Signature looks made for your moment` },
+  { icon: ShoppingBag, label: `Shop`, locator: `shop`, description: `Curated rituals and beauty essentials` },
+  { icon: Armchair, label: `Studio`, locator: `studio`, description: `Meet Sadia and discover the atelier` },
+  { icon: MapPin, label: `Contact`, locator: `contact`, description: `Find us and plan your next visit` },
 ];
 
 export function BrandMark({ testId = `link-logo` }: { testId?: string }) {
@@ -63,15 +63,37 @@ export default function Header({
     };
   }, [sticky]);
 
+  useEffect(() => {
+    const desktopQuery = window.matchMedia(`(min-width: 801px)`);
+    const closeAtDesktop = () => {
+      if (desktopQuery.matches) setMobileOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === `Escape`) setMobileOpen(false);
+    };
+
+    desktopQuery.addEventListener(`change`, closeAtDesktop);
+    window.addEventListener(`keydown`, closeOnEscape);
+
+    return () => {
+      desktopQuery.removeEventListener(`change`, closeAtDesktop);
+      window.removeEventListener(`keydown`, closeOnEscape);
+    };
+  }, []);
+
   const headerClassName = [
     `bb-header`,
     sticky ? `is-sticky` : ``,
+    mobileOpen ? `is-menu-open` : ``,
     sticky && scrolled ? `is-scrolled` : ``,
   ].filter(Boolean).join(` `);
   const containerClassName = width === `full` ? `bb-header-inner is-full-width` : `bb-container bb-header-inner`;
+  const headerGlassFilter = scrolled || mobileOpen ? `blur(20px) saturate(125%)` : `blur(0) saturate(100%)`;
+  const headerGlassStyle = { backdropFilter: headerGlassFilter, WebkitBackdropFilter: headerGlassFilter } as CSSProperties;
+  const mobileMenuGlassStyle = { backdropFilter: `blur(22px) saturate(125%)`, WebkitBackdropFilter: `blur(22px) saturate(125%)` } as CSSProperties;
 
   return (
-    <header className={headerClassName} data-hero-reveal data-width={width}>
+    <header className={headerClassName} style={headerGlassStyle} data-hero-reveal data-width={width}>
       <div className={containerClassName}>
         <BrandMark />
         <nav className="bb-nav" aria-label="Main navigation">
@@ -95,24 +117,36 @@ export default function Header({
             onClick={() => setMobileOpen((current) => !current)}
             data-testid="button-mobile-menu"
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            <span className="bb-menu-icon" aria-hidden="true"><span /><span /><span /></span>
           </button>
         </div>
       </div>
-      <div id="mobile-navigation" className={`bb-mobile-panel ${mobileOpen ? `is-open` : ``}`} data-testid="mobile-navigation">
-        {navigationItems.map(({ icon: Icon, label, locator }) => (
-          <button
-            type="button"
-            key={locator}
-            className="bb-mobile-nav-link"
-            onClick={() => { closeMobile(); scrollToElement(`#${locator}`); }}
-            data-testid={`mobile-link-${locator}`}
-          >
-            <Icon size={15} strokeWidth={1.6} aria-hidden="true" />{label}
-          </button>
-        ))}
-        <button className="bb-button bb-button-primary" onClick={() => { closeMobile(); onBook(); }} data-testid="button-mobile-book">Book an appointment <CalendarDays size={16} /></button>
-      </div>
+      <nav id="mobile-navigation" className={`bb-mobile-panel ${mobileOpen ? `is-open` : ``}`} style={mobileMenuGlassStyle} aria-label="Mobile navigation" aria-hidden={!mobileOpen} inert={!mobileOpen} data-testid="mobile-navigation">
+        <div className="bb-mobile-panel-heading">
+          <span>Explore Bengali Blush</span>
+          <small>Beauty, with feeling</small>
+        </div>
+        <div className="bb-mobile-nav-grid">
+          {navigationItems.map(({ icon: Icon, label, locator, description }, index) => (
+            <button
+              type="button"
+              key={locator}
+              className="bb-mobile-nav-link"
+              style={{ '--bb-menu-delay': `${70 + index * 45}ms` } as CSSProperties}
+              onClick={() => { closeMobile(); scrollToElement(`#${locator}`); }}
+              data-testid={`mobile-link-${locator}`}
+            >
+              <span className="bb-mobile-nav-index">{String(index + 1).padStart(2, `0`)}</span>
+              <span className="bb-mobile-nav-copy"><span><Icon size={16} strokeWidth={1.5} aria-hidden="true" />{label}</span><small>{description}</small></span>
+              <ArrowUpRight size={15} strokeWidth={1.5} aria-hidden="true" />
+            </button>
+          ))}
+        </div>
+        <button className="bb-mobile-menu-book" onClick={() => { closeMobile(); onBook(); }} data-testid="button-mobile-book">
+          <span><small>Reserve your chair</small><strong>Book your appointment</strong></span>
+          <span className="bb-mobile-menu-book-icon" aria-hidden="true"><CalendarDays size={17} strokeWidth={1.5} /></span>
+        </button>
+      </nav>
     </header>
   );
 }
