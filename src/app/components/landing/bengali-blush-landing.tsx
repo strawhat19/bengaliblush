@@ -6,9 +6,10 @@ import { getStoredCartServerSnapshot, getStoredCartSnapshot, storeBookingRequest
 import LandingMotion from '@/app/components/effects/landing-motion';
 import ScrollToTop from '@/app/components/effects/scroll-to-top';
 import Header, { BrandMark } from '@/app/components/navigation/header';
+import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
+import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import {
   Armchair,
-  ArrowDown,
   ArrowUpRight,
   CalendarDays,
   Check,
@@ -123,13 +124,14 @@ function Hero({ onBook }: { onBook: () => void }) {
           </h1>
           <p>Modern glam, Bengali warmth, and a little extra time in the mirror. Your beauty ritual starts here.</p>
           <div className="bb-hero-buttons">
-            <button className="bb-button bb-button-primary" onClick={onBook} data-testid="button-hero-book">Book your appointment <ArrowUpRight size={16} /></button>
-            <a href="#services" className="bb-button bb-button-outline" data-testid="link-hero-services">Explore services <ArrowDown size={15} /></a>
+            <button className="bb-button bb-button-primary" onClick={onBook} data-testid="button-hero-book">Book your appointment <CalendarDays size={16} /></button>
+            <button type="button" className="bb-button bb-button-outline" onClick={() => scrollToElement(`#services`)} data-testid="link-hero-services">Explore services <WandSparkles size={15} /></button>
           </div>
         </div>
       </div>
+      <HeroPromoWheel revealEffect />
       <div className="bb-hero-note">Toronto · by appointment</div>
-      <a className="bb-scroll-cue" href="#intro" data-testid="link-scroll-cue"><span /> Scroll to explore</a>
+      <button type="button" className="bb-scroll-cue" onClick={() => scrollToElement(`#intro`)} data-testid="link-scroll-cue"><span /> Scroll to explore</button>
     </section>
   );
 }
@@ -380,9 +382,9 @@ function Footer() {
     <footer className="bb-footer">
       <div className="bb-container">
         <div className="bb-footer-grid">
-          <div><BrandMark /><p className="bb-footer-owner">Founded and led by Sadia Islam Misty</p><p className="bb-footer-copy">A beauty atelier for soft glam, big energy, and the joy of being beautifully seen.</p></div>
+          <div><BrandMark testId="footer-link-logo" /><p className="bb-footer-owner">Founded and led by Sadia Islam Misty</p><p className="bb-footer-copy">A beauty atelier for soft glam, big energy, and the joy of being beautifully seen.</p></div>
           <div><h4>Find us</h4><div className="bb-footer-links"><span><MapPin size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />Toronto, ON</span><a href="mailto:hello@bengaliblush.ca" data-testid="link-email">hello@bengaliblush.ca</a><a href="https://www.instagram.com" target="_blank" rel="noreferrer" data-testid="link-instagram"><Instagram size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />@bengaliblush</a></div></div>
-          <div><h4>Say hello</h4><div className="bb-footer-links"><a href="#services" data-testid="footer-link-services">Services</a><a href="#shop" data-testid="footer-link-shop">The beauty shelf</a><a href="#contact" data-testid="footer-link-book">Book an appointment</a></div></div>
+          <div><h4>Say hello</h4><div className="bb-footer-links"><button type="button" onClick={() => scrollToElement(`#services`)} data-testid="footer-link-services">Services</button><button type="button" onClick={() => scrollToElement(`#shop`)} data-testid="footer-link-shop">The beauty shelf</button><button type="button" onClick={() => scrollToElement(`#contact`)} data-testid="footer-link-book">Book an appointment</button></div></div>
         </div>
         <div className="bb-footer-bottom"><span>© {new Date()?.getFullYear()} Bengali Blush Atelier</span><span>Made for your main character moment</span></div>
       </div>
