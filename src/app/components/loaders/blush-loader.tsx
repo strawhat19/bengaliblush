@@ -136,7 +136,7 @@ export default function BlushLoader() {
         <span className="bb-loader-track" aria-hidden="true"><span /></span>
       </div>
       <span className="bb-loader-rail bb-loader-rail-bottom">
-        Soft Glam / Big Energy / Always You
+        Soft Glam / Pretty Energy / Always You
       </span>
     </div>
   );
