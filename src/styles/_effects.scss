@@ -1,0 +1,100 @@
+// Bengali Blush's small Sass layer: expressive tokens and reusable tactile states.
+$blush-ink: #3e0d23;
+$blush-gold: #e9b968;
+$blush-cream: #f8e8d1;
+$blush-coral: #e77d68;
+$baby-pink: #f4dfe3;
+$ink-black: #141313;
+$bengal-green: #12513a;
+$bengal-red: #b52e38;
+$ease-bloom: cubic-bezier(.2, .75, .2, 1);
+
+@mixin pill-focus {
+  &:focus-visible {
+    outline: 2px solid $blush-gold;
+    outline-offset: 4px;
+  }
+}
+
+@mixin tactile-hover {
+  transition: transform .25s $ease-bloom, border-color .25s ease, background-color .25s ease, color .25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  @include pill-focus;
+}
+
+.bb-button,
+.bb-add-button,
+.bb-service-book,
+.bb-close,
+.bb-menu-button,
+.bb-bag-button {
+  @include pill-focus;
+}
+
+.bb-button {
+  @include tactile-hover;
+}
+
+.bb-product-card {
+  transition: transform .35s $ease-bloom, box-shadow .35s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 35px rgba($blush-ink, .1);
+  }
+}
+
+.bb-service {
+  @include pill-focus;
+}
+
+.bb-flag-mark {
+  transition: transform .25s $ease-bloom, box-shadow .25s ease;
+
+  &:hover {
+    transform: rotate(-4deg) scale(1.05);
+    box-shadow: 0 5px 0 rgba($bengal-red, .18);
+  }
+}
+
+.bb-product-bottle.rose {
+  background: linear-gradient(100deg, #efb2a4, $blush-coral);
+}
+
+.bb-product-bottle.coral {
+  background: linear-gradient(100deg, #f0a087, $blush-gold);
+}
+
+.bb-product-bottle.pearl {
+  background: linear-gradient(100deg, #fffaf1, #dfc9bd);
+}
+
+.bb-product-bottle.plum {
+  background: linear-gradient(100deg, #72324e, $blush-ink);
+}
+
+.bb-product-bottle.berry {
+  background: linear-gradient(100deg, #cb6574, $bengal-red);
+}
+
+.bb-product-bottle.cream {
+  background: linear-gradient(100deg, $blush-cream, #d5ab8e);
+}
+
+.bb-product-bottle.amber {
+  background: linear-gradient(100deg, #f1c468, #c96d3f);
+}
+
+.bb-product-bottle.green {
+  background: linear-gradient(100deg, #43846b, $bengal-green);
+}
+
+@media (max-width: 800px) {
+  .bb-mobile-booking {
+    @include tactile-hover;
+  }
+}

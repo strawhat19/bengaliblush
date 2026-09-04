@@ -1,27 +1,36 @@
 # Bengali Blush
 
-A beauty boutique storefront built with React, Vite, and pnpm workspaces.
+A Next.js, TypeScript, Sass, and PWA storefront for Bengali Blush Atelier.
 
-## Run Locally from Git Bash
+## Run Locally
 
-Install the dependencies:
-
-```bash
-pnpm install
-```
-
-Start the storefront:
+Install dependencies:
 
 ```bash
-PORT=25910 BASE_PATH=/ pnpm --filter @workspace/bengali-blush run dev
+npm install
 ```
 
-Open <http://localhost:25910> in your browser.
-
-To run the optional API server, open another Git Bash terminal and run:
+Start the development server:
 
 ```bash
-PORT=8080 pnpm --filter @workspace/api-server run dev
+npm run dev
 ```
 
-The API health endpoint is available at <http://localhost:8080/api/healthz>.
+Open [http://localhost:3000](http://localhost:3000).
+
+## Commands
+
+- `npm run dev` — start the local development server
+- `npm run typecheck` — check TypeScript
+- `npm run lint` — check code quality
+- `npm run build` — create the production PWA build
+- `npm start` — serve the production build
+
+## Structure
+
+- `src/app` — App Router layouts, pages, and UI components
+- `src/shared` — site configuration and browser storage
+- `src/styles` — Sass theme, storefront, effects, and responsive styling
+- `public` — images, icons, and the web app manifest
+
+Cart contents and booking requests are stored locally in the browser until a backend is connected.

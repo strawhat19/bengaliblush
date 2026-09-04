@@ -1,0 +1,24 @@
+{
+  "name": "Bengali Blush Atelier",
+  "short_name": "Bengali Blush",
+  "description": "Modern glam, Bengali warmth, and a little extra time in the mirror.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#3e0d23",
+  "theme_color": "#3e0d23",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
