@@ -3,14 +3,16 @@
 import { useEffect, useId, useRef } from 'react';
 
 type HeroPromoWheelProps = {
+  color?: string;
   revealEffect?: boolean;
+  style?: React.CSSProperties;
 };
 
 const rotationDuration = 20_000;
 const promoArc = `M 189.5 22 A 167.5 167.5 0 1 1 189.5 357 A 167.5 167.5 0 1 1 189.5 22`;
 const promoPhrase = `SOFT GLAM • BENGALI WARMTH • BOOK YOUR GLOW •`;
 
-export default function HeroPromoWheel({ revealEffect = false }: HeroPromoWheelProps) {
+export default function HeroPromoWheel({ revealEffect = false, style, color = `hsl(var(--secondary))` }: HeroPromoWheelProps) {
   const ringRef = useRef<HTMLDivElement | null>(null);
   const arcPathId = `bb-hero-promo-${useId().replaceAll(`:`, ``)}`;
 
@@ -56,13 +58,13 @@ export default function HeroPromoWheel({ revealEffect = false }: HeroPromoWheelP
   }, []);
 
   return (
-    <div className={`bb-hero-promo${revealEffect ? ` has-reveal-effect` : ``}`} aria-label="Soft glam, Bengali warmth, book your glow">
+    <div style={style} className={`bb-hero-promo${revealEffect ? ` has-reveal-effect` : ``}`} aria-label="Soft glam, Bengali warmth, book your glow">
       <div ref={ringRef} className="bb-hero-promo-ring-motion">
         <svg className="bb-hero-promo-ring" viewBox="0 0 379 379" aria-hidden="true">
           <defs>
             <path id={arcPathId} d={promoArc} />
           </defs>
-          <text className="bb-hero-promo-text">
+          <text className="bb-hero-promo-text" style={{ fill: color }}>
             <textPath href={`#${arcPathId}`} startOffset="0" textLength="1035" lengthAdjust="spacing">
               {promoPhrase}
             </textPath>

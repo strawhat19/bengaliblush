@@ -16,9 +16,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock3,
+  Globe,
   Heart,
   Instagram,
+  Mail,
   MapPin,
+  Phone,
   Plus,
   Quote,
   ShoppingBag,
@@ -382,11 +385,60 @@ function Footer() {
     <footer className="bb-footer">
       <div className="bb-container">
         <div className="bb-footer-grid">
-          <div><BrandMark testId="footer-link-logo" /><p className="bb-footer-owner">Founded and led by Sadia Islam Misty</p><p className="bb-footer-copy">A beauty atelier for soft glam, big energy, and the joy of being beautifully seen.</p></div>
-          <div><h4>Find us</h4><div className="bb-footer-links"><span><MapPin size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />Toronto, ON</span><a href="mailto:hello@bengaliblush.ca" data-testid="link-email">hello@bengaliblush.ca</a><a href="https://www.instagram.com" target="_blank" rel="noreferrer" data-testid="link-instagram"><Instagram size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />@bengaliblush</a></div></div>
-          <div><h4>Say hello</h4><div className="bb-footer-links"><button type="button" onClick={() => scrollToElement(`#services`)} data-testid="footer-link-services">Services</button><button type="button" onClick={() => scrollToElement(`#shop`)} data-testid="footer-link-shop">The beauty shelf</button><button type="button" onClick={() => scrollToElement(`#contact`)} data-testid="footer-link-book">Book an appointment</button></div></div>
+          <div>
+            <BrandMark testId="footer-link-logo" />
+            <p className="bb-footer-owner">
+              Founded and led by Sadia Islam Misty
+            </p>
+            <p className="bb-footer-copy">
+              A beauty atelier for soft glam, big energy, and the joy of being beautifully seen.
+            </p>
+          </div>
+          <div>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106135.53646357554!2d-84.50260752904175!3d33.76749982933103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f5045d6993098d%3A0x66fede2f990b630b!2sAtlanta%2C%20GA!5e0!3m2!1sen!2sus!4v1788999713048!5m2!1sen!2sus" width="100%" height="150" style={{ border: 0, marginBottom: 15 }} loading="lazy" />
+            <h4>Find us</h4>
+            <div className="bb-footer-links">
+              <span>
+                <MapPin size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
+                Atlanta, GA, USA
+              </span>
+              <a href="sms:11234567890" data-testid="link-phone">
+                <Phone size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
+                +1 (123) 456-7890
+              </a>
+              <a href="mailto:sadiaislam7222@gmail.com" data-testid="link-email">
+                <Mail size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
+                sadiaislam7222@gmail.com
+              </a>
+              <a href="https://www.instagram.com" target="_blank" rel="noreferrer" data-testid="link-instagram">
+                <Instagram size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
+                @bengaliblush
+              </a>
+            </div>
+          </div>
+          <div className={`wheelFooterCol`}>
+            <HeroPromoWheel revealEffect color={`white`} style={{ position: `static`, minHeight: 160, marginBottom: 15 }} />
+            <h4>Say hello</h4>
+            <div className="bb-footer-links">
+              <button type="button" onClick={() => scrollToElement(`#services`)} data-testid="footer-link-services">
+                Services
+              </button>
+              <button type="button" onClick={() => scrollToElement(`#contact`)} data-testid="footer-link-book">
+                Book Now
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="bb-footer-bottom"><span>© {new Date()?.getFullYear()} Bengali Blush Atelier</span><span>Made for your main character moment</span></div>
+        <div className="bb-footer-bottom">
+          <span>© {new Date()?.getFullYear()} Bengali Blush Atelier</span>
+          <span>
+            <a href="https://piratechs.com/" target="_blank" rel="noreferrer" data-testid="link-piratechs" style={{ marginRight: 5 }}>
+              <Globe size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
+              Piratechs | 
+            </a>
+            Made for your main character moment
+          </span>
+        </div>
       </div>
     </footer>
   );

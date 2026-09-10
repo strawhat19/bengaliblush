@@ -347,7 +347,13 @@ a { color: inherit; text-decoration: none; }
   .bb-product-visual { height: 230px; }
   .bb-story-image { height: 420px; }
   .bb-booking-form { gap: 15px 12px; }
-  .bb-footer-grid { grid-template-columns: 1fr 1fr; gap: 34px 20px; }
+  .bb-footer-grid { 
+    gap: 34px 20px; 
+    grid-template-columns: 1fr;
+    .wheelFooterCol {
+      display: none;
+    }
+  }
   .bb-footer-grid > :first-child { grid-column: 1 / -1; }
   .bb-footer-bottom { display: block; line-height: 1.7; }
   .bb-footer-bottom span { display: block; margin-top: 8px; }
