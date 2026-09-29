@@ -14,6 +14,8 @@ export type Product = {
   price: number;
   label: string;
   shade: string;
+  image?: string;
+  imageAlt?: string;
   visual?: 'serum' | 'apparel' | 'candle' | 'tool';
 };
 

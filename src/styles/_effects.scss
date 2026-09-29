@@ -8,6 +8,7 @@ $ink-black: #141313;
 $bengal-green: #12513a;
 $bengal-red: #b52e38;
 $ease-bloom: cubic-bezier(.2, .75, .2, 1);
+$liquid-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'%3E%3Cpath d='M0 12Q25 0 50 12T100 12T150 12T200 12V100H0Z'/%3E%3C/svg%3E");
 
 @mixin pill-focus {
   &:focus-visible {
@@ -26,6 +27,54 @@ $ease-bloom: cubic-bezier(.2, .75, .2, 1);
   @include pill-focus;
 }
 
+@mixin liquid-fill {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    position: absolute;
+    z-index: -1;
+    inset: -40% -50% -1px;
+    pointer-events: none;
+    content: '';
+    mask: $liquid-wave center / 100% 100% no-repeat;
+    -webkit-mask: $liquid-wave center / 100% 100% no-repeat;
+    transition: transform .55s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  &::before {
+    background: var(--bb-liquid-back, hsl(var(--secondary) / .6));
+    transform: translate3d(10%, 100%, 0);
+  }
+
+  &::after {
+    background: var(--bb-liquid-front, hsl(var(--primary)));
+    transform: translate3d(-10%, 100%, 0);
+  }
+
+  &:is(:focus-visible, :active):not(:disabled)::before {
+    transform: translate3d(-10%, 0, 0);
+  }
+
+  &:is(:focus-visible, :active):not(:disabled)::after {
+    transform: translate3d(10%, 0, 0);
+    transition-delay: 80ms;
+  }
+
+  @media (hover: hover) {
+    &:hover:not(:disabled)::before {
+      transform: translate3d(-10%, 0, 0);
+    }
+
+    &:hover:not(:disabled)::after {
+      transform: translate3d(10%, 0, 0);
+      transition-delay: 80ms;
+    }
+  }
+}
+
 .bb-button,
 .bb-add-button,
 .bb-service-book,
@@ -37,6 +86,80 @@ $ease-bloom: cubic-bezier(.2, .75, .2, 1);
 
 .bb-button {
   @include tactile-hover;
+}
+
+.bb-button,
+.bb-ghost-button,
+.bb-service-book,
+.bb-menu-button,
+.bb-bag-button,
+.bb-add-button,
+.bb-close,
+.bb-mobile-booking,
+.bb-cart-continue,
+.bb-product-quantity-button,
+.bb-cart-quantity-button,
+.bb-shop-slider-arrows button {
+  @include liquid-fill;
+}
+
+.bb-ghost-button,
+.bb-menu-button,
+.bb-bag-button,
+.bb-mobile-booking,
+.bb-submit,
+.bb-add-button,
+.bb-product-quantity-button,
+.bb-cart-checkout {
+  --bb-liquid-back: hsl(var(--accent) / .7);
+  --bb-liquid-front: hsl(var(--secondary));
+}
+
+.bb-button-primary {
+  --bb-liquid-back: hsl(var(--accent));
+  --bb-liquid-front: hsl(var(--primary));
+}
+
+.bb-button-outline {
+  --bb-liquid-back: hsl(var(--accent) / .7);
+  --bb-liquid-front: hsl(var(--secondary));
+}
+
+.bb-service-book,
+.bb-close,
+.bb-cart-continue,
+.bb-cart-quantity-button {
+  --bb-liquid-back: hsl(var(--accent) / .45);
+  --bb-liquid-front: hsl(var(--primary));
+}
+
+.bb-shop-slider-arrows button {
+  --bb-liquid-back: hsl(var(--accent) / .45);
+  --bb-liquid-front: hsl(var(--secondary));
+}
+
+.bb-button-outline:hover,
+.bb-ghost-button:hover,
+.bb-menu-button:hover,
+.bb-bag-button:hover,
+.bb-mobile-booking:hover,
+.bb-submit:hover,
+.bb-add-button:hover,
+.bb-product-quantity-button:hover,
+.bb-cart-checkout:hover {
+  color: hsl(var(--foreground));
+}
+
+.bb-button-primary:hover {
+  color: hsl(var(--card));
+}
+
+.bb-service-book:hover,
+.bb-close:hover,
+.bb-cart-continue:hover,
+.bb-cart-quantity-button:hover {
+  background: transparent;
+  color: hsl(var(--card));
 }
 
 .bb-product-card {

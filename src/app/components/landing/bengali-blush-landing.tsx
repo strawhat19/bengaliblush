@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type FormEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import type { Product, ProductCategory, Service } from '@/shared/types/storefront';
 import { getStoredCartServerSnapshot, getStoredCartSnapshot, storeBookingRequest, subscribeStoredCart, writeStoredCart } from '@/shared/storage/storefront-storage';
@@ -67,7 +68,7 @@ const sampleTestimonials = [
     heading: { first: `The`, accent: `magic`, last: `is yours` },
     service: `lash fill client`,
     image: `/testimonial-maya.png`,
-    imageAlt: `Editorial portrait of a fictional woman with light warm skin and dark wavy hair, wearing burgundy satin`,
+    imageAlt: `Editorial portrait of a fictional woman with light warm skin and a dark shoulder-length bob, wearing burgundy satin`,
     quote: `I came in for a fill before a wedding. Sadia took her time, and they looked fresh again.`,
   },
 ];
@@ -88,11 +89,11 @@ const productCategories: ProductCategory[] = [
     id: `apparel`,
     name: `Apparel`,
     products: [
-      { id: `pakistani-lehenga`, name: `Pakistani Embroidered Lehenga`, description: `A festive skirt, blouse, and dupatta with delicate detail.`, price: 249, label: `Pakistani style`, shade: `berry`, visual: `apparel` },
-      { id: `bengali-jamdani`, name: `Bengali Jamdani Saree`, description: `An airy floral weave with a timeless drape.`, price: 189, label: `Bengali style`, shade: `cream`, visual: `apparel` },
-      { id: `indian-banarasi`, name: `Indian Banarasi Saree`, description: `Brocade-inspired elegance for every celebration.`, price: 219, label: `Indian style`, shade: `gold`, visual: `apparel` },
-      { id: `pakistani-lawn`, name: `Pakistani Lawn Kurta Set`, description: `A printed kurta, trousers, and matching dupatta.`, price: 95, label: `Everyday edit`, shade: `green`, visual: `apparel` },
-      { id: `bengali-muslin`, name: `Bengali Muslin Salwar Set`, description: `Lightweight festive layers with an easy silhouette.`, price: 129, label: `New arrival`, shade: `coral`, visual: `apparel` },
+      { id: `pakistani-lehenga`, name: `Pakistani Embroidered Lehenga`, description: `A festive skirt, blouse, and dupatta with delicate detail.`, price: 249, label: `Pakistani style`, shade: `berry`, visual: `apparel`, image: `/apparel-pakistani-lehenga.png`, imageAlt: `Woman wearing an embroidered Pakistani lehenga and dupatta` },
+      { id: `bengali-jamdani`, name: `Bengali Jamdani Saree`, description: `An airy floral weave with a timeless drape.`, price: 189, label: `Bengali style`, shade: `cream`, visual: `apparel`, image: `/apparel-bengali-jamdani.png`, imageAlt: `Woman wearing a floral Bengali Jamdani saree` },
+      { id: `indian-banarasi`, name: `Indian Banarasi Saree`, description: `Brocade-inspired elegance for every celebration.`, price: 219, label: `Indian style`, shade: `gold`, visual: `apparel`, image: `/apparel-indian-banarasi.png`, imageAlt: `Woman wearing a brocade Indian Banarasi saree` },
+      { id: `pakistani-lawn`, name: `Pakistani Lawn Kurta Set`, description: `A printed kurta, trousers, and matching dupatta.`, price: 95, label: `Everyday edit`, shade: `green`, visual: `apparel`, image: `/apparel-pakistani-lawn.png`, imageAlt: `Woman wearing a printed Pakistani lawn kurta, trousers, and dupatta` },
+      { id: `bengali-muslin`, name: `Bengali Muslin Salwar Set`, description: `Lightweight festive layers with an easy silhouette.`, price: 129, label: `New arrival`, shade: `coral`, visual: `apparel`, image: `/apparel-bengali-muslin.png`, imageAlt: `Woman wearing a light Bengali muslin salwar set` },
     ],
   },
   {
@@ -285,7 +286,16 @@ function ProductBottle({ shade }: { shade: string }) {
   return <div className={`bb-product-bottle ${shade}`} aria-hidden="true" />;
 }
 
-function ProductArtwork({ product }: { product: Product }) {
+function ProductArtwork({ product, context = `card` }: { product: Product; context?: `card` | `category` | `cart` }) {
+  if (product.visual === `apparel` && product.image && context !== `category`) return (
+    <Image
+      className="bb-product-photo"
+      src={product.image}
+      alt={product.imageAlt ?? product.name}
+      fill
+      sizes={context === `cart` ? `62px` : `(max-width: 800px) 100vw, (max-width: 1050px) 40vw, 36vw`}
+    />
+  );
   if (product.visual === `apparel`) return (
     <svg className={`bb-product-art ${product.shade}`} viewBox="0 0 180 220" fill="none" aria-hidden="true">
       <path d="M72 20h36l9 16 21 12-11 25-20-10-6 23H79l-6-23-20 10-11-25 21-12 9-16Z" fill="var(--art-main)" stroke="currentColor" strokeOpacity=".36" />
@@ -318,18 +328,45 @@ function ProductArtwork({ product }: { product: Product }) {
   return <ProductBottle shade={product.shade} />;
 }
 
-function Shop({ onAdd }: { onAdd: (product: Product) => void }) {
+function ProductCardCartControl({ product, quantity, isActive, onAdd, onDecrement }: { product: Product; quantity: number; isActive: boolean; onAdd: (product: Product) => void; onDecrement: (id: string) => void }) {
+  if (quantity === 0) return (
+    <button
+      type="button"
+      className="bb-add-button bb-product-cart-pill"
+      id={`bb-product-add-${product.id}`}
+      tabIndex={isActive ? 0 : -1}
+      onClick={() => onAdd(product)}
+      data-testid={`button-add-${product.id}`}
+    >
+      Add to bag <Plus size={14} />
+    </button>
+  );
+
+  return (
+    <div className="bb-product-quantity bb-product-cart-pill" id={`bb-product-quantity-${product.id}`} role="group" aria-label={`${product.name} quantity`}>
+      <button type="button" className="bb-product-quantity-button" id={`bb-product-decrease-${product.id}`} tabIndex={isActive ? 0 : -1} onClick={() => onDecrement(product.id)} aria-label={`Decrease quantity of ${product.name}`} data-testid={`button-decrease-card-${product.id}`}><Minus size={14} /></button>
+      <output className="bb-product-quantity-value" id={`bb-product-quantity-value-${product.id}`} aria-label={`Quantity: ${quantity}`}>{quantity}</output>
+      <button type="button" className="bb-product-quantity-button" id={`bb-product-increase-${product.id}`} tabIndex={isActive ? 0 : -1} onClick={() => onAdd(product)} aria-label={`Increase quantity of ${product.name}`} data-testid={`button-increase-card-${product.id}`}><Plus size={14} /></button>
+    </div>
+  );
+}
+
+function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: Product) => void; onDecrement: (id: string) => void }) {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{ pointerId: number; startX: number; startY: number; deltaX: number; axis: `x` | `y` | null } | null>(null);
   const suppressClickRef = useRef(false);
+  const quantities = cart.reduce<Record<string, number>>((counts, product) => {
+    counts[product.id] = (counts[product.id] ?? 0) + 1;
+    return counts;
+  }, {});
   const showCategory = (direction: number) => {
     setActiveCategoryIndex((current) => Math.min(productCategories.length - 1, Math.max(0, current + direction)));
   };
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!event.isPrimary || (event.pointerType === `mouse` && event.button !== 0)) return;
-    if (event.target instanceof Element && event.target.closest(`button`)) {
+    if (event.target instanceof Element && event.target.closest(`button, a`)) {
       suppressClickRef.current = false;
       return;
     }
@@ -407,14 +444,26 @@ function Shop({ onAdd }: { onAdd: (product: Product) => void }) {
               >
                 {category.products.map((product) => (
                   <article className="bb-product-card" id={`product-${product.id}`} key={product.id} data-testid={`card-product-${product.id}`}>
-                    <div className="bb-product-visual">
+                    <div className={`bb-product-visual${product.image ? ` has-photo` : ``}`}>
                       <span className="bb-product-label" id={`product-label-${product.id}`}>{product.label}</span>
                       <ProductArtwork product={product} />
+                      {product.image && (
+                        <a
+                          className="bb-product-photo-link"
+                          id={`product-photo-link-${product.id}`}
+                          href={product.image}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`View full outfit photo of ${product.name}`}
+                        >
+                          View outfit <ArrowUpRight size={13} aria-hidden="true" />
+                        </a>
+                      )}
                     </div>
                     <div className="bb-product-info">
                       <h3>{product.name}</h3>
                       <p>{product.description}</p>
-                      <div className="bb-product-bottom"><span className="bb-product-price">${product.price.toFixed(2)}</span><button className="bb-add-button" tabIndex={categoryIndex === activeCategoryIndex ? 0 : -1} onClick={() => onAdd(product)} data-testid={`button-add-${product.id}`}>Add to bag <Plus size={14} /></button></div>
+                      <div className="bb-product-bottom"><span className="bb-product-price">${product.price.toFixed(2)}</span><ProductCardCartControl product={product} quantity={quantities[product.id] ?? 0} isActive={categoryIndex === activeCategoryIndex} onAdd={onAdd} onDecrement={onDecrement} /></div>
                     </div>
                   </article>
                 ))}
@@ -435,7 +484,7 @@ function Shop({ onAdd }: { onAdd: (product: Product) => void }) {
                   onClick={() => setActiveCategoryIndex(index)}
                   data-testid={`button-category-${category.id}`}
                 >
-                  <span className="bb-category-thumb" aria-hidden="true"><ProductArtwork product={category.products[0]} /></span>
+                  <span className="bb-category-thumb" aria-hidden="true"><ProductArtwork product={category.products[0]} context="category" /></span>
                   <span className="bb-category-tab-copy"><small>{String(index + 1).padStart(2, '0')}</small><strong>{category.name}</strong></span>
                 </button>
               ))}
@@ -715,7 +764,7 @@ function BookingSection({ onSuccess, confirmation }: { onSuccess: (name: string,
           <Check size={20} style={{ color: 'hsl(var(--primary))', marginBottom: 17 }} />
           <strong>We’re making room for you, {confirmation.name}.</strong>
            <p>Your request for <b>{confirmation.service}</b> is on its way to the studio. Keep an eye on your inbox — Sadia will confirm the details within one studio day.</p>
-          <button type="button" className="bb-button bb-button-outline" style={{ color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary))', marginTop: 22 }} onClick={() => onSuccess('', '')} data-testid="button-book-another">Book another look <ArrowUpRight size={15} /></button>
+          <button type="button" className="bb-button bb-button-outline bb-button-outline-dark" style={{ marginTop: 22 }} onClick={() => onSuccess('', '')} data-testid="button-book-another">Book another look <ArrowUpRight size={15} /></button>
         </div> : <div data-reveal><BookingForm onSuccess={onSuccess} /></div>}
       </div>
     </section>
@@ -811,7 +860,7 @@ function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, 
               <Heart size={28} />
               <strong>Nothing here yet.</strong>
               <p>The Misty Market is waiting for a little something lovely.</p>
-              <button className="bb-button bb-button-outline" style={{ color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary))', marginTop: 22 }} onClick={onClose} data-testid="button-continue-shopping">Keep browsing <ArrowUpRight size={15} /></button>
+              <button className="bb-button bb-button-outline bb-button-outline-dark" style={{ marginTop: 22 }} onClick={onClose} data-testid="button-continue-shopping">Keep browsing <ArrowUpRight size={15} /></button>
             </div>
           </div>
         ) : (
@@ -820,7 +869,7 @@ function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, 
               <div className="bb-cart-lines" id="bb-cart-lines">
                 {cartLines.map(({ product, quantity }) => (
                   <div className="bb-cart-line" id={`bb-cart-line-${product.id}`} key={product.id}>
-                    <div className="bb-cart-thumb" id={`bb-cart-thumb-${product.id}`}><ProductArtwork product={product} /></div>
+                    <div className="bb-cart-thumb" id={`bb-cart-thumb-${product.id}`}><ProductArtwork product={product} context="cart" /></div>
                     <div className="bb-cart-details" id={`bb-cart-details-${product.id}`}>
                       <h3 className="bb-cart-product-name" id={`bb-cart-product-name-${product.id}`}>{product.name}</h3>
                       <p className="bb-cart-unit-price" id={`bb-cart-unit-price-${product.id}`}>${product.price.toFixed(2)} each</p>
@@ -954,7 +1003,11 @@ export default function BengaliBlushLanding() {
   };
   const closeBag = () => setBagPhase((current) => current === `closed` || current === `closing` ? current : `closing`);
   const handleSuccess = (name: string, service: string) => { storeBookingRequest(name, service); setConfirmation({ name, service }); setToast(`Thanks, ${name}. Your ${service.toLowerCase()} request is in.`); };
-  const addProduct = (product: Product) => { writeStoredCart([...getStoredCartSnapshot(), product]); setToast(`${product.name} added to your bag.`); openBag(); };
+  const addProduct = (product: Product) => {
+    const currentCart = getStoredCartSnapshot();
+    writeStoredCart([...currentCart, product]);
+    if (!currentCart.some((item) => item.id === product.id)) setToast(`Added ${product.name} to Bag`);
+  };
   const removeProduct = (id: string) => writeStoredCart(getStoredCartSnapshot().filter((item) => item.id !== id));
   const incrementProduct = (product: Product) => writeStoredCart([...getStoredCartSnapshot(), product]);
   const decrementProduct = (id: string) => {
@@ -973,7 +1026,7 @@ export default function BengaliBlushLanding() {
       <Intro />
       <Services onBook={openBooking} />
       <Marquee />
-      <Shop onAdd={addProduct} />
+      <Shop cart={cart} onAdd={addProduct} onDecrement={decrementProduct} />
       <Reviews />
       <BookingSection onSuccess={(name, service) => {
         if (!name && !service) {
