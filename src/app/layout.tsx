@@ -39,9 +39,9 @@ export const metadata: Metadata = {
   manifest: `/manifest.json`,
   description: siteConfig.description,
   icons: {
-    icon: { url: `/favicon.svg`, type: `image/svg+xml` },
-    apple: `/apple-icon-180x180.png`,
-    shortcut: `/favicon.svg`,
+    icon: { url: `/favicon.svg?v=bb`, type: `image/svg+xml` },
+    apple: `/apple-icon-180x180.png?v=bb`,
+    shortcut: `/favicon.svg?v=bb`,
   },
   openGraph: {
     title: siteConfig.name,

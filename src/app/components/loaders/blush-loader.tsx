@@ -121,9 +121,7 @@ export default function BlushLoader() {
       </span>
       <div className="bb-loader-core">
         <div className="bb-loader-brand" aria-hidden="true">
-          <span className="bb-loader-mark">
-            b
-          </span>
+          <span className="bb-loader-mark" />
           <span className="bb-loader-name">
             Bengali Blush
           </span>

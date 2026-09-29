@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, type CSSProperties } from 'react';
-import { Armchair, ArrowUpRight, CalendarDays, MapPin, ShoppingBag, WandSparkles } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, MapPin, Quote, ShoppingBag, WandSparkles } from 'lucide-react';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 
 export type HeaderWidth = 'boxed' | 'full';
@@ -17,14 +17,14 @@ type HeaderProps = {
 const navigationItems = [
   { icon: WandSparkles, label: `Services`, locator: `services`, description: `Signature looks made for your moment` },
   { icon: ShoppingBag, label: `Shop`, locator: `shop`, description: `Curated rituals and beauty essentials` },
-  { icon: Armchair, label: `Studio`, locator: `studio`, description: `Meet Sadia and discover the atelier` },
+  { icon: Quote, label: `Reviews`, locator: `reviews`, description: `Kind words from lash clients` },
   { icon: MapPin, label: `Contact`, locator: `contact`, description: `Find us and plan your next visit` },
 ];
 
 export function BrandMark({ testId = `link-logo` }: { testId?: string }) {
   return (
     <button type="button" className="bb-logo" onClick={() => scrollToElement()} aria-label="Back to top" data-testid={testId}>
-      <span className="bb-logo-mark" aria-hidden="true">b</span>
+      <span className="bb-logo-mark" aria-hidden="true" />
       <span className="bb-logo-text">Bengali Blush</span>
     </button>
   );

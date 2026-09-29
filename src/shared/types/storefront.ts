@@ -14,12 +14,12 @@ export type Product = {
   price: number;
   label: string;
   shade: string;
+  visual?: 'serum' | 'apparel' | 'candle' | 'tool';
 };
 
 export type ProductCategory = {
   id: string;
   name: string;
-  shade: string;
   products: Product[];
 };
 
