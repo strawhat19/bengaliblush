@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type CSSProperties } from 'react';
 import { ArrowUpRight, CalendarDays, MapPin, Quote, ShoppingBag, WandSparkles } from 'lucide-react';
+import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 
 export type HeaderWidth = 'boxed' | 'full';
@@ -88,12 +89,9 @@ export default function Header({
     sticky && scrolled ? `is-scrolled` : ``,
   ].filter(Boolean).join(` `);
   const containerClassName = width === `full` ? `bb-header-inner is-full-width` : `bb-container bb-header-inner`;
-  const headerGlassFilter = scrolled || mobileOpen ? `blur(20px) saturate(125%)` : `blur(0) saturate(100%)`;
-  const headerGlassStyle = { backdropFilter: headerGlassFilter, WebkitBackdropFilter: headerGlassFilter } as CSSProperties;
-  const mobileMenuGlassStyle = { backdropFilter: `blur(22px) saturate(125%)`, WebkitBackdropFilter: `blur(22px) saturate(125%)` } as CSSProperties;
 
   return (
-    <header className={headerClassName} style={headerGlassStyle} data-hero-reveal data-width={width}>
+    <header className={headerClassName} data-hero-reveal data-width={width}>
       <div className={containerClassName}>
         <BrandMark />
         <nav className="bb-nav" aria-label="Main navigation">
@@ -121,31 +119,34 @@ export default function Header({
           </button>
         </div>
       </div>
-      <nav id="mobile-navigation" className={`bb-mobile-panel ${mobileOpen ? `is-open` : ``}`} style={mobileMenuGlassStyle} aria-label="Mobile navigation" aria-hidden={!mobileOpen} inert={!mobileOpen} data-testid="mobile-navigation">
-        <div className="bb-mobile-panel-heading">
-          <span>Explore Bengali Blush</span>
-          <small>Beauty, with feeling</small>
+      <nav id="mobile-navigation" className={`bb-mobile-panel ${mobileOpen ? `is-open` : ``}`} aria-label="Mobile navigation" aria-hidden={!mobileOpen} inert={!mobileOpen} data-testid="mobile-navigation">
+        <LiquidPanelEdge expanded={mobileOpen} id="bb-mobile-menu-liquid-edge" edge="bottom" />
+        <div className="bb-mobile-panel-content" id="bb-mobile-panel-content">
+          <div className="bb-mobile-panel-heading">
+            <span>Explore Bengali Blush</span>
+            <small>Beauty, with feeling</small>
+          </div>
+          <div className="bb-mobile-nav-grid">
+            {navigationItems.map(({ icon: Icon, label, locator, description }, index) => (
+              <button
+                type="button"
+                key={locator}
+                className="bb-mobile-nav-link"
+                style={{ '--bb-menu-delay': `${70 + index * 45}ms` } as CSSProperties}
+                onClick={() => { closeMobile(); scrollToElement(`#${locator}`); }}
+                data-testid={`mobile-link-${locator}`}
+              >
+                <span className="bb-mobile-nav-index">{String(index + 1).padStart(2, `0`)}</span>
+                <span className="bb-mobile-nav-copy"><span><Icon size={16} strokeWidth={1.5} aria-hidden="true" />{label}</span><small>{description}</small></span>
+                <ArrowUpRight size={15} strokeWidth={1.5} aria-hidden="true" />
+              </button>
+            ))}
+          </div>
+          <button className="bb-mobile-menu-book" onClick={() => { closeMobile(); onBook(); }} data-testid="button-mobile-book">
+            <span><small>Reserve your chair</small><strong>Book your appointment</strong></span>
+            <span className="bb-mobile-menu-book-icon" aria-hidden="true"><CalendarDays size={17} strokeWidth={1.5} /></span>
+          </button>
         </div>
-        <div className="bb-mobile-nav-grid">
-          {navigationItems.map(({ icon: Icon, label, locator, description }, index) => (
-            <button
-              type="button"
-              key={locator}
-              className="bb-mobile-nav-link"
-              style={{ '--bb-menu-delay': `${70 + index * 45}ms` } as CSSProperties}
-              onClick={() => { closeMobile(); scrollToElement(`#${locator}`); }}
-              data-testid={`mobile-link-${locator}`}
-            >
-              <span className="bb-mobile-nav-index">{String(index + 1).padStart(2, `0`)}</span>
-              <span className="bb-mobile-nav-copy"><span><Icon size={16} strokeWidth={1.5} aria-hidden="true" />{label}</span><small>{description}</small></span>
-              <ArrowUpRight size={15} strokeWidth={1.5} aria-hidden="true" />
-            </button>
-          ))}
-        </div>
-        <button className="bb-mobile-menu-book" onClick={() => { closeMobile(); onBook(); }} data-testid="button-mobile-book">
-          <span><small>Reserve your chair</small><strong>Book your appointment</strong></span>
-          <span className="bb-mobile-menu-book-icon" aria-hidden="true"><CalendarDays size={17} strokeWidth={1.5} /></span>
-        </button>
       </nav>
     </header>
   );

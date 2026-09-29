@@ -192,9 +192,8 @@ function Intro() {
           </h2>
           <p>There is no one way to be beautiful. We create looks that feel like you on your very best day: considered, expressive, and impossible to forget.</p>
           <div className="bb-founder-note">
-            <div className="bb-founder-meta"><span>Certified Lash Technician</span><span>LA to ATL</span></div>
-            <p>From Los Angeles, California, to Atlanta, Sadia brings an easy sense of beauty and a careful eye for detail to every appointment.</p>
             <div className="bb-founder-signature"><span>with love,</span><strong>Sadia Islam Misty</strong></div>
+            <div className="bb-founder-meta"><span>Certified Lash Technician</span><span>LA to ATL</span></div>
           </div>
         </div>
         <div className="bb-intro-art" aria-label="Bengali Blush founder wearing party makeup" data-reveal>
@@ -907,7 +906,7 @@ function BookingModal({ service, isOpen, onClose, onSuccess }: { service?: Servi
     <>
       <div className={`bb-overlay bb-booking-overlay${isOpen ? ` is-open` : ``}`} onClick={onClose} aria-hidden="true" data-testid="button-close-booking-overlay" />
       <div ref={modalRef} className={`bb-booking-modal${isOpen ? ` is-open` : ``}`} role="dialog" aria-modal="true" aria-label="Book an appointment" aria-hidden={!isOpen} inert={!isOpen} tabIndex={-1} data-testid="modal-booking">
-        <LiquidPanelEdge expanded={isOpen} id="bb-booking-liquid-edge" />
+        <LiquidPanelEdge expanded={isOpen} id="bb-booking-liquid-edge" edge="bottom" />
         <div className="bb-booking-modal-content" id="bb-booking-modal-content">
           <div className="bb-booking-modal-heading"><div><span className="bb-eyebrow">Reserve your chair</span><h2>Make it<br />a date.</h2><p>{service ? `You’re booking ${service.name}.` : 'Tell us what you’re dreaming up.'}</p></div><button className="bb-close" onClick={onClose} aria-label="Close booking form" data-testid="button-close-booking"><X size={18} /></button></div>
           <BookingForm compact selectedService={service} onSuccess={onSuccess} />
@@ -944,7 +943,7 @@ export default function BengaliBlushLanding() {
     }
     if (bagPhase === `closing`) {
       const reducedMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches;
-      const timer = window.setTimeout(() => setBagPhase(`closed`), reducedMotion ? 0 : 820);
+      const timer = window.setTimeout(() => setBagPhase(`closed`), reducedMotion ? 0 : 700);
       return () => window.clearTimeout(timer);
     }
     if (bagPhase === `closed`) bagOpenerRef.current?.focus({ preventScroll: true });
@@ -960,7 +959,7 @@ export default function BengaliBlushLanding() {
     }
     if (bookingPhase === `closing`) {
       const reducedMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches;
-      const timer = window.setTimeout(() => setBookingPhase(`closed`), reducedMotion ? 0 : 820);
+      const timer = window.setTimeout(() => setBookingPhase(`closed`), reducedMotion ? 0 : 700);
       return () => window.clearTimeout(timer);
     }
     if (bookingPhase === `closed`) bookingOpenerRef.current?.focus({ preventScroll: true });
