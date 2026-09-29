@@ -138,5 +138,5 @@ html { scrollbar-width: thin; scrollbar-color: hsl(var(--primary)) hsl(var(--bac
 ::-webkit-scrollbar-thumb:hover { background: hsl(var(--accent)); }
 
 @media (max-width: 800px) {
-  .bb-scroll-to-top { right: 17px; bottom: 76px; width: 42px; height: 42px; }
+  .bb-scroll-to-top { right: 17px; bottom: 16px; width: 42px; height: 42px; }
 }
