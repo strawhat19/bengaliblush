@@ -1,5 +1,6 @@
 import './globals.scss';
 
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata, Viewport } from 'next';
 import { DM_Mono, DM_Sans, Fraunces } from 'next/font/google';
 import { siteConfig } from '@/shared/config/site';
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <BlushLoader />
         {children}
         <PwaRegistration />
+        <Analytics />
       </body>
     </html>
   );
