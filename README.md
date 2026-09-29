@@ -34,5 +34,3 @@ Open [http://localhost:3000](http://localhost:3000).
 - `src/shared` — site configuration and browser storage
 - `src/styles` — Sass theme, storefront, effects, and responsive styling
 - `public` — images, icons, and the web app manifest
-
-Cart contents and booking requests are stored locally in the browser until a backend is connected.
