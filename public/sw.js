@@ -1,9 +1,9 @@
 const CACHE_PREFIX = `bengali-blush`;
-const CACHE_NAME = `${CACHE_PREFIX}-shell-v3`;
+const CACHE_NAME = `${CACHE_PREFIX}-shell-v8`;
 const APP_SHELL = [
-  `/favicon.svg?v=bb`,
-  `/icon-192x192.png?v=bb`,
-  `/icon-512x512.png?v=bb`,
+  `/favicon.svg?v=bb-arc`,
+  `/icon-192x192.png?v=bb-arc`,
+  `/icon-512x512.png?v=bb-arc`,
   `/manifest.json`,
   `/hero-beauty.jpg`,
   `/hair-styling.jpg`,

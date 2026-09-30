@@ -44,7 +44,7 @@
 }
 
 .bb-loader-brand { display: flex; align-items: center; justify-content: center; gap: 14px; }
-.bb-loader-mark { display: block; width: 51px; height: 51px; flex: none; background: url('/favicon.svg?v=bb') center / contain no-repeat; }
+.bb-loader-mark { display: block; width: 51px; height: 51px; flex: none; background: url('/favicon.svg?v=bb-arc') center / contain no-repeat; }
 .bb-loader-name { font-family: var(--app-font-serif); font-size: clamp(25px, 4vw, 34px); font-weight: 500; letter-spacing: -.045em; }
 .bb-loader-readout { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding-top: 20px; border-top: 1px solid hsl(var(--card) / .18); }
 .bb-loader-status { max-width: 180px; color: hsl(var(--secondary)); font-family: var(--app-font-mono); font-size: 9px; font-weight: 500; letter-spacing: .14em; line-height: 1.5; text-transform: uppercase; }

@@ -9,13 +9,13 @@
   "theme_color": "#3e0d23",
   "icons": [
     {
-      "src": "/icon-192x192.png?v=bb",
+      "src": "/icon-192x192.png?v=bb-arc",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512x512.png?v=bb",
+      "src": "/icon-512x512.png?v=bb-arc",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

@@ -80,7 +80,7 @@ a { color: inherit; text-decoration: none; }
 .bb-header-inner { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 24px 0; }
 .bb-header-inner.is-full-width { width: 100%; padding-inline: clamp(18px, 3.2vw, 54px); }
 .bb-logo { display: inline-flex; align-items: center; gap: 11px; border: 0; padding: 0; background: transparent; color: inherit; text-align: left; }
-.bb-logo-mark { display: block; width: 39px; height: 39px; flex: none; background: url('/favicon.svg?v=bb') center / contain no-repeat; }
+.bb-logo-mark { display: block; width: 39px; height: 39px; flex: none; background: url('/favicon.svg?v=bb-arc') center / contain no-repeat; }
 .bb-logo-text { font-family: var(--app-font-serif); font-size: 21px; letter-spacing: -.04em; }
 .bb-nav { display: flex; align-items: center; gap: 34px; }
 .bb-nav button { position: relative; display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 0; background: transparent; color: rgba(255, 242, 226, .8); font-size: 12px; }
