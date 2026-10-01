@@ -59,7 +59,7 @@ const sampleTestimonials = [
     heading: { first: `You`, accent: `shine`, last: `your way` },
     service: `first-time lash client`,
     image: `/testimonial-aisha.png`,
-    imageAlt: `Editorial portrait of a fictional client in cream silk against a terracotta backdrop`,
+    imageAlt: `Editorial portrait of a fictional client in cream silk against an earthy brown backdrop`,
     quote: `I was nervous for my first set. Sadia explained everything and made me feel comfortable.`,
   },
   {
@@ -68,7 +68,7 @@ const sampleTestimonials = [
     heading: { first: `The`, accent: `magic`, last: `is yours` },
     service: `lash fill client`,
     image: `/testimonial-maya.png`,
-    imageAlt: `Editorial portrait of a fictional woman with light warm skin and a dark shoulder-length bob, wearing burgundy satin`,
+    imageAlt: `Editorial portrait of a fictional woman with a dark shoulder-length bob in burgundy satin against an earthy brown backdrop`,
     quote: `I came in for a fill before a wedding. Sadia took her time, and they looked fresh again.`,
   },
 ];
@@ -158,7 +158,10 @@ function Hero({ onBook }: { onBook: () => void }) {
       <div className="bb-hero-content">
         <div className="bb-hero-copy" data-hero-reveal>
           <SectionMarker icon={Sparkles} index="01" title="Welcome" inverse />
-          <span className="bb-eyebrow" style={{ color: 'hsl(38 75% 67%)' }}>Beauty, with feeling</span>
+          <span className="bb-eyebrow" style={{ color: 'hsl(38 75% 67%)' }}>
+            Beauty, with feeling
+            <span className="bb-flag-mark" aria-hidden="true"><span /></span>
+          </span>
           <h1 aria-label="Come for the glow. Stay for the feeling.">
             <RevealLine>Come for the</RevealLine><br />
             <RevealLine index={1}><em>glow.</em> Stay</RevealLine><br />
@@ -184,22 +187,35 @@ function Intro() {
       <div className="bb-container bb-intro-grid">
         <div className="bb-intro-copy" data-reveal>
           <SectionMarker icon={Heart} index="02" title="Our Story" />
-          <span className="bb-eyebrow">The Bengali Blush feeling</span>
-          <h2 aria-label="Soft glam. Big energy. Always you.">
-            <RevealLine>Soft glam.</RevealLine><br />
-            <RevealLine index={1}><em>Big energy.</em></RevealLine><br />
-            <RevealLine index={2}>Always you.</RevealLine>
+          <span className="bb-eyebrow">
+            California Girls
+          </span>
+          <h2 aria-label="Bangladesh Los Angeles Atlanta">
+            <RevealLine>Bangladesh</RevealLine><br />
+            <RevealLine index={1}><em>Los Angeles</em></RevealLine><br />
+            <RevealLine index={2}>Atlanta</RevealLine>
           </h2>
-          <p>There is no one way to be beautiful. We create looks that feel like you on your very best day: considered, expressive, and impossible to forget.</p>
+          {/* <p>There is no one way to be beautiful. We create looks that feel like you on your very best day: considered, expressive, and impossible to forget.</p> */}
           <div className="bb-founder-note">
-            <div className="bb-founder-signature"><span>with love,</span><strong>Sadia Islam Misty</strong></div>
-            <div className="bb-founder-meta"><span>Certified Lash Technician</span><span>LA to ATL</span></div>
+            <div className="bb-founder-signature">
+              <span>with love,</span>
+              <strong>Sadia Islam Misty</strong>
+            </div>
+            <div className="bb-founder-meta" style={{ flexDirection: `row-reverse` }}>
+              <span>Certified Lash Technician</span>
+              <span></span>
+            </div>
           </div>
         </div>
         <div className="bb-intro-art" aria-label="Bengali Blush founder wearing party makeup" data-reveal>
           <div className="bb-intro-circle" />
           <div className="bb-intro-photo" />
-          <div className="bb-intro-stamp"><div><strong>BB</strong><span>since 2021</span></div></div>
+          <div className="bb-intro-stamp">
+            <div>
+              <strong>BB</strong>
+              <span>since 2021</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -214,12 +230,15 @@ function Services({ onBook }: { onBook: (service?: Service) => void }) {
           <div>
             <SectionMarker icon={WandSparkles} index="03" title="Services" />
             <div className="bb-services-heading-top">
-              <span className="bb-eyebrow">Choose your moment</span>
-              <span className="bb-flag-mark" aria-hidden="true"><span /></span>
+              <span className="bb-eyebrow">
+                Choose Services
+              </span>
             </div>
-            <h2 aria-label="The menu, made for your plans."><RevealLine>The menu, made</RevealLine><br /><RevealLine index={1}>for your plans.</RevealLine></h2>
+            <h2 aria-label="Services Menu">
+              <RevealLine>Services Menu</RevealLine>
+            </h2>
           </div>
-          <p>From a first-date flutter to full celebration glam, every service is paced with care and finished with a mirror moment.</p>
+          <p>Prices are negotiable.</p>
         </div>
         <div className="bb-service-list" data-reveal>
           {services.map((service) => (
@@ -617,14 +636,19 @@ function Reviews() {
           <div className={`bb-story-image-track${isDragging ? ` is-dragging` : ``}`} style={trackStyle}>
             {sampleTestimonials.map((testimonial, index) => (
               <div
-                className="bb-story-image-slide"
+                className={`bb-story-image-slide`}
                 id={`review-portrait-${index + 1}`}
                 key={testimonial.name}
-                role="img"
-                aria-label={testimonial.imageAlt}
                 aria-hidden={index !== activeTestimonialIndex}
-                style={{ backgroundImage: `url(${testimonial.image})` }}
-              />
+              >
+                <div
+                  role={`img`}
+                  className={`bb-story-image-photo`}
+                  aria-label={testimonial.imageAlt}
+                  id={`review-portrait-photo-${index + 1}`}
+                  style={{ backgroundImage: `url(${testimonial.image})` }}
+                />
+              </div>
             ))}
           </div>
         </div>

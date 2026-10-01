@@ -1,11 +1,11 @@
 import './globals.scss';
 
-import { Analytics } from '@vercel/analytics/next';
 import type { Metadata, Viewport } from 'next';
-import { DM_Mono, DM_Sans, Fraunces } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { siteConfig } from '@/shared/config/site';
 import BlushLoader from '@/app/components/loaders/blush-loader';
 import PwaRegistration from '@/app/components/pwa/pwa-registration';
+import { Allura, DM_Mono, DM_Sans, Fraunces } from 'next/font/google';
 
 const sans = DM_Sans({
   subsets: ['latin'],
@@ -25,6 +25,13 @@ const mono = DM_Mono({
   subsets: ['latin'],
   variable: '--font-dm-mono',
   weight: ['400', '500'],
+});
+
+const signature = Allura({
+  weight: '400',
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-allura',
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `http://localhost:3000`;
@@ -60,7 +67,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
+    <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable} ${signature.variable}`}>
       <body>
         <BlushLoader />
         {children}

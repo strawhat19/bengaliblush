@@ -103,10 +103,22 @@ export default function Header({
         </nav>
         <div className="bb-header-actions">
           <button className="bb-ghost-button" onClick={onBook} data-testid="button-header-book"><CalendarDays size={14} strokeWidth={1.6} />Book Now</button>
-          <button className="bb-bag-button" onClick={onBag} aria-label="Open shopping bag" data-testid="button-open-bag">
-            <ShoppingBag size={19} strokeWidth={1.5} />
-            {bagCount > 0 && <span className="bb-bag-count" data-testid="text-bag-count">{bagCount}</span>}
-          </button>
+          <span id={`bb-bag-control`} className={`bb-bag-control`}>
+            <button
+              onClick={onBag}
+              id={`bb-bag-button`}
+              className={`bb-bag-button`}
+              aria-label={`Open shopping bag`}
+              data-testid={`button-open-bag`}
+            >
+              <ShoppingBag size={19} strokeWidth={1.5} />
+            </button>
+            {bagCount > 0 && (
+              <span id={`bb-bag-count`} className={`bb-bag-count`} data-testid={`text-bag-count`}>
+                {bagCount}
+              </span>
+            )}
+          </span>
           <button
             className="bb-menu-button"
             aria-controls="mobile-navigation"
