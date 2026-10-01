@@ -1,5 +1,5 @@
 const CACHE_PREFIX = `bengali-blush`;
-const CACHE_NAME = `${CACHE_PREFIX}-shell-v8`;
+const CACHE_NAME = `${CACHE_PREFIX}-shell-v9`;
 const APP_SHELL = [
   `/favicon.svg?v=bb-arc`,
   `/icon-192x192.png?v=bb-arc`,
@@ -41,15 +41,19 @@ self.addEventListener(`fetch`, event => {
   const requestUrl = new URL(request.url);
   if (request.method !== `GET` || requestUrl.origin !== self.location.origin) return;
 
-  if (request.mode === `navigate`) {
+  const isNavigation = request.mode === `navigate`;
+  if (isNavigation || requestUrl.pathname.startsWith(`/_next/`)) {
+    const cacheKey = isNavigation ? `/` : request;
     event.respondWith(
       fetch(request)
         .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(`/`, copy));
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(cacheKey, copy));
+          }
           return response;
         })
-        .catch(() => caches.match(`/`)),
+        .catch(() => caches.match(cacheKey)),
     );
     return;
   }

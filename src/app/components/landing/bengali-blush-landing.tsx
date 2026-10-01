@@ -10,6 +10,7 @@ import Header, { BrandMark } from '@/app/components/navigation/header';
 import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import {
   ArrowUpRight,
   CalendarDays,
@@ -209,7 +210,10 @@ function Intro() {
         </div>
         <div className="bb-intro-art" aria-label="Bengali Blush founder wearing party makeup" data-reveal>
           <div className="bb-intro-circle" />
-          <div className="bb-intro-photo" />
+          <div id={`bb-intro-photo`} className={`bb-intro-photo`}>
+            <div id={`bb-intro-photo-image`} className={`bb-intro-photo-image`} />
+            <OrnamentalArch id={`bb-intro-photo-arch`} />
+          </div>
           <div className="bb-intro-stamp">
             <div>
               <strong>BB</strong>
@@ -642,12 +646,18 @@ function Reviews() {
                 aria-hidden={index !== activeTestimonialIndex}
               >
                 <div
-                  role={`img`}
                   className={`bb-story-image-photo`}
-                  aria-label={testimonial.imageAlt}
                   id={`review-portrait-photo-${index + 1}`}
-                  style={{ backgroundImage: `url(${testimonial.image})` }}
-                />
+                >
+                  <div
+                    role={`img`}
+                    className={`bb-story-image-portrait`}
+                    aria-label={testimonial.imageAlt}
+                    id={`review-portrait-image-${index + 1}`}
+                    style={{ backgroundImage: `url(${testimonial.image})` }}
+                  />
+                  <OrnamentalArch id={`review-portrait-arch-${index + 1}`} />
+                </div>
               </div>
             ))}
           </div>
@@ -807,6 +817,7 @@ function Footer() {
             <p className="bb-footer-copy">
               A beauty atelier for soft glam, big energy, and the joy of being beautifully seen.
             </p>
+            <span className="bb-flag-mark" aria-hidden="true" style={{ marginTop: 15 }}><span /></span>
           </div>
           <div>
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106135.53646357554!2d-84.50260752904175!3d33.76749982933103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f5045d6993098d%3A0x66fede2f990b630b!2sAtlanta%2C%20GA!5e0!3m2!1sen!2sus!4v1788999713048!5m2!1sen!2sus" width="100%" height="150" style={{ border: 0, marginBottom: 15 }} loading="lazy" />

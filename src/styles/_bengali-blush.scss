@@ -147,7 +147,8 @@ a { color: inherit; text-decoration: none; }
 .bb-founder-signature strong { font-family: var(--app-font-signature); font-size: clamp(36px, 4vw, 48px); font-style: normal; font-weight: 400; letter-spacing: 0; line-height: 1.2; }
 .bb-intro-art { position: relative; min-height: 450px; }
 .bb-intro-circle { position: absolute; top: 8%; right: 4%; width: min(370px, 80%); aspect-ratio: 1; border-radius: 50%; background: hsl(var(--secondary)); }
-.bb-intro-photo { position: absolute; top: 0; right: 16%; width: 63%; height: 90%; border-radius: 48% 48% 12px 12px; background: center/cover no-repeat url('/party-makeup.jpg'); filter: saturate(.9); }
+.bb-intro-photo { position: absolute; top: 0; right: 16%; width: 63%; height: 90%; isolation: isolate; }
+.bb-intro-photo-image { height: 100%; border-radius: 48% 48% 12px 12px; background: center/cover no-repeat url('/party-makeup.jpg'); filter: saturate(.9); }
 .bb-intro-stamp { position: absolute; bottom: 7%; left: 4%; display: grid; width: 116px; height: 116px; place-items: center; border: 1px solid hsl(var(--primary)); border-radius: 50%; background: hsl(var(--background)); color: hsl(var(--primary)); text-align: center; transform: rotate(-12deg); }
 .bb-intro-stamp strong { display: block; font-family: var(--app-font-serif); font-size: 25px; line-height: .9; }
 .bb-intro-stamp span { font-family: var(--app-font-mono); font-size: 8px; letter-spacing: .12em; text-transform: uppercase; }
@@ -273,8 +274,9 @@ a { color: inherit; text-decoration: none; }
 .bb-story-copy:active { cursor: grabbing; }
 .bb-story-image-track, .bb-review-heading-track, .bb-testimonial-track { display: flex; width: 100%; height: 100%; transition: transform .65s cubic-bezier(.2, .75, .2, 1); }
 .bb-story-image-track.is-dragging, .bb-review-heading-track.is-dragging, .bb-testimonial-track.is-dragging { transition: none; }
-.bb-story-image-slide { height: 100%; flex: 0 0 100%; padding-inline: 12px; }
-.bb-story-image-photo { height: 100%; border-radius: 48% 48% 12px 12px; background: center/cover no-repeat; }
+.bb-story-image-slide { height: 100%; flex: 0 0 100%; padding: 16px 28px; }
+.bb-story-image-photo { --bb-arch-color: hsl(var(--secondary)); position: relative; height: 100%; isolation: isolate; }
+.bb-story-image-portrait { height: 100%; border-radius: 48% 48% 12px 12px; background: center/cover no-repeat; }
 .bb-review-eyebrow { color: hsl(var(--secondary)); }
 .bb-review-heading-viewport { overflow: hidden; }
 .bb-review-heading-slide { display: flex; min-width: 0; flex: 0 0 100%; align-items: center; gap: clamp(6px, 1vw, 12px); }
