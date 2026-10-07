@@ -117,7 +117,7 @@ export default function BlushLoader() {
       aria-valuenow={0}
     >
       <span className="bb-loader-rail bb-loader-rail-top">
-        Beauty, With Feeling
+        Beauty Studio
       </span>
       <div className="bb-loader-core">
         <div className="bb-loader-brand" aria-hidden="true">

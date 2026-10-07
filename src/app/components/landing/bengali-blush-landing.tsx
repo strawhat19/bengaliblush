@@ -21,9 +21,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock3,
+  FileText,
   Globe,
   Heart,
-  Info,
   Instagram,
   Mail,
   MapPin,
@@ -33,6 +33,7 @@ import {
   Quote,
   Star,
   ShoppingBag,
+  ShieldCheck,
   Sparkles,
   Trash2,
   WandSparkles,
@@ -164,7 +165,7 @@ function Hero({ onBook }: { onBook: () => void }) {
         <div className="bb-hero-copy" data-hero-reveal>
           <SectionMarker icon={Sparkles} index="01" title="Welcome" inverse />
           <span className="bb-eyebrow" style={{ color: 'hsl(38 75% 67%)' }}>
-            Beauty, with feeling
+            Beauty Studio
             <span className="bb-flag-mark" aria-hidden="true"><span /></span>
           </span>
           <h1 aria-label="Come for the glow. Stay for the feeling.">
@@ -179,7 +180,7 @@ function Hero({ onBook }: { onBook: () => void }) {
           </div>
         </div>
       </div>
-      <HeroPromoWheel revealEffect />
+      <HeroPromoWheel revealEffect alternateSpin />
       <div className="bb-hero-note">Atlanta · by appointment</div>
       <button type="button" className="bb-scroll-cue" onClick={() => scrollToElement(`#intro`)} data-testid="link-scroll-cue"><span /> Atelier</button>
     </section>
@@ -195,11 +196,21 @@ function Intro() {
           <span className="bb-eyebrow">
             California Girls
           </span>
-          <h2 aria-label="Bangladesh Los Angeles Atlanta">
-            <RevealLine>Bangladesh</RevealLine><br />
-            <RevealLine index={1}><em>Los Angeles</em></RevealLine><br />
-            <RevealLine index={2}>Atlanta</RevealLine>
-          </h2>
+          <div id={`bb-intro-heading`} className={`bb-intro-heading`}>
+            <h2 id={`bb-intro-title`} aria-label="Bangladesh Los Angeles Atlanta">
+              <RevealLine>Bangladesh</RevealLine>
+              <RevealLine index={1}><em>Los Angeles</em></RevealLine>
+              <RevealLine index={2}>Atlanta</RevealLine>
+            </h2>
+            <Link
+              href={siteRoutes.about.href}
+              id={`bb-intro-about-link`}
+              data-testid={`link-intro-about`}
+              className={`bb-button bb-intro-about-link`}
+            >
+              See Details <ArrowUpRight size={15} aria-hidden={`true`} />
+            </Link>
+          </div>
           {/* <p>There is no one way to be beautiful. We create looks that feel like you on your very best day: considered, expressive, and impossible to forget.</p> */}
           <div className="bb-founder-note">
             <div className="bb-founder-signature">
@@ -211,14 +222,6 @@ function Intro() {
               <span></span>
             </div>
           </div>
-          <Link
-            href={siteRoutes.about.href}
-            id={`bb-intro-about-link`}
-            data-testid={`link-intro-about`}
-            className={`bb-button bb-button-outline bb-button-outline-dark bb-intro-about-link`}
-          >
-            Our full story <ArrowUpRight size={15} aria-hidden={`true`} />
-          </Link>
         </div>
         <div className="bb-intro-art" aria-label="Bengali Blush founder wearing party makeup" data-reveal>
           <div className="bb-intro-circle" />
@@ -856,21 +859,27 @@ function Footer({ onBook }: { onBook: () => void }) {
             </div>
           </div>
           <div className={`wheelFooterCol`}>
-            <HeroPromoWheel revealEffect color={`white`} style={{ position: `static`, minHeight: 160, marginBottom: 15 }} />
+            <HeroPromoWheel
+              reverseSpin
+              revealEffect
+              alternateSpin
+              color={`white`}
+              style={{ minHeight: 160, marginBottom: 15, position: `static` }}
+            />
             <h4>Say hello</h4>
             <div className="bb-footer-links">
-              <Link href={siteRoutes.about.href} id={`bb-footer-about-link`} className={`bb-footer-page-link`} data-testid={`footer-link-about`}>
-                <Info size={13} aria-hidden={`true`} />About
-              </Link>
-              <Link href={siteRoutes.contact.href} id={`bb-footer-contact-link`} className={`bb-footer-page-link`} data-testid={`footer-link-contact`}>
-                <MapPin size={13} aria-hidden={`true`} />Contact
-              </Link>
               <Link href={siteRoutes.services.href} id={`bb-footer-services-link`} className={`bb-footer-page-link`} data-testid={`footer-link-services`}>
                 <WandSparkles size={13} aria-hidden={`true`} />Services
               </Link>
               <button type={`button`} onClick={onBook} id={`bb-footer-book-button`} className={`bb-footer-page-link`} data-testid={`footer-link-book`}>
                 <CalendarDays size={13} aria-hidden={`true`} />Book Now
               </button>
+              <Link href={siteRoutes.privacy.href} id={`bb-footer-privacy-link`} className={`bb-footer-page-link`} data-testid={`footer-link-privacy`}>
+                <ShieldCheck size={13} aria-hidden={`true`} />Privacy Policy
+              </Link>
+              <Link href={siteRoutes.terms.href} id={`bb-footer-terms-link`} className={`bb-footer-page-link`} data-testid={`footer-link-terms`}>
+                <FileText size={13} aria-hidden={`true`} />Terms
+              </Link>
             </div>
           </div>
         </div>

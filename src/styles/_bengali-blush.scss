@@ -131,6 +131,7 @@ a { color: inherit; text-decoration: none; }
 .bb-hero-note::before { width: 1px; height: 54px; background: hsl(var(--secondary)); content: ''; }
 .bb-hero-promo { position: absolute; z-index: 2; right: clamp(90px, 18vw, 280px); bottom: 52px; width: clamp(154px, 11vw, 176px); aspect-ratio: 1; color: hsl(var(--secondary)); filter: drop-shadow(0 3px 8px hsl(340 32% 15% / .6)); }
 .bb-hero-promo-ring-motion { position: absolute; inset: 0; transform-origin: center; will-change: transform; }
+.bb-hero-promo-logo-motion, .bb-hero-promo-text-motion { transform-box: view-box; transform-origin: center; will-change: transform; }
 .bb-hero-promo-ring { width: 100%; height: 100%; overflow: visible; }
 .bb-hero-promo-text { fill: hsl(var(--secondary)); font-family: var(--app-font-mono); font-size: 23px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; }
 .bb-scroll-cue { position: absolute; z-index: 1; bottom: 35px; left: 24px; display: flex; align-items: center; gap: 10px; border: 0; padding: 0; background: transparent; color: rgba(255, 242, 226, .64); font-size: 11px; }

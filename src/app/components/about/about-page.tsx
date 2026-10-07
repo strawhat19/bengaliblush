@@ -65,7 +65,7 @@ const AboutPage = () => (
       <div className={`bb-container bb-about-philosophy-grid`} id={`bb-about-philosophy-grid`}>
         <div className={`bb-about-philosophy-copy`} id={`bb-about-philosophy-copy`} data-reveal>
           <span className={`bb-eyebrow`} id={`bb-about-philosophy-eyebrow`}>The Bengali Blush Feeling</span>
-          <h2 className={`bb-about-section-heading`} id={`bb-about-philosophy-heading`}>Beauty, with<br /><em>feeling.</em></h2>
+          <h2 className={`bb-about-section-heading`} id={`bb-about-philosophy-heading`}>Beauty<br /><em>Studio</em></h2>
           <p className={`bb-about-philosophy-introduction`} id={`bb-about-philosophy-introduction`}>Soft glam, big energy, and a look that feels like you on your very best day. Our services bring together expressive lashes, hair styling, and party makeup for your next main character moment.</p>
         </div>
         <div className={`bb-about-details`} id={`bb-about-details`}>

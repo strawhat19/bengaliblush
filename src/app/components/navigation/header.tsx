@@ -6,7 +6,7 @@ import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { navigationRoutes, siteRoutes } from '@/shared/navigation/routes';
 import { useEffect, useState, type MouseEvent, type CSSProperties } from 'react';
-import { Home, Info, LogIn, Quote, MapPin, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
+import { Home, Info, LogIn, Quote, MapPin, FileText, UserPlus, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
 
 export type HeaderWidth = 'boxed' | 'full';
 
@@ -19,7 +19,7 @@ type HeaderProps = {
   cartButtonFilled?: boolean;
 };
 
-const navigationIcons = { Home, Info, Quote, MapPin, ShoppingBag, WandSparkles };
+const navigationIcons = { Home, Info, LogIn, Quote, MapPin, FileText, UserPlus, ShieldCheck, ShoppingBag, WandSparkles };
 const navigationItems = navigationRoutes.map((route) => ({
   ...route,
   locator: route.section ?? route.href.slice(1),
@@ -155,14 +155,15 @@ export default function Header({
               </span>
             )}
           </span>
-          <button
-            type={`button`}
+          <Link
+            onClick={closeMobile}
+            href={siteRoutes.signin.href}
             id={`bb-header-sign-in`}
             className={`bb-ghost-button`}
             data-testid={`button-header-sign-in`}
           >
             <LogIn size={14} strokeWidth={1.6} aria-hidden={`true`} />Sign In
-          </button>
+          </Link>
           <button
             className="bb-menu-button"
             aria-controls="mobile-navigation"
@@ -180,7 +181,7 @@ export default function Header({
         <div className="bb-mobile-panel-content" id="bb-mobile-panel-content">
           <div className="bb-mobile-panel-heading">
             <span>Explore Bengali Blush</span>
-            <small>Beauty, with feeling</small>
+            <small>Beauty Studio</small>
           </div>
           <div className="bb-mobile-nav-grid">
             {navigationItems.map(({ Icon, href, label, locator, section, description }, index) => (

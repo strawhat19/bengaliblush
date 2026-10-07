@@ -1,4 +1,4 @@
-export type NavigationIcon = `Info` | `Home` | `Quote` | `MapPin` | `ShoppingBag` | `WandSparkles`;
+export type NavigationIcon = `Info` | `Home` | `LogIn` | `Quote` | `MapPin` | `FileText` | `UserPlus` | `ShieldCheck` | `ShoppingBag` | `WandSparkles`;
 
 export type SiteRoute = {
   href: string;
@@ -15,7 +15,7 @@ export const siteRoutes = {
     href: `/`,
     icon: `Home`,
     label: `Home`,
-    description: `Beauty, with feeling`,
+    description: `Beauty Studio`,
   },
   about: {
     icon: `Info`,
@@ -53,6 +53,38 @@ export const siteRoutes = {
     title: `Contact Bengali Blush`,
     description: `Find us and plan your next visit`,
     aliases: [`/contactme`, `/contactus`, `/getintouch`, `/contact-me`, `/contact-us`, `/get-in-touch`],
+  },
+  terms: {
+    href: `/terms`,
+    label: `Terms`,
+    icon: `FileText`,
+    title: `Terms | Bengali Blush`,
+    aliases: [`/terms-of-service`],
+    description: `Using the website and requesting appointments`,
+  },
+  privacy: {
+    href: `/privacy`,
+    icon: `ShieldCheck`,
+    label: `Privacy Policy`,
+    aliases: [`/privacy-policy`],
+    title: `Privacy Policy | Bengali Blush`,
+    description: `How information is used on the website`,
+  },
+  signin: {
+    icon: `LogIn`,
+    href: `/signin`,
+    label: `Sign In`,
+    title: `Sign In | Bengali Blush`,
+    description: `Welcome back to your beauty ritual`,
+    aliases: [`/log`, `/sign`, `/login`, `/log-in`, `/sign-in`],
+  },
+  signup: {
+    href: `/signup`,
+    icon: `UserPlus`,
+    label: `Sign Up`,
+    title: `Sign Up | Bengali Blush`,
+    description: `Make yourself at home at Bengali Blush`,
+    aliases: [`/new`, `/sign-up`, `/register`, `/subscribe`, `/onboarding`],
   },
 } satisfies Record<string, SiteRoute>;
 

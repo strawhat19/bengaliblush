@@ -1,0 +1,235 @@
+.bb-auth-story {
+  isolation: isolate;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  min-height: 100svh;
+  color: hsl(var(--foreground));
+  border-right: 1px solid hsl(var(--primary) / .14);
+  background: radial-gradient(ellipse at 5% 70%, hsl(var(--secondary) / .22), transparent 57%), linear-gradient(145deg, hsl(var(--background)), hsl(var(--baby-pink)) 82%);
+
+  .bb-auth-story-inner {
+    gap: 22px;
+    display: flex;
+    margin: 0 auto;
+    max-width: 600px;
+    min-height: 100svh;
+    position: relative;
+    flex-direction: column;
+    padding: 30px clamp(30px, 3.1vw, 48px) 26px;
+  }
+
+  .bb-auth-story-orbit {
+    z-index: -1;
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    border: 1px solid hsl(var(--primary) / .08);
+  }
+
+  .bb-auth-story-orbit-large { top: -340px; left: -340px; width: 860px; height: 860px; }
+  .bb-auth-story-orbit-small { top: -225px; left: -225px; width: 635px; height: 635px; }
+  .bb-auth-story-brand-row { gap: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .bb-auth-story-brand-row .bb-logo { min-height: 44px; color: hsl(var(--primary)); }
+  .bb-auth-story-brand-row .bb-logo-text { font-size: clamp(19px, 1.75vw, 24px); }
+  .bb-auth-story-brand-row .bb-logo-mark { width: 36px; height: 36px; }
+
+  .bb-auth-story-studio-pill {
+    flex: none;
+    padding: 7px 10px;
+    border-radius: 999px;
+    color: hsl(var(--primary));
+    font-family: var(--app-font-mono);
+    font-size: 9px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border: 1px solid hsl(var(--primary) / .22);
+  }
+
+  .bb-auth-story-carousel { flex: 1; display: grid; align-content: center; padding-block: 17px 24px; touch-action: pan-y; }
+
+  .bb-auth-story-slide {
+    gap: 25px;
+    opacity: 0;
+    display: grid;
+    grid-area: 1 / 1;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(16px);
+    transition: opacity .4s ease, transform .5s cubic-bezier(.2,.85,.25,1), visibility .4s;
+
+    &.is-active { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(0); }
+  }
+
+  .bb-auth-story-art { width: min(100%, 340px); height: 270px; margin: 0 auto; position: relative; }
+  .bb-auth-story-art-orbit { top: 14px; left: 26px; width: 240px; height: 240px; position: absolute; border-radius: 50%; background: hsl(var(--secondary) / .55); }
+
+  .bb-auth-story-photo {
+    overflow: hidden;
+    position: absolute;
+    border-radius: 18px;
+    background: hsl(var(--primary));
+    border: 5px solid hsl(var(--card));
+    box-shadow: 0 17px 35px hsl(var(--primary) / .17);
+  }
+
+  .bb-auth-story-photo-image { object-fit: cover; object-position: center; }
+  .bb-auth-story-glow-photo { top: 6px; left: 43px; width: 205px; height: 243px; border-radius: 44% 44% 13px 13px; transform: rotate(-7deg); }
+  .bb-auth-story-glow-photo .bb-auth-story-photo-image { object-position: 61% center; }
+
+  .bb-auth-story-photo-caption {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    padding: 32px 12px 13px;
+    color: hsl(var(--card));
+    font-family: var(--app-font-serif);
+    font-size: 18px;
+    font-style: italic;
+    background: linear-gradient(transparent, hsl(var(--foreground) / .75));
+  }
+
+  .bb-auth-story-spark {
+    top: 2px;
+    right: 36px;
+    width: 54px;
+    height: 54px;
+    display: grid;
+    position: absolute;
+    place-items: center;
+    border-radius: 50%;
+    transform: rotate(12deg);
+    background: hsl(var(--primary));
+    color: hsl(var(--secondary));
+    border: 5px solid hsl(var(--baby-pink));
+    box-shadow: 0 8px 20px hsl(var(--primary) / .15);
+  }
+
+  .bb-auth-story-art-note {
+    gap: 9px;
+    z-index: 2;
+    left: 5px;
+    bottom: 3px;
+    display: flex;
+    position: absolute;
+    padding: 13px 15px;
+    align-items: center;
+    border-radius: 13px;
+    transform: rotate(-3deg);
+    color: hsl(var(--primary));
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--primary) / .12);
+    box-shadow: 0 10px 24px hsl(var(--primary) / .1);
+  }
+
+  .bb-auth-story-art-note-text { font-size: 11px; font-weight: 500; }
+  .bb-auth-story-wheel { right: -2px; bottom: 21px; width: 106px; height: 106px; position: absolute; border-radius: 50%; background: hsl(var(--primary)); box-shadow: 0 7px 18px hsl(var(--primary) / .2); }
+  .bb-auth-story-wheel .bb-hero-promo { inset: 4px; width: auto; margin: 0; filter: none; }
+  .bb-auth-story-hair-photo { top: 5px; right: 12px; width: 166px; height: 224px; transform: rotate(9deg); }
+  .bb-auth-story-makeup-photo { top: 28px; left: 12px; width: 166px; height: 218px; transform: rotate(-9deg); }
+  .bb-auth-story-art-beauty .bb-auth-story-spark { top: 3px; right: 122px; }
+  .bb-auth-story-art-beauty .bb-auth-story-art-note { right: 0; left: auto; bottom: -2px; transform: rotate(3deg); }
+  .bb-auth-story-art-founder .bb-auth-story-art-orbit { top: 7px; left: 48px; width: 233px; height: 233px; background: hsl(var(--primary) / .13); }
+
+  .bb-auth-story-founder-letter {
+    gap: 8px;
+    top: 30px;
+    left: 1px;
+    width: 257px;
+    display: grid;
+    position: absolute;
+    padding: 24px 20px;
+    border-radius: 18px;
+    transform: rotate(-7deg);
+    background: hsl(var(--card));
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / .14);
+    box-shadow: 0 16px 35px hsl(var(--primary) / .13);
+  }
+
+  .bb-auth-story-founder-letter-label { margin-top: 8px; font-family: var(--app-font-serif); font-size: 18px; font-style: italic; }
+  .bb-auth-story-signature { font-family: var(--app-font-signature); font-size: 34px; font-weight: 400; line-height: 1.1; }
+  .bb-auth-story-founder-letter-role { font-family: var(--app-font-mono); font-size: 8px; letter-spacing: .07em; text-transform: uppercase; }
+  .bb-auth-story-founder-photo { top: 0; right: 0; width: 129px; height: 163px; transform: rotate(8deg); }
+  .bb-auth-story-art-founder .bb-auth-story-art-note { right: 0; left: auto; bottom: 2px; transform: rotate(3deg); }
+
+  .bb-auth-story-eyebrow { gap: 9px; display: inline-flex; align-items: center; color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+  .bb-auth-story-eyebrow::before { width: 22px; height: 1px; flex: none; background: currentColor; content: ''; }
+  .bb-auth-story-title { margin: 15px 0 17px; font-family: var(--app-font-serif); font-size: clamp(38px, 3.85vw, 52px); font-weight: 500; line-height: 1.07; letter-spacing: -.055em; }
+  .bb-auth-story-title-line, .bb-auth-story-title-accent { display: block; }
+  .bb-auth-story-title-accent { color: hsl(var(--primary)); font-weight: inherit; }
+  .bb-auth-story-description { margin: 0; max-width: 430px; min-height: 69px; color: hsl(var(--muted-foreground)); font-size: 14px; line-height: 1.7; }
+  .bb-auth-story-footer { gap: 13px; display: grid; }
+  .bb-auth-story-pagination-row { gap: 10px; display: flex; align-items: center; justify-content: space-between; }
+  .bb-auth-story-pagination, .bb-auth-story-controls { gap: 4px; display: flex; align-items: center; }
+  .bb-auth-story-dot-button { display: grid; min-width: 24px; min-height: 44px; border: 0; padding: 4px; place-items: center; background: transparent; }
+  .bb-auth-story-dot { width: 8px; height: 5px; border-radius: 999px; background: hsl(var(--primary) / .25); transition: width .35s ease, background-color .35s ease; }
+  .bb-auth-story-dot-button.is-active .bb-auth-story-dot { width: 28px; background: hsl(var(--primary)); }
+  .bb-auth-story-counter { margin-left: 5px; color: hsl(var(--muted-foreground)); font-family: var(--app-font-mono); font-size: 10px; }
+
+  .bb-auth-story-control {
+    padding: 0;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: transparent;
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / .26);
+    transition: color .25s ease, background-color .25s ease, border-color .25s ease;
+
+    &:hover { color: hsl(var(--card)); border-color: hsl(var(--primary)); background: hsl(var(--primary)); }
+  }
+
+  .bb-auth-story-detail { margin: 0; min-height: 34px; padding-top: 15px; color: hsl(var(--muted-foreground)); font-size: 11px; line-height: 1.6; border-top: 1px solid hsl(var(--primary) / .14); }
+  .bb-auth-story-form-link { display: none; }
+  :is(.bb-logo, .bb-auth-story-control, .bb-auth-story-dot-button, .bb-auth-story-form-link):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
+
+  @media (max-width: 1039px) {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid hsl(var(--primary) / .14);
+
+    .bb-auth-story-inner { gap: 14px; max-width: 620px; min-height: 740px; padding: 22px 32px 28px; }
+    .bb-auth-story-carousel { padding-block: 14px 20px; }
+    .bb-auth-story-slide { gap: 20px; }
+    .bb-auth-story-title { font-size: 42px; }
+    .bb-auth-story-title-line { max-width: 470px; }
+    .bb-auth-story-detail { min-height: 0; padding-top: 10px; }
+    .bb-auth-story-form-link { gap: 12px; display: flex; min-height: 48px; padding: 12px 18px; align-items: center; justify-content: center; border-radius: 999px; color: hsl(var(--card)); background: hsl(var(--primary)); border: 1px solid hsl(var(--primary)); font-size: 13px; transition: color .25s ease, background-color .25s ease; }
+    .bb-auth-story-form-link:hover { color: hsl(var(--primary)); background: hsl(var(--secondary)); }
+  }
+
+  @media (max-width: 479px) {
+    .bb-auth-story-inner { min-height: 715px; padding-inline: 22px; }
+    .bb-auth-story-brand-row { gap: 8px; }
+    .bb-auth-story-brand-row .bb-logo { gap: 8px; }
+    .bb-auth-story-brand-row .bb-logo-mark { width: 32px; height: 32px; }
+    .bb-auth-story-brand-row .bb-logo-text { font-size: 20px; }
+    .bb-auth-story-studio-pill { padding: 6px 8px; font-size: 8px; }
+    .bb-auth-story-art { height: 248px; width: 310px; max-width: 100%; }
+    .bb-auth-story-art-orbit { left: 20px; width: 223px; height: 223px; }
+    .bb-auth-story-glow-photo { left: 33px; width: 190px; height: 226px; }
+    .bb-auth-story-wheel { right: 0; width: 94px; height: 94px; }
+    .bb-auth-story-spark { right: 24px; }
+    .bb-auth-story-hair-photo { width: 150px; height: 206px; }
+    .bb-auth-story-makeup-photo { top: 20px; width: 150px; height: 202px; }
+    .bb-auth-story-art-beauty .bb-auth-story-spark { right: 112px; }
+    .bb-auth-story-art-founder .bb-auth-story-art-orbit { width: 219px; height: 219px; }
+    .bb-auth-story-founder-letter { width: 239px; padding: 21px 17px; }
+    .bb-auth-story-signature { font-size: 32px; }
+    .bb-auth-story-founder-photo { width: 121px; height: 150px; }
+    .bb-auth-story-title { font-size: 37px; }
+    .bb-auth-story-eyebrow { font-size: 8px; letter-spacing: .08em; }
+    .bb-auth-story-description { min-height: 67px; font-size: 13px; }
+    .bb-auth-story-controls { gap: 5px; }
+    .bb-auth-story-control { width: 35px; height: 35px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bb-auth-story-slide { transform: none; transition: none; }
+    :is(.bb-auth-story-dot, .bb-auth-story-control, .bb-auth-story-form-link) { transition: none; }
+  }
+}

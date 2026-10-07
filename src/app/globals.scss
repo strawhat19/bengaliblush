@@ -3,6 +3,8 @@
 @use '../styles/motion';
 @use '../styles/inner-pages';
 @use './components/about/about-page';
+@use './components/legal/legal-page.scss';
 @use './components/navigation/header';
 @use './components/contact/contact-page';
+@use './components/authentication/auth-page.scss';
 @use './components/effects/ornamental-arch/ornamental-arch';
