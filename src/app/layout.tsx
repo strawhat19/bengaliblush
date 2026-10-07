@@ -45,7 +45,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: siteConfig.title,
   manifest: `/manifest.json`,
+  applicationName: siteConfig.name,
   description: siteConfig.description,
+  appleWebApp: {
+    capable: true,
+    title: siteConfig.name,
+    statusBarStyle: `default`,
+  },
   icons: {
     icon: { url: `/favicon.svg?v=bb-arc`, type: `image/svg+xml` },
     apple: `/apple-icon-180x180.png?v=bb-arc`,

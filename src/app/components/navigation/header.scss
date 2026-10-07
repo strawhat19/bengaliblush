@@ -1,0 +1,7 @@
+.bb-nav .bb-nav-link { position: relative; display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 0; background: transparent; color: rgba(255, 242, 226, .8); font-size: 12px; font-weight: 600; }
+.bb-nav .bb-nav-link::after { position: absolute; right: 0; bottom: -7px; left: 0; height: 1px; background: hsl(var(--secondary)); content: ''; transform: scaleX(0); transform-origin: right; transition: transform .3s ease; }
+.bb-nav .bb-nav-link:hover::after, .bb-nav .bb-nav-link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-nav .bb-nav-link::after { transition: none; }
+}

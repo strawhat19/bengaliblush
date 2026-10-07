@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#3e0d23" />
+    <meta name="robots" content="noindex" />
+    <title>Offline | Bengali Blush</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { display: grid; min-height: 100dvh; margin: 0; padding: 36px 24px; place-items: center; background: #faf5f1; color: #321a24; font-family: Arial, sans-serif; }
+      a { color: inherit; text-decoration: none; }
+      button { font: inherit; cursor: pointer; }
+      .bb-offline { width: min(580px, 100%); }
+      .bb-offline-brand { display: inline-flex; align-items: center; gap: 11px; margin-bottom: 60px; font-family: Georgia, serif; font-size: 24px; }
+      .bb-offline-logo { width: 42px; height: 42px; }
+      .bb-offline-eyebrow { display: flex; align-items: center; gap: 12px; color: #8b2740; font-family: monospace; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; }
+      .bb-offline-eyebrow::before { width: 28px; height: 1px; background: currentColor; content: ''; }
+      .bb-offline-heading { margin: 22px 0; font-family: Georgia, serif; font-size: clamp(48px, 10vw, 80px); font-weight: 400; letter-spacing: -.05em; line-height: 1.05; }
+      .bb-offline-heading em { color: #8b2740; }
+      .bb-offline-copy { max-width: 420px; margin: 0 0 28px; color: #7e626e; font-size: 15px; line-height: 1.75; }
+      .bb-offline-retry { display: inline-flex; align-items: center; gap: 10px; min-height: 49px; padding: 0 23px; border: 0; border-radius: 999px; background: #8b2740; color: #fff8f2; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; transition: background-color .25s ease, transform .25s ease; }
+      .bb-offline-retry:hover { background: #641b2e; transform: translateY(-2px); }
+      .bb-offline-links { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 32px; }
+      .bb-offline-link { display: inline-flex; align-items: center; gap: 7px; color: #8b2740; font-size: 13px; }
+      .bb-offline-link:hover { text-decoration: underline; }
+      .bb-offline-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-top: 65px; padding-top: 18px; border-top: 1px solid #d5c6bc; color: #7e626e; font-family: monospace; font-size: 10px; }
+      a:focus-visible, button:focus-visible { outline: 2px solid #8b2740; outline-offset: 5px; }
+      @media (prefers-reduced-motion: reduce) { .bb-offline-retry { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <main id="bb-offline-page" class="bb-offline">
+      <a id="bb-offline-brand" class="bb-offline-brand" href="/" aria-label="Bengali Blush home">
+        <img id="bb-offline-logo" class="bb-offline-logo" src="/icon-192x192.png?v=bb-arc" alt="" width="42" height="42" />
+        <span id="bb-offline-brand-name" class="bb-offline-brand-name">Bengali Blush</span>
+      </a>
+      <span id="bb-offline-eyebrow" class="bb-offline-eyebrow">A little pause in the glow</span>
+      <h1 id="bb-offline-heading" class="bb-offline-heading">Still here.<br /><em>Just offline.</em></h1>
+      <p id="bb-offline-copy" class="bb-offline-copy">We can’t reach the studio right now. Revisit available pages below, or reconnect and try again. Your next beauty moment can wait a little.</p>
+      <button id="bb-offline-retry" class="bb-offline-retry" type="button">
+        Try Again
+        <svg id="bb-offline-retry-icon" class="bb-offline-retry-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 7v5h-5M3 17v-5h5" /><path d="M5 7a8 8 0 0 1 13-1l3 6M3 12l3 6a8 8 0 0 0 13-1" /></svg>
+      </button>
+      <nav id="bb-offline-links" class="bb-offline-links" aria-label="Available pages">
+        <a id="bb-offline-home-link" class="bb-offline-link" href="/">Home <span aria-hidden="true">↗</span></a>
+        <a id="bb-offline-about-link" class="bb-offline-link" href="/about">About <span aria-hidden="true">↗</span></a>
+        <a id="bb-offline-contact-link" class="bb-offline-link" href="/contact">Contact <span aria-hidden="true">↗</span></a>
+      </nav>
+      <footer id="bb-offline-footer" class="bb-offline-footer">
+        <span id="bb-offline-copyright" class="bb-offline-copyright">© <span id="bb-offline-year">2026</span> Bengali Blush Atelier</span>
+        <a id="bb-offline-piratechs-link" class="bb-offline-link" href="https://piratechs.com/" target="_blank" rel="noreferrer">Piratechs <span aria-hidden="true">↗</span></a>
+      </footer>
+    </main>
+    <script>
+      document.getElementById(`bb-offline-year`).textContent = String(new Date().getFullYear());
+      document.getElementById(`bb-offline-retry`).addEventListener(`click`, () => window.location.reload());
+    </script>
+  </body>
+</html>

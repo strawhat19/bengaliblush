@@ -1,0 +1,6 @@
+.bb-contact-form { gap: 27px; }
+.bb-contact-form .bb-contact-message { min-height: 145px; }
+.bb-contact-field-help { color: hsl(340 24% 27%); font-size: 11px; line-height: 1.6; }
+.bb-contact-delivery-note { max-width: 360px; margin: -12px 0 0; color: hsl(340 24% 27%); font-size: 11px; line-height: 1.6; }
+.bb-contact-draft-status { display: grid; justify-items: start; gap: 10px; padding: 18px; border: 1px solid hsl(var(--primary) / .35); background: hsl(var(--card) / .45); }
+.bb-contact-draft-message { margin: 0; color: hsl(var(--foreground)); font-size: 13px; line-height: 1.6; }

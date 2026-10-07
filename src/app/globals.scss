@@ -1,4 +1,8 @@
 @use '../styles/bengali-blush';
 @use '../styles/effects';
 @use '../styles/motion';
+@use '../styles/inner-pages';
+@use './components/about/about-page';
+@use './components/navigation/header';
+@use './components/contact/contact-page';
 @use './components/effects/ornamental-arch/ornamental-arch';

@@ -64,6 +64,15 @@ export default function HeroPromoWheel({ revealEffect = false, style, color = `h
           <defs>
             <path id={arcPathId} d={promoArc} />
           </defs>
+          <image
+            x={49.5}
+            y={49.5}
+            width={280}
+            height={280}
+            id={`${arcPathId}-logo`}
+            className={`bb-hero-promo-logo`}
+            href={`/logo-mark-transparent.svg`}
+          />
           <text className="bb-hero-promo-text" style={{ fill: color }}>
             <textPath href={`#${arcPathId}`} startOffset="0" textLength="1035" lengthAdjust="spacing">
               {promoPhrase}

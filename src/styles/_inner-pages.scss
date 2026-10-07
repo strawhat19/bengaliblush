@@ -1,0 +1,9 @@
+.bb-inner-page .bb-header::before { background: hsl(var(--primary) / .96); }
+.bb-intro-about-link { margin-top: 28px; }
+.bb-intro-about-link:hover { border-color: hsl(var(--primary)); background: hsl(var(--primary)); color: hsl(var(--card)); }
+.bb-footer-page-link { display: inline-flex; align-items: center; gap: 8px; }
+
+@media (max-width: 800px) {
+  .bb-footer .wheelFooterCol { display: block; }
+  .bb-footer .wheelFooterCol .bb-hero-promo { display: none; }
+}

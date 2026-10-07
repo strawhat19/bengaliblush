@@ -1,16 +1,19 @@
 'use client';
 
+import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type FormEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
-import type { Product, ProductCategory, Service } from '@/shared/types/storefront';
-import { getStoredCartServerSnapshot, getStoredCartSnapshot, storeBookingRequest, subscribeStoredCart, writeStoredCart } from '@/shared/storage/storefront-storage';
-import LandingMotion from '@/app/components/effects/landing-motion';
+import { siteContact } from '@/shared/config/site';
+import { siteRoutes } from '@/shared/navigation/routes';
 import ScrollToTop from '@/app/components/effects/scroll-to-top';
+import LandingMotion from '@/app/components/effects/landing-motion';
 import Header, { BrandMark } from '@/app/components/navigation/header';
 import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
-import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
+import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
+import type { Product, ProductCategory, Service } from '@/shared/types/storefront';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type FormEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { getStoredCartServerSnapshot, getStoredCartSnapshot, storeBookingRequest, subscribeStoredCart, writeStoredCart } from '@/shared/storage/storefront-storage';
 import {
   ArrowUpRight,
   CalendarDays,
@@ -20,6 +23,7 @@ import {
   Clock3,
   Globe,
   Heart,
+  Info,
   Instagram,
   Mail,
   MapPin,
@@ -207,6 +211,14 @@ function Intro() {
               <span></span>
             </div>
           </div>
+          <Link
+            href={siteRoutes.about.href}
+            id={`bb-intro-about-link`}
+            data-testid={`link-intro-about`}
+            className={`bb-button bb-button-outline bb-button-outline-dark bb-intro-about-link`}
+          >
+            Our full story <ArrowUpRight size={15} aria-hidden={`true`} />
+          </Link>
         </div>
         <div className="bb-intro-art" aria-label="Bengali Blush founder wearing party makeup" data-reveal>
           <div className="bb-intro-circle" />
@@ -804,7 +816,7 @@ function BookingSection({ onSuccess, confirmation }: { onSuccess: (name: string,
   );
 }
 
-function Footer() {
+function Footer({ onBook }: { onBook: () => void }) {
   return (
     <footer className="bb-footer">
       <div className="bb-container">
@@ -820,36 +832,44 @@ function Footer() {
             <span className="bb-flag-mark" aria-hidden="true" style={{ marginTop: 15 }}><span /></span>
           </div>
           <div>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106135.53646357554!2d-84.50260752904175!3d33.76749982933103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f5045d6993098d%3A0x66fede2f990b630b!2sAtlanta%2C%20GA!5e0!3m2!1sen!2sus!4v1788999713048!5m2!1sen!2sus" width="100%" height="150" style={{ border: 0, marginBottom: 15 }} loading="lazy" />
+            <iframe src={siteContact.mapEmbedUrl} title={`Bengali Blush Area In Atlanta`} width="100%" height="150" style={{ border: 0, marginBottom: 15 }} loading="lazy" />
             <h4>Find us</h4>
             <div className="bb-footer-links">
               <span>
                 <MapPin size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
-                Atlanta, GA, USA
+                {siteContact.address}
               </span>
-              <a href="sms:11234567890" data-testid="link-phone">
+              <a href={siteContact.phoneHref} data-testid="link-phone">
                 <Phone size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
-                +1 (123) 456-7890
+                {siteContact.phone}
               </a>
-              <a href="mailto:sadiaislam7222@gmail.com" data-testid="link-email">
+              <a href={`mailto:${siteContact.email}`} data-testid="link-email">
                 <Mail size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
-                sadiaislam7222@gmail.com
+                {siteContact.email}
               </a>
-              <a href="https://www.instagram.com/bengaliblush" target="_blank" rel="noreferrer" data-testid="link-instagram">
-                <Instagram size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
-                @bengaliblush
-              </a>
+              {siteContact.socials.map(({ id, href, handle }) => (
+                <a key={id} href={href} id={`bb-footer-social-${id}`} target={`_blank`} rel={`noreferrer`} data-testid={`link-${id}`}>
+                  <Instagram size={13} style={{ verticalAlign: `middle`, marginRight: 7 }} />
+                  {handle}
+                </a>
+              ))}
             </div>
           </div>
           <div className={`wheelFooterCol`}>
             <HeroPromoWheel revealEffect color={`white`} style={{ position: `static`, minHeight: 160, marginBottom: 15 }} />
             <h4>Say hello</h4>
             <div className="bb-footer-links">
-              <button type="button" onClick={() => scrollToElement(`#services`)} data-testid="footer-link-services">
-                Services
-              </button>
-              <button type="button" onClick={() => scrollToElement(`#contact`)} data-testid="footer-link-book">
-                Book Now
+              <Link href={siteRoutes.about.href} id={`bb-footer-about-link`} className={`bb-footer-page-link`} data-testid={`footer-link-about`}>
+                <Info size={13} aria-hidden={`true`} />About
+              </Link>
+              <Link href={siteRoutes.contact.href} id={`bb-footer-contact-link`} className={`bb-footer-page-link`} data-testid={`footer-link-contact`}>
+                <MapPin size={13} aria-hidden={`true`} />Contact
+              </Link>
+              <Link href={siteRoutes.services.href} id={`bb-footer-services-link`} className={`bb-footer-page-link`} data-testid={`footer-link-services`}>
+                <WandSparkles size={13} aria-hidden={`true`} />Services
+              </Link>
+              <button type={`button`} onClick={onBook} id={`bb-footer-book-button`} className={`bb-footer-page-link`} data-testid={`footer-link-book`}>
+                <CalendarDays size={13} aria-hidden={`true`} />Book Now
               </button>
             </div>
           </div>
@@ -951,7 +971,7 @@ function BookingModal({ service, isOpen, onClose, onSuccess }: { service?: Servi
   );
 }
 
-export default function BengaliBlushLanding() {
+export default function BengaliBlushLanding({ children }: { children?: ReactNode }) {
   const cart = useSyncExternalStore(subscribeStoredCart, getStoredCartSnapshot, getStoredCartServerSnapshot);
   const [bagPhase, setBagPhase] = useState<`closed` | `opening` | `open` | `closing`>(`closed`);
   const bagOpenerRef = useRef<HTMLElement | null>(null);
@@ -1053,23 +1073,27 @@ export default function BengaliBlushLanding() {
   const handleCheckout = () => { setToast('Checkout is being prepared for you.'); closeBag(); };
 
   return (
-    <main className="bb-page">
+    <main id={`bb-storefront-page`} className={`bb-page${children ? ` bb-inner-page` : ``}`}>
       <LandingMotion />
       <Header sticky width="boxed" bagCount={bagCount} onBag={openBag} onBook={() => openBooking()} />
-      <Hero onBook={() => openBooking()} />
-      <Intro />
-      <Services onBook={openBooking} />
-      <Marquee />
-      <Shop cart={cart} onAdd={addProduct} onDecrement={decrementProduct} />
-      <Reviews />
-      <BookingSection onSuccess={(name, service) => {
-        if (!name && !service) {
-          setConfirmation(null);
-          return;
-        }
-        handleSuccess(name, service);
-      }} confirmation={confirmation} />
-      <Footer />
+      {children ?? (
+        <>
+          <Hero onBook={() => openBooking()} />
+          <Intro />
+          <Services onBook={openBooking} />
+          <Marquee />
+          <Shop cart={cart} onAdd={addProduct} onDecrement={decrementProduct} />
+          <Reviews />
+          <BookingSection onSuccess={(name, service) => {
+            if (!name && !service) {
+              setConfirmation(null);
+              return;
+            }
+            handleSuccess(name, service);
+          }} confirmation={confirmation} />
+        </>
+      )}
+      <Footer onBook={() => children ? openBooking() : scrollToElement(`#contact`)} />
       <div className={`bb-toast ${toast ? '' : 'is-hidden'}`} style={{ display: toast ? 'block' : 'none' }} data-testid="status-toast"><Check size={14} style={{ verticalAlign: 'middle', marginRight: 8 }} />{toast}</div>
       {bagPhase !== `closed` && <BagDrawer cart={cart} isOpen={bagPhase === `open`} onClose={closeBag} onRemove={removeProduct} onIncrement={incrementProduct} onDecrement={decrementProduct} onCheckout={handleCheckout} />}
       {bookingPhase !== `closed` && <BookingModal service={bookingService} isOpen={bookingPhase === `open`} onClose={closeBooking} onSuccess={(name, service) => { handleSuccess(name, service); closeBooking(); }} />}

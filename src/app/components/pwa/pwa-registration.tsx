@@ -38,9 +38,28 @@ export default function PwaRegistration() {
       return () => { active = false; };
     }
 
-    navigator.serviceWorker.register(`/sw.js`).catch(error => {
+    if (!window.isSecureContext) return;
+
+    let active = true;
+    let registration: ServiceWorkerRegistration | undefined;
+    const checkForUpdates = () => {
+      if (!active || !registration || !navigator.onLine || document.visibilityState !== `visible`) return;
+      registration.update().catch(error => console.error(`Service Worker Update Failed`, error));
+    };
+
+    navigator.serviceWorker.register(`/sw.js`, { scope: `/`, updateViaCache: `none` }).then(workerRegistration => {
+      if (active) registration = workerRegistration;
+    }).catch(error => {
       console.error(`Service Worker Registration Failed`, error);
     });
+
+    window.addEventListener(`online`, checkForUpdates);
+    document.addEventListener(`visibilitychange`, checkForUpdates);
+    return () => {
+      active = false;
+      window.removeEventListener(`online`, checkForUpdates);
+      document.removeEventListener(`visibilitychange`, checkForUpdates);
+    };
   }, []);
 
   return null;

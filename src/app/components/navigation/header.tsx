@@ -1,9 +1,12 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
-import { Info, LogIn, Quote, MapPin, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
+import { navigationRoutes, siteRoutes } from '@/shared/navigation/routes';
+import { useEffect, useState, type MouseEvent, type CSSProperties } from 'react';
+import { Home, Info, LogIn, Quote, MapPin, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
 
 export type HeaderWidth = 'boxed' | 'full';
 
@@ -16,20 +19,35 @@ type HeaderProps = {
   cartButtonFilled?: boolean;
 };
 
-const navigationItems = [
-  { icon: Info, label: `About`, locator: `about`, placeholder: true, description: `The story behind Bengali Blush` },
-  { icon: WandSparkles, label: `Services`, locator: `services`, description: `Signature looks made for your moment` },
-  { icon: ShoppingBag, label: `Shop`, locator: `shop`, description: `Curated rituals and beauty essentials` },
-  { icon: Quote, label: `Reviews`, locator: `reviews`, description: `Kind words from lash clients` },
-  { icon: MapPin, label: `Contact`, locator: `contact`, description: `Find us and plan your next visit` },
-];
+const navigationIcons = { Home, Info, Quote, MapPin, ShoppingBag, WandSparkles };
+const navigationItems = navigationRoutes.map((route) => ({
+  ...route,
+  locator: route.section ?? route.href.slice(1),
+  Icon: navigationIcons[route.icon],
+}));
+
+const isRegularClick = (event: MouseEvent<HTMLAnchorElement>) =>
+  event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
 
 export function BrandMark({ testId = `link-logo` }: { testId?: string }) {
+  const pathname = usePathname();
+
   return (
-    <button type="button" className="bb-logo" onClick={() => scrollToElement()} aria-label="Back to top" data-testid={testId}>
+    <Link
+      href={siteRoutes.home.href}
+      id={`bb-${testId}`}
+      className={`bb-logo`}
+      data-testid={testId}
+      aria-label={pathname === `/` ? `Back to top` : `Bengali Blush home`}
+      onClick={(event) => {
+        if (pathname !== `/` || !isRegularClick(event)) return;
+        event.preventDefault();
+        scrollToElement();
+      }}
+    >
       <span className="bb-logo-mark" aria-hidden="true" />
       <span className="bb-logo-text">Bengali Blush</span>
-    </button>
+    </Link>
   );
 }
 
@@ -37,13 +55,21 @@ export default function Header({
   onBag,
   onBook,
   bagCount,
-  sticky = false,
+  sticky = true,
   width = 'boxed',
   cartButtonFilled = false,
 }: HeaderProps) {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeMobile = () => setMobileOpen(false);
+  const navigateToSection = (event: MouseEvent<HTMLAnchorElement>, section?: string) => {
+    closeMobile();
+    if (!section || pathname !== `/` || !isRegularClick(event)) return;
+    if (!document.getElementById(section)) return;
+    event.preventDefault();
+    scrollToElement(`#${section}`);
+  };
 
   useEffect(() => {
     if (!sticky) return;
@@ -98,17 +124,18 @@ export default function Header({
       <div className={containerClassName}>
         <BrandMark />
         <nav className="bb-nav" aria-label="Main navigation">
-          {navigationItems.map(({ icon: Icon, label, locator, placeholder }) => (
-            <button
-              type={`button`}
+          {navigationItems.map(({ Icon, href, label, locator, section }) => (
+            <Link
+              href={href}
               key={locator}
               id={`bb-nav-${locator}`}
               className={`bb-nav-link`}
               data-testid={`link-${locator}`}
-              onClick={placeholder ? undefined : () => scrollToElement(`#${locator}`)}
+              aria-current={pathname === href ? `page` : undefined}
+              onClick={(event) => navigateToSection(event, section)}
             >
               <Icon size={13} strokeWidth={1.6} aria-hidden="true" />{label}
-            </button>
+            </Link>
           ))}
         </nav>
         <div className="bb-header-actions">
@@ -156,20 +183,21 @@ export default function Header({
             <small>Beauty, with feeling</small>
           </div>
           <div className="bb-mobile-nav-grid">
-            {navigationItems.map(({ icon: Icon, label, locator, description, placeholder }, index) => (
-              <button
-                type="button"
+            {navigationItems.map(({ Icon, href, label, locator, section, description }, index) => (
+              <Link
+                href={href}
                 key={locator}
                 id={`bb-mobile-nav-${locator}`}
                 className="bb-mobile-nav-link"
+                aria-current={pathname === href ? `page` : undefined}
                 style={{ '--bb-menu-delay': `${70 + index * 45}ms` } as CSSProperties}
-                onClick={placeholder ? undefined : () => { closeMobile(); scrollToElement(`#${locator}`); }}
+                onClick={(event) => navigateToSection(event, section)}
                 data-testid={`mobile-link-${locator}`}
               >
                 <span className="bb-mobile-nav-index">{String(index + 1).padStart(2, `0`)}</span>
                 <span className="bb-mobile-nav-copy"><span><Icon size={16} strokeWidth={1.5} aria-hidden="true" />{label}</span><small>{description}</small></span>
                 <ArrowUpRight size={15} strokeWidth={1.5} aria-hidden="true" />
-              </button>
+              </Link>
             ))}
           </div>
           <button className="bb-mobile-menu-book" onClick={() => { closeMobile(); onBook(); }} data-testid="button-mobile-book">
