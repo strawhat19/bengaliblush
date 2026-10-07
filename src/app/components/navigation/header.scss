@@ -1,6 +1,14 @@
+.bb-nav { gap: clamp(15px, 2.4vw, 30px); }
 .bb-nav .bb-nav-link { position: relative; display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 0; background: transparent; color: rgba(255, 242, 226, .8); font-size: 12px; font-weight: 600; }
 .bb-nav .bb-nav-link::after { position: absolute; right: 0; bottom: -7px; left: 0; height: 1px; background: hsl(var(--secondary)); content: ''; transform: scaleX(0); transform-origin: right; transition: transform .3s ease; }
-.bb-nav .bb-nav-link:hover::after, .bb-nav .bb-nav-link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.bb-nav .bb-nav-link:hover::after, .bb-nav .bb-nav-link:focus-visible::after, .bb-nav .bb-nav-link[aria-current='page']::after { transform: scaleX(1); transform-origin: left; }
+.bb-mobile-nav-link[aria-current='page'] { border-color: hsl(var(--secondary) / .5); background: hsl(var(--card) / .1); }
+
+@media (min-width: 801px) and (max-width: 1000px) {
+  .bb-nav { gap: 14px; }
+  .bb-header .bb-logo-text { font-size: 18px; }
+  .bb-header .bb-ghost-button { padding-inline: 12px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .bb-nav .bb-nav-link::after { transition: none; }

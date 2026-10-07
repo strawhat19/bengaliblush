@@ -4,12 +4,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { siteContact } from '@/shared/config/site';
 import { siteRoutes } from '@/shared/navigation/routes';
+import { services } from '@/shared/services/service-content';
 import ScrollToTop from '@/app/components/effects/scroll-to-top';
+import { BookingContext } from '@/shared/services/booking-context';
 import LandingMotion from '@/app/components/effects/landing-motion';
 import Header, { BrandMark } from '@/app/components/navigation/header';
 import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
+import LandingServices from '@/app/components/services/landing-services/landing-services';
 import type { Product, ProductCategory, Service } from '@/shared/types/storefront';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type FormEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
@@ -20,7 +23,7 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Clock3,
+  BookOpen,
   FileText,
   Globe,
   Heart,
@@ -40,14 +43,6 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-
-const services: Service[] = [
-  { id: 'signature-set', number: '01', name: 'Signature lash set', description: 'Lightweight, fluttery extensions tailored to your eye shape.', duration: '1 hr 45 min', price: '$145' },
-  { id: 'lash-fill', number: '02', name: 'Lash fill', description: 'A tidy refresh that keeps your signature set looking full.', duration: '60 min', price: '$78' },
-  { id: 'lash-lift', number: '03', name: 'Lash lift + tint', description: 'Your natural lashes, lifted skyward and softly defined.', duration: '60 min', price: '$85' },
-  { id: 'hair-styling', number: '04', name: 'Hair styling', description: 'Polished waves, romantic updos, or a look made for the dance floor.', duration: '75 min', price: '$110' },
-  { id: 'party-makeup', number: '05', name: 'Party makeup', description: 'A luminous, camera-ready face for your best kind of night.', duration: '90 min', price: '$135' },
-];
 
 const sampleTestimonials = [
   {
@@ -235,65 +230,6 @@ function Intro() {
               <span>since 2021</span>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Services({ onBook }: { onBook: (service?: Service) => void }) {
-  return (
-    <section className="bb-section bb-services" id="services">
-      <div className="bb-container">
-        <div className="bb-section-heading" data-reveal>
-          <div>
-            <SectionMarker icon={WandSparkles} index="03" title="Services" />
-            <div className="bb-services-heading-top">
-              <span className="bb-eyebrow">
-                Choose Services
-              </span>
-            </div>
-            <h2 aria-label="Services Menu">
-              <RevealLine>Services Menu</RevealLine>
-            </h2>
-          </div>
-          <p>Prices are negotiable.</p>
-        </div>
-        <div className="bb-service-list" data-reveal>
-          {services.map((service) => (
-            <article
-              className="bb-service"
-              key={service.id}
-              role="button"
-              tabIndex={0}
-              aria-label={`Book ${service.name}`}
-              onClick={() => onBook(service)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  onBook(service);
-                }
-              }}
-              data-testid={`card-service-${service.id}`}
-            >
-              <span className="bb-service-number">{service.number}</span>
-              <div><h3>{service.name}</h3><p>{service.description}</p></div>
-              <span className="bb-service-meta"><Clock3 size={13} /> {service.duration}</span>
-              <span className="bb-service-price">{service.price}</span>
-              <button
-                type="button"
-                className="bb-service-book"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onBook(service);
-                }}
-                aria-label={`Book ${service.name}`}
-                data-testid={`button-book-${service.id}`}
-              >
-                <Plus size={17} />
-              </button>
-            </article>
-          ))}
         </div>
       </div>
     </section>
@@ -868,6 +804,9 @@ function Footer({ onBook }: { onBook: () => void }) {
             />
             <h4>Say hello</h4>
             <div className="bb-footer-links">
+              <Link href={siteRoutes.blog.href} id={`bb-footer-blog-link`} className={`bb-footer-page-link`} data-testid={`footer-link-blog`}>
+                <BookOpen size={13} aria-hidden={`true`} />Beauty Blog
+              </Link>
               <Link href={siteRoutes.services.href} id={`bb-footer-services-link`} className={`bb-footer-page-link`} data-testid={`footer-link-services`}>
                 <WandSparkles size={13} aria-hidden={`true`} />Services
               </Link>
@@ -1082,32 +1021,34 @@ export default function BengaliBlushLanding({ children }: { children?: ReactNode
   const handleCheckout = () => { setToast('Checkout is being prepared for you.'); closeBag(); };
 
   return (
-    <main id={`bb-storefront-page`} className={`bb-page${children ? ` bb-inner-page` : ``}`}>
-      <LandingMotion />
-      <Header sticky width="boxed" bagCount={bagCount} onBag={openBag} onBook={() => openBooking()} />
-      {children ?? (
-        <>
-          <Hero onBook={() => openBooking()} />
-          <Intro />
-          <Services onBook={openBooking} />
-          <Marquee />
-          <Shop cart={cart} onAdd={addProduct} onDecrement={decrementProduct} />
-          <Reviews />
-          <BookingSection onSuccess={(name, service) => {
-            if (!name && !service) {
-              setConfirmation(null);
-              return;
-            }
-            handleSuccess(name, service);
-          }} confirmation={confirmation} />
-        </>
-      )}
-      <Footer onBook={() => children ? openBooking() : scrollToElement(`#contact`)} />
-      <div className={`bb-toast ${toast ? '' : 'is-hidden'}`} style={{ display: toast ? 'block' : 'none' }} data-testid="status-toast"><Check size={14} style={{ verticalAlign: 'middle', marginRight: 8 }} />{toast}</div>
-      {bagPhase !== `closed` && <BagDrawer cart={cart} isOpen={bagPhase === `open`} onClose={closeBag} onRemove={removeProduct} onIncrement={incrementProduct} onDecrement={decrementProduct} onCheckout={handleCheckout} />}
-      {bookingPhase !== `closed` && <BookingModal service={bookingService} isOpen={bookingPhase === `open`} onClose={closeBooking} onSuccess={(name, service) => { handleSuccess(name, service); closeBooking(); }} />}
-      <ScrollToTop />
-      <button className="bb-mobile-booking" onClick={() => openBooking()} data-testid="button-mobile-sticky-book"><CalendarDays size={14} strokeWidth={1.6} />Book Now</button>
-    </main>
+    <BookingContext.Provider value={openBooking}>
+      <main id={`bb-storefront-page`} className={`bb-page${children ? ` bb-inner-page` : ``}`}>
+        <LandingMotion />
+        <Header sticky width="boxed" bagCount={bagCount} onBag={openBag} onBook={() => openBooking()} />
+        {children ?? (
+          <>
+            <Hero onBook={() => openBooking()} />
+            <Intro />
+            <LandingServices />
+            <Marquee />
+            <Shop cart={cart} onAdd={addProduct} onDecrement={decrementProduct} />
+            <Reviews />
+            <BookingSection onSuccess={(name, service) => {
+              if (!name && !service) {
+                setConfirmation(null);
+                return;
+              }
+              handleSuccess(name, service);
+            }} confirmation={confirmation} />
+          </>
+        )}
+        <Footer onBook={() => children ? openBooking() : scrollToElement(`#contact`)} />
+        <div className={`bb-toast ${toast ? '' : 'is-hidden'}`} style={{ display: toast ? 'block' : 'none' }} data-testid="status-toast"><Check size={14} style={{ verticalAlign: 'middle', marginRight: 8 }} />{toast}</div>
+        {bagPhase !== `closed` && <BagDrawer cart={cart} isOpen={bagPhase === `open`} onClose={closeBag} onRemove={removeProduct} onIncrement={incrementProduct} onDecrement={decrementProduct} onCheckout={handleCheckout} />}
+        {bookingPhase !== `closed` && <BookingModal service={bookingService} isOpen={bookingPhase === `open`} onClose={closeBooking} onSuccess={(name, service) => { handleSuccess(name, service); closeBooking(); }} />}
+        <ScrollToTop />
+        <button className="bb-mobile-booking" onClick={() => openBooking()} data-testid="button-mobile-sticky-book"><CalendarDays size={14} strokeWidth={1.6} />Book Now</button>
+      </main>
+    </BookingContext.Provider>
   );
 }

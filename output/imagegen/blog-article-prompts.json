@@ -1,0 +1,29 @@
+{
+  "mode": "Built-in image_gen",
+  "assets": [
+    {
+      "path": "public/blog/bridal-beauty-details.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: a landscape editorial photograph inside a Bengali Blush Beauty Blog article. Create one finished wide photograph, 3:2 landscape composition. Warm cream, muted blush and burgundy accents with natural window light, tactile textures, polished yet realistic beauty editorial styling. No text, no labels, no logos, no watermark, no collage. Keep important subjects comfortably within the center area so the photograph can crop responsively.\nPrimary subject: A carefully arranged South Asian bridal preparation still life: delicate gold earrings and bangles, a folded burgundy embroidered dupatta, a soft makeup brush and a lipstick on a cream dressing table. Elegant intimate wedding-morning mood, fine fabric detail and restrained composition. No people."
+    },
+    {
+      "path": "public/blog/everyday-makeup-brown-skin.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: a landscape editorial photograph inside a Bengali Blush Beauty Blog article. Create one finished wide photograph, 3:2 landscape composition. Warm cream, muted blush and burgundy accents with natural window light, tactile textures, polished yet realistic beauty editorial styling. No text, no labels, no logos, no watermark, no collage. Keep important subjects comfortably within the center area so the photograph can crop responsively.\nPrimary subject: Close natural beauty portrait of one adult South Asian woman with medium-deep brown skin, softly blended everyday makeup, rosy blush and a muted berry lip, gently using a clean fluffy makeup brush on her cheek. Honest natural skin texture, warm confident expression, neutral cream backdrop, natural hands and anatomy. Frame from shoulders upward with enough space around her face."
+    },
+    {
+      "path": "public/blog/simple-skincare-essentials.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: a landscape editorial photograph inside a Bengali Blush Beauty Blog article. Create one finished wide photograph, 3:2 landscape composition. Warm cream, muted blush and burgundy accents with natural window light, tactile textures, polished yet realistic beauty editorial styling. No text, no labels, no logos, no watermark, no collage. Keep important subjects comfortably within the center area so the photograph can crop responsively.\nPrimary subject: A minimal skincare routine still life on a warm cream bathroom shelf: three unbranded plain containers suggesting cleanser, moisturizer and sunscreen, a neatly folded soft washcloth and a clear glass dish. White and pale blush containers, no writing anywhere, peaceful natural light, realistic ceramics and clean surfaces. No people."
+    },
+    {
+      "path": "public/blog/gentle-hair-care.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: a landscape editorial photograph inside a Bengali Blush Beauty Blog article. Create one finished wide photograph, 3:2 landscape composition. Warm cream, muted blush and burgundy accents with natural window light, tactile textures, polished yet realistic beauty editorial styling. No text, no labels, no logos, no watermark, no collage. Keep important subjects comfortably within the center area so the photograph can crop responsively.\nPrimary subject: A realistic beauty editorial still life of careful event hair preparation: a wide-tooth comb, a simple unbranded heat protection spray bottle, hair sectioning clips, a soft folded towel and a curling wand turned off on a cream dressing table. Soft blush and burgundy accents, clean objects arranged with generous breathing room, no cords tangled, no text on containers. No people."
+    },
+    {
+      "path": "public/blog/makeup-brush-care.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: a landscape editorial photograph inside a Bengali Blush Beauty Blog article. Create one finished wide photograph, 3:2 landscape composition. Warm cream, muted blush and burgundy accents with natural window light, tactile textures, polished yet realistic beauty editorial styling. No text, no labels, no logos, no watermark, no collage. Keep important subjects comfortably within the center area so the photograph can crop responsively.\nPrimary subject: Clean makeup brushes freshly washed and lying flat on a folded white cotton towel beside a cream ceramic basin, brush tips extending just over the counter edge to dry, a clean reusable makeup sponge nearby. Realistic bristles and wood handles, small beads of water, tasteful pale blush accents. No people, no dirty grime, no text."
+    },
+    {
+      "path": "public/blog/pre-wedding-wellness.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: a landscape editorial photograph inside a Bengali Blush Beauty Blog article. Create one finished wide photograph, 3:2 landscape composition. Warm cream, muted blush and burgundy accents with natural window light, tactile textures, polished yet realistic beauty editorial styling. No text, no labels, no logos, no watermark, no collage. Keep important subjects comfortably within the center area so the photograph can crop responsively.\nPrimary subject: A quiet morning rest and planning still life by a sunlit window: a glass of water, a small bowl of fresh fruit, a folded cream linen napkin, a closed plain burgundy notebook and a pen on a pale wooden table. Gentle warm light and soft shadows, uncluttered peaceful atmosphere, no pills or supplements, no people, no text."
+    }
+  ]
+}

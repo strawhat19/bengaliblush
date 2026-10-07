@@ -1,4 +1,4 @@
-export type NavigationIcon = `Info` | `Home` | `LogIn` | `Quote` | `MapPin` | `FileText` | `UserPlus` | `ShieldCheck` | `ShoppingBag` | `WandSparkles`;
+export type NavigationIcon = `Info` | `Home` | `LogIn` | `Quote` | `MapPin` | `BookOpen` | `FileText` | `UserPlus` | `ShieldCheck` | `ShoppingBag` | `WandSparkles`;
 
 export type SiteRoute = {
   href: string;
@@ -25,10 +25,16 @@ export const siteRoutes = {
     description: `The story behind Bengali Blush`,
     aliases: [`/info`, `/company`, `/aboutus`, `/aboutme`, `/about-us`, `/about-me`],
   },
+  blog: {
+    href: `/blog`,
+    label: `Blog`,
+    icon: `BookOpen`,
+    title: `Beauty Blog | Bengali Blush`,
+    description: `Beauty, makeup, hair care, and wellness reads`,
+  },
   services: {
+    href: `/services`,
     label: `Services`,
-    href: `/#services`,
-    section: `services`,
     icon: `WandSparkles`,
     description: `Signature looks made for your moment`,
   },
@@ -90,6 +96,7 @@ export const siteRoutes = {
 
 export const navigationRoutes: readonly SiteRoute[] = [
   siteRoutes.about,
+  siteRoutes.blog,
   siteRoutes.services,
   siteRoutes.shop,
   siteRoutes.reviews,

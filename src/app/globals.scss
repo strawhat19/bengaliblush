@@ -3,8 +3,16 @@
 @use '../styles/motion';
 @use '../styles/inner-pages';
 @use './components/about/about-page';
+@use './components/blog/blog-card/blog-card.scss';
+@use './components/blog/blog-index/blog-index.scss';
+@use './components/blog/blog-article/blog-article.scss';
 @use './components/legal/legal-page.scss';
 @use './components/navigation/header';
 @use './components/contact/contact-page';
 @use './components/authentication/auth-page.scss';
 @use './components/effects/ornamental-arch/ornamental-arch';
+@use './components/services/service-card/service-card.scss';
+@use './components/services/services-index/services-index.scss';
+@use './components/services/landing-services/landing-services.scss';
+@use './components/services/service-details-page/service-details-page.scss';
+@use './components/services/service-booking-button/service-booking-button.scss';

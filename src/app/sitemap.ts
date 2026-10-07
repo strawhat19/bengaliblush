@@ -1,0 +1,27 @@
+import type { MetadataRoute } from 'next';
+import { siteUrl } from '@/shared/config/site';
+import { siteRoutes } from '@/shared/navigation/routes';
+import { services } from '@/shared/services/service-content';
+import { getServiceHref } from '@/shared/services/service-utils';
+import { blogArticles, blogCategories } from '@/shared/blog/blog-content';
+import { getBlogArticleHref, getBlogCategoryHref } from '@/shared/blog/blog-utils';
+
+const sitemap = (): MetadataRoute.Sitemap => [
+  ...[
+    siteRoutes.home,
+    siteRoutes.about,
+    siteRoutes.blog,
+    siteRoutes.terms,
+    siteRoutes.contact,
+    siteRoutes.privacy,
+    siteRoutes.services,
+  ].map(({ href }) => ({ url: new URL(href, siteUrl).toString() })),
+  ...services.map(({ slug }) => ({ url: new URL(getServiceHref(slug), siteUrl).toString() })),
+  ...blogCategories.map(({ slug }) => ({ url: new URL(getBlogCategoryHref(slug), siteUrl).toString() })),
+  ...blogArticles.map((article) => ({
+    lastModified: article.publishedAt,
+    url: new URL(getBlogArticleHref(article.slug), siteUrl).toString(),
+  })),
+];
+
+export default sitemap;

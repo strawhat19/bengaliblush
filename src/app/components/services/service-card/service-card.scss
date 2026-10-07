@@ -1,0 +1,39 @@
+.bb-service-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 1px solid hsl(var(--primary) / .17);
+  background: hsl(var(--card));
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+
+  .bb-service-card-link { display: flex; flex: 1; flex-direction: column; }
+  .bb-service-card-visual { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: hsl(var(--muted)); }
+  .bb-service-card-image { object-fit: cover; transition: transform .55s ease; }
+  .bb-service-card-number { position: absolute; top: 17px; left: 18px; display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid hsl(var(--card) / .6); border-radius: 50%; background: hsl(var(--card) / .94); color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 10px; }
+  .bb-service-card-body { display: flex; flex: 1; flex-direction: column; align-items: start; padding: 25px 25px 22px; }
+  .bb-service-card-title { margin: 0 0 12px; font-family: var(--app-font-serif); font-size: 29px; font-weight: 500; line-height: 1.15; letter-spacing: -.035em; }
+  .bb-service-card-description { margin: 0 0 23px; color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.8; }
+  .bb-service-card-meta { display: flex; width: 100%; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
+  .bb-service-card-duration { display: inline-flex; align-items: center; gap: 7px; color: hsl(var(--muted-foreground)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+  .bb-service-card-price { color: hsl(var(--primary)); font-family: var(--app-font-serif); font-size: 25px; }
+  .bb-service-card-details { display: inline-flex; align-items: center; gap: 7px; margin-top: 22px; border-bottom: 1px solid hsl(var(--primary) / .25); padding-bottom: 5px; color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+  .bb-service-card-details svg { transition: transform .3s ease; }
+  .bb-service-card-booking { border-top: 1px solid hsl(var(--primary) / .12); padding: 18px 25px 24px; }
+  .bb-service-booking-button { width: 100%; }
+  .bb-service-card-link:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
+
+  &:hover { border-color: hsl(var(--primary) / .4); box-shadow: 0 15px 35px hsl(var(--foreground) / .07); transform: translateY(-4px); }
+  &:hover .bb-service-card-image { transform: scale(1.035); }
+  &:hover .bb-service-card-details svg { transform: translate(2px, -2px); }
+  &:focus-within { border-color: hsl(var(--primary)); }
+
+  @media (max-width: 600px) {
+    .bb-service-card-body { padding: 24px 22px 21px; }
+    .bb-service-card-booking { padding: 18px 22px 23px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &, .bb-service-card-image, .bb-service-card-details svg { transition: none; }
+    &:hover, &:hover .bb-service-card-image, &:hover .bb-service-card-details svg { transform: none; }
+  }
+}

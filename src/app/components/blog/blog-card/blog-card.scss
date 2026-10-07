@@ -1,0 +1,33 @@
+.bb-blog-card {
+  min-width: 0;
+  border: 1px solid hsl(var(--primary) / .15);
+  background: hsl(var(--card));
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+
+  .bb-blog-card-link { display: flex; height: 100%; flex-direction: column; }
+  .bb-blog-card-visual { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: hsl(var(--muted)); }
+  .bb-blog-card-image { object-fit: cover; transition: transform .55s ease; }
+  .bb-blog-card-category { position: absolute; bottom: 17px; left: 19px; padding: 8px 12px; background: hsl(var(--card) / .96); color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .09em; text-transform: uppercase; }
+  .bb-blog-card-body { display: flex; flex: 1; flex-direction: column; align-items: start; padding: 26px 25px; }
+  .bb-blog-card-reading-time { display: inline-flex; align-items: center; gap: 7px; color: hsl(var(--muted-foreground)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .07em; text-transform: uppercase; }
+  .bb-blog-card-title { margin: 15px 0 13px; font-family: var(--app-font-serif); font-size: clamp(24px, 2.3vw, 29px); font-weight: 500; line-height: 1.16; letter-spacing: -.04em; }
+  .bb-blog-card-excerpt { margin: 0 0 24px; color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.8; }
+  .bb-blog-card-read-link { display: inline-flex; align-items: center; gap: 9px; margin-top: auto; border-bottom: 1px solid hsl(var(--primary) / .25); padding-bottom: 5px; color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+  .bb-blog-card-read-link svg { transition: transform .3s ease; }
+
+  &:hover { border-color: hsl(var(--primary) / .4); box-shadow: 0 15px 35px hsl(var(--foreground) / .07); transform: translateY(-4px); }
+  &:hover .bb-blog-card-image { transform: scale(1.035); }
+  &:hover .bb-blog-card-read-link svg { transform: translate(2px, -2px); }
+  &:focus-within { border-color: hsl(var(--primary)); }
+  .bb-blog-card-link:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 5px; }
+
+  @media (max-width: 600px) {
+    .bb-blog-card-body { padding: 24px 22px; }
+    .bb-blog-card-title { font-size: 28px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &, .bb-blog-card-image, .bb-blog-card-read-link svg { transition: none; }
+    &:hover, &:hover .bb-blog-card-image, &:hover .bb-blog-card-read-link svg { transform: none; }
+  }
+}

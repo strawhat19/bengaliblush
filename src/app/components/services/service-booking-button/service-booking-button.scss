@@ -1,0 +1,11 @@
+.bb-service-booking-button {
+  max-width: 100%;
+  font-size: 10px;
+
+  &:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &:hover { transform: none; }
+  }
+}

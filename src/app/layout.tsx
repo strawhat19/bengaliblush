@@ -2,7 +2,7 @@ import './globals.scss';
 
 import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
-import { siteConfig } from '@/shared/config/site';
+import { siteConfig, siteUrl } from '@/shared/config/site';
 import BlushLoader from '@/app/components/loaders/blush-loader';
 import PwaRegistration from '@/app/components/pwa/pwa-registration';
 import { Allura, DM_Mono, DM_Sans, Fraunces } from 'next/font/google';
@@ -33,8 +33,6 @@ const signature = Allura({
   subsets: ['latin'],
   variable: '--font-allura',
 });
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `http://localhost:3000`;
 
 export const viewport: Viewport = {
   colorScheme: `light`,

@@ -6,7 +6,7 @@ import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { navigationRoutes, siteRoutes } from '@/shared/navigation/routes';
 import { useEffect, useState, type MouseEvent, type CSSProperties } from 'react';
-import { Home, Info, LogIn, Quote, MapPin, FileText, UserPlus, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
+import { Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
 
 export type HeaderWidth = 'boxed' | 'full';
 
@@ -19,7 +19,7 @@ type HeaderProps = {
   cartButtonFilled?: boolean;
 };
 
-const navigationIcons = { Home, Info, LogIn, Quote, MapPin, FileText, UserPlus, ShieldCheck, ShoppingBag, WandSparkles };
+const navigationIcons = { Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, ShieldCheck, ShoppingBag, WandSparkles };
 const navigationItems = navigationRoutes.map((route) => ({
   ...route,
   locator: route.section ?? route.href.slice(1),
@@ -131,7 +131,7 @@ export default function Header({
               id={`bb-nav-${locator}`}
               className={`bb-nav-link`}
               data-testid={`link-${locator}`}
-              aria-current={pathname === href ? `page` : undefined}
+              aria-current={pathname === href || (!section && pathname.startsWith(`${href}/`)) ? `page` : undefined}
               onClick={(event) => navigateToSection(event, section)}
             >
               <Icon size={13} strokeWidth={1.6} aria-hidden="true" />{label}
@@ -190,7 +190,7 @@ export default function Header({
                 key={locator}
                 id={`bb-mobile-nav-${locator}`}
                 className="bb-mobile-nav-link"
-                aria-current={pathname === href ? `page` : undefined}
+                aria-current={pathname === href || (!section && pathname.startsWith(`${href}/`)) ? `page` : undefined}
                 style={{ '--bb-menu-delay': `${70 + index * 45}ms` } as CSSProperties}
                 onClick={(event) => navigateToSection(event, section)}
                 data-testid={`mobile-link-${locator}`}
