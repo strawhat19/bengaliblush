@@ -95,6 +95,7 @@ $liquid-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' 
 .bb-bag-button,
 .bb-add-button,
 .bb-close,
+.bb-scroll-to-top,
 .bb-mobile-booking,
 .bb-cart-continue,
 .bb-product-quantity-button,
@@ -106,6 +107,7 @@ $liquid-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' 
 .bb-ghost-button,
 .bb-menu-button,
 .bb-bag-button,
+.bb-scroll-to-top,
 .bb-mobile-booking,
 .bb-submit,
 .bb-add-button,
@@ -115,7 +117,8 @@ $liquid-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' 
   --bb-liquid-front: hsl(var(--secondary));
 }
 
-.bb-button-primary {
+.bb-button-primary,
+.bb-header-actions :is(.bb-bag-button.is-filled, .bb-menu-button, .bb-ghost-button) {
   --bb-liquid-back: hsl(var(--accent));
   --bb-liquid-front: hsl(var(--primary));
 }
@@ -146,11 +149,13 @@ $liquid-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' 
 .bb-submit:hover,
 .bb-add-button:hover,
 .bb-product-quantity-button:hover,
-.bb-cart-checkout:hover {
+.bb-cart-checkout:hover,
+.bb-scroll-to-top:is(:hover, :focus-visible, :active) {
   color: hsl(var(--foreground));
 }
 
-.bb-button-primary:hover {
+.bb-button-primary:hover,
+.bb-header-actions :is(.bb-bag-button.is-filled, .bb-menu-button, .bb-ghost-button):is(:hover, :focus-visible, :active) {
   color: hsl(var(--card));
 }
 

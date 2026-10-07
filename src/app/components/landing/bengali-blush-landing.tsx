@@ -177,7 +177,7 @@ function Hero({ onBook }: { onBook: () => void }) {
       </div>
       <HeroPromoWheel revealEffect />
       <div className="bb-hero-note">Atlanta · by appointment</div>
-      <button type="button" className="bb-scroll-cue" onClick={() => scrollToElement(`#intro`)} data-testid="link-scroll-cue"><span /> Scroll to explore</button>
+      <button type="button" className="bb-scroll-cue" onClick={() => scrollToElement(`#intro`)} data-testid="link-scroll-cue"><span /> Atelier</button>
     </section>
   );
 }
@@ -360,7 +360,7 @@ function ProductCardCartControl({ product, quantity, isActive, onAdd, onDecremen
       onClick={() => onAdd(product)}
       data-testid={`button-add-${product.id}`}
     >
-      Add to bag <Plus size={14} />
+      Add to cart <Plus size={14} />
     </button>
   );
 
@@ -885,9 +885,9 @@ function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, 
   return (
     <>
       <div className={`bb-overlay bb-cart-overlay${isOpen ? ` is-open` : ``}`} onClick={onClose} aria-hidden="true" data-testid="button-close-bag-overlay" />
-      <aside ref={drawerRef} className={`bb-drawer${isOpen ? ` is-open` : ``}`} role="dialog" aria-modal="true" aria-label="Shopping bag" aria-hidden={!isOpen} inert={!isOpen} tabIndex={-1} data-testid="drawer-bag">
+      <aside ref={drawerRef} className={`bb-drawer${isOpen ? ` is-open` : ``}`} role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden={!isOpen} inert={!isOpen} tabIndex={-1} data-testid="drawer-bag">
         <LiquidPanelEdge expanded={isOpen} id="bb-cart-liquid-edge" />
-        <div className="bb-drawer-header"><div><span className="bb-eyebrow">Your edit</span><h2>Shopping bag</h2></div><button className="bb-close" onClick={onClose} aria-label="Close shopping bag" data-testid="button-close-bag"><X size={18} /></button></div>
+        <div className="bb-drawer-header"><div><span className="bb-eyebrow">Your edit</span><h2>Shopping cart</h2></div><button className="bb-close" onClick={onClose} aria-label="Close shopping cart" data-testid="button-close-bag"><X size={18} /></button></div>
         {cartLines.length === 0 ? (
           <div className="bb-empty" id="bb-cart-empty">
             <div className="bb-empty-content" id="bb-cart-empty-content">
@@ -1040,7 +1040,7 @@ export default function BengaliBlushLanding() {
   const addProduct = (product: Product) => {
     const currentCart = getStoredCartSnapshot();
     writeStoredCart([...currentCart, product]);
-    if (!currentCart.some((item) => item.id === product.id)) setToast(`Added ${product.name} to Bag`);
+    if (!currentCart.some((item) => item.id === product.id)) setToast(`Added ${product.name} to Cart`);
   };
   const removeProduct = (id: string) => writeStoredCart(getStoredCartSnapshot().filter((item) => item.id !== id));
   const incrementProduct = (product: Product) => writeStoredCart([...getStoredCartSnapshot(), product]);
@@ -1074,7 +1074,7 @@ export default function BengaliBlushLanding() {
       {bagPhase !== `closed` && <BagDrawer cart={cart} isOpen={bagPhase === `open`} onClose={closeBag} onRemove={removeProduct} onIncrement={incrementProduct} onDecrement={decrementProduct} onCheckout={handleCheckout} />}
       {bookingPhase !== `closed` && <BookingModal service={bookingService} isOpen={bookingPhase === `open`} onClose={closeBooking} onSuccess={(name, service) => { handleSuccess(name, service); closeBooking(); }} />}
       <ScrollToTop />
-      <button className="bb-mobile-booking" onClick={() => openBooking()} data-testid="button-mobile-sticky-book">Book your glow-up <ArrowUpRight size={15} /></button>
+      <button className="bb-mobile-booking" onClick={() => openBooking()} data-testid="button-mobile-sticky-book"><CalendarDays size={14} strokeWidth={1.6} />Book Now</button>
     </main>
   );
 }

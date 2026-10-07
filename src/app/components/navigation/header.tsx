@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState, type CSSProperties } from 'react';
-import { ArrowUpRight, CalendarDays, MapPin, Quote, ShoppingBag, WandSparkles } from 'lucide-react';
-import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
+import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
+import { Info, LogIn, Quote, MapPin, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
 
 export type HeaderWidth = 'boxed' | 'full';
 
@@ -13,9 +13,11 @@ type HeaderProps = {
   onBook: () => void;
   sticky?: boolean;
   width?: HeaderWidth;
+  cartButtonFilled?: boolean;
 };
 
 const navigationItems = [
+  { icon: Info, label: `About`, locator: `about`, placeholder: true, description: `The story behind Bengali Blush` },
   { icon: WandSparkles, label: `Services`, locator: `services`, description: `Signature looks made for your moment` },
   { icon: ShoppingBag, label: `Shop`, locator: `shop`, description: `Curated rituals and beauty essentials` },
   { icon: Quote, label: `Reviews`, locator: `reviews`, description: `Kind words from lash clients` },
@@ -37,6 +39,7 @@ export default function Header({
   bagCount,
   sticky = false,
   width = 'boxed',
+  cartButtonFilled = false,
 }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -95,23 +98,29 @@ export default function Header({
       <div className={containerClassName}>
         <BrandMark />
         <nav className="bb-nav" aria-label="Main navigation">
-          {navigationItems.map(({ icon: Icon, label, locator }) => (
-            <button type="button" key={locator} onClick={() => scrollToElement(`#${locator}`)} data-testid={`link-${locator}`}>
+          {navigationItems.map(({ icon: Icon, label, locator, placeholder }) => (
+            <button
+              type={`button`}
+              key={locator}
+              id={`bb-nav-${locator}`}
+              className={`bb-nav-link`}
+              data-testid={`link-${locator}`}
+              onClick={placeholder ? undefined : () => scrollToElement(`#${locator}`)}
+            >
               <Icon size={13} strokeWidth={1.6} aria-hidden="true" />{label}
             </button>
           ))}
         </nav>
         <div className="bb-header-actions">
-          <button className="bb-ghost-button" onClick={onBook} data-testid="button-header-book"><CalendarDays size={14} strokeWidth={1.6} />Book Now</button>
           <span id={`bb-bag-control`} className={`bb-bag-control`}>
             <button
               onClick={onBag}
               id={`bb-bag-button`}
-              className={`bb-bag-button`}
-              aria-label={`Open shopping bag`}
+              className={`bb-bag-button${cartButtonFilled ? ` is-filled` : ``}`}
+              aria-label={`Open shopping cart`}
               data-testid={`button-open-bag`}
             >
-              <ShoppingBag size={19} strokeWidth={1.5} />
+              <ShoppingCart size={19} strokeWidth={1.5} />
             </button>
             {bagCount > 0 && (
               <span id={`bb-bag-count`} className={`bb-bag-count`} data-testid={`text-bag-count`}>
@@ -119,6 +128,14 @@ export default function Header({
               </span>
             )}
           </span>
+          <button
+            type={`button`}
+            id={`bb-header-sign-in`}
+            className={`bb-ghost-button`}
+            data-testid={`button-header-sign-in`}
+          >
+            <LogIn size={14} strokeWidth={1.6} aria-hidden={`true`} />Sign In
+          </button>
           <button
             className="bb-menu-button"
             aria-controls="mobile-navigation"
@@ -139,13 +156,14 @@ export default function Header({
             <small>Beauty, with feeling</small>
           </div>
           <div className="bb-mobile-nav-grid">
-            {navigationItems.map(({ icon: Icon, label, locator, description }, index) => (
+            {navigationItems.map(({ icon: Icon, label, locator, description, placeholder }, index) => (
               <button
                 type="button"
                 key={locator}
+                id={`bb-mobile-nav-${locator}`}
                 className="bb-mobile-nav-link"
                 style={{ '--bb-menu-delay': `${70 + index * 45}ms` } as CSSProperties}
-                onClick={() => { closeMobile(); scrollToElement(`#${locator}`); }}
+                onClick={placeholder ? undefined : () => { closeMobile(); scrollToElement(`#${locator}`); }}
                 data-testid={`mobile-link-${locator}`}
               >
                 <span className="bb-mobile-nav-index">{String(index + 1).padStart(2, `0`)}</span>

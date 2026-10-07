@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowUp } from 'lucide-react';
+import { ChevronUp } from 'lucide-react';
 import { type MouseEvent, useEffect, useState } from 'react';
 
 const scrollThreshold = 480;
@@ -44,7 +44,7 @@ export default function ScrollToTop() {
       onClick={scrollToTop}
       className={`bb-scroll-to-top${visible ? ` is-visible` : ``}`}
     >
-      <ArrowUp size={17} strokeWidth={1.8} aria-hidden="true" />
+      <ChevronUp size={19} strokeWidth={1.8} aria-hidden="true" />
     </button>
   );
 }

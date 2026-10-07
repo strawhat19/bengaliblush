@@ -117,7 +117,7 @@ body.bb-page-loading { overflow: hidden; }
   width: 46px;
   height: 46px;
   place-items: center;
-  border: 1px solid hsl(var(--secondary) / .7);
+  border: 0;
   border-radius: 50%;
   background: hsl(var(--primary));
   color: hsl(var(--card));
@@ -125,10 +125,10 @@ body.bb-page-loading { overflow: hidden; }
   opacity: 0;
   pointer-events: none;
   transform: translate3d(0, 10px, 0) scale(.94);
-  transition: opacity .2s ease, transform .25s cubic-bezier(.2, .75, .2, 1), background-color .2s ease;
+  transition: opacity .2s ease, transform .25s cubic-bezier(.2, .75, .2, 1), background-color .2s ease, color .2s ease;
 }
 .bb-scroll-to-top.is-visible { opacity: 1; pointer-events: auto; transform: translate3d(0, 0, 0) scale(1); }
-.bb-scroll-to-top:hover { background: hsl(345 60% 27%); transform: translate3d(0, -2px, 0) scale(1.03); }
+.bb-scroll-to-top:hover { transform: translate3d(0, -2px, 0) scale(1.03); }
 .bb-scroll-to-top:focus-visible { outline: 2px solid hsl(var(--secondary)); outline-offset: 4px; }
 
 html { scrollbar-width: thin; scrollbar-color: hsl(var(--primary)) hsl(var(--background)); }
