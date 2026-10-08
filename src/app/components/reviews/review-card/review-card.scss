@@ -1,0 +1,74 @@
+.bb-review-card {
+  padding: 15px;
+  min-width: 0;
+  border: 1px solid hsl(var(--primary) / .13);
+  background: hsl(var(--card) / .6);
+
+  &-portrait {
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1 / 1.12;
+    background: hsl(var(--muted));
+    border-radius: 160px 160px 2px 2px;
+
+    &::after {
+      inset: 50% 0 0;
+      position: absolute;
+      pointer-events: none;
+      content: '';
+      background: linear-gradient(transparent, hsl(var(--foreground) / .55));
+    }
+  }
+
+  &-image {
+    object-fit: cover;
+    object-position: center 30%;
+    transition: transform .6s ease;
+  }
+
+  &-portrait-label {
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+    z-index: 1;
+    position: absolute;
+    text-align: center;
+    color: hsl(var(--card));
+    font-size: 8px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-family: var(--app-font-mono);
+  }
+
+  &-copy { padding: 29px 16px 16px; }
+  &-rating { gap: 4px; display: flex; color: hsl(var(--primary)); }
+  &-heading {
+    margin: 18px 0 20px;
+    font-size: 29px;
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -.04em;
+    font-family: var(--app-font-serif);
+
+    em { color: hsl(var(--primary)); }
+  }
+
+  &-quote { margin: 0; }
+  &-quote-mark { color: hsl(var(--secondary)); }
+  &-quote-text { margin: 10px 0 24px; color: hsl(var(--muted-foreground)); font-size: 14px; line-height: 1.85; }
+  &-attribution { gap: 7px; display: flex; flex-direction: column; font-style: normal; }
+  &-name { color: hsl(var(--primary)); font-size: 17px; font-family: var(--app-font-serif); }
+  &-service { color: hsl(var(--muted-foreground)); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; font-family: var(--app-font-mono); }
+
+  &:hover &-image { transform: scale(1.025); }
+
+  @media (max-width: 600px) {
+    &-portrait { aspect-ratio: 1 / 1.02; }
+    &-copy { padding: 28px 13px 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &-image { transition: none; }
+    &:hover &-image { transform: none; }
+  }
+}

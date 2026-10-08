@@ -1,0 +1,23 @@
+.bb-shop-loading {
+  min-height: 75dvh;
+  padding: 155px 0 85px;
+
+  .bb-shop-loading-heading { margin: 23px 0 15px; font-family: var(--app-font-serif); font-size: clamp(38px, 5vw, 62px); font-weight: 500; letter-spacing: -.05em; }
+  .bb-shop-loading-status { color: hsl(var(--muted-foreground)); font-size: 12px; }
+  .bb-shop-loading-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 23px; margin-top: 35px; }
+  .bb-shop-loading-card { overflow: hidden; background: hsl(var(--card)); }
+  .bb-shop-loading-visual { aspect-ratio: 1 / 1.1; background: hsl(var(--muted) / .55); }
+  .bb-shop-loading-line { height: 13px; margin: 21px; border-radius: 3px; background: hsl(var(--muted) / .6); }
+  .bb-shop-loading-title { width: 70%; }
+  .bb-shop-loading-description { width: 48%; margin-top: 0; }
+
+  @media (max-width: 850px) {
+    padding-top: 130px;
+    .bb-shop-loading-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 600px) {
+    .bb-shop-loading-grid { grid-template-columns: 1fr; }
+    .bb-shop-loading-card:nth-child(n + 3) { display: none; }
+  }
+}

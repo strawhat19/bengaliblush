@@ -1,0 +1,65 @@
+.bb-notification-card {
+  display: grid;
+  gap: 13px;
+  padding: 20px 0;
+  text-decoration: none;
+  grid-template-columns: 36px minmax(0, 1fr) 15px;
+  border-bottom: 1px solid var(--bb-panel-border, hsl(var(--border)));
+
+  &:last-child { border-bottom: 0; }
+  &:focus-visible { border-radius: 8px; outline: 2px solid hsl(var(--secondary)); outline-offset: 4px; }
+  &:is(:hover, :focus-visible) .bb-notification-arrow { transform: translate(2px, -2px); }
+  &:is(:hover, :focus-visible) .bb-notification-title { color: hsl(var(--accent)); }
+}
+
+.bb-notification-arrow {
+  margin-top: 3px;
+  color: var(--bb-panel-text, hsl(var(--foreground)));
+  transition: transform .25s ease;
+}
+
+.bb-notification-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--bb-panel-text, hsl(var(--foreground)));
+  background: hsl(var(--secondary) / .18);
+  border: 1px solid hsl(var(--secondary) / .35);
+}
+
+.bb-notification-copy { min-width: 0; }
+.bb-notification-title {
+  display: flex;
+  gap: 9px;
+  margin: 0 0 9px;
+  align-items: center;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+  font-family: var(--app-font-serif);
+  color: var(--bb-panel-text, hsl(var(--foreground)));
+  transition: color .25s ease;
+}
+
+.bb-notification-unread-dot {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: hsl(var(--accent));
+}
+
+.bb-notification-body {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--bb-panel-muted, hsl(var(--muted-foreground)));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-notification-arrow,
+  .bb-notification-title { transition: none; }
+}

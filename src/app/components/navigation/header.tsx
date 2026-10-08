@@ -5,8 +5,10 @@ import { usePathname } from 'next/navigation';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { navigationRoutes, siteRoutes } from '@/shared/navigation/routes';
+import ThemeToggle from '@/app/components/navigation/theme-toggle/theme-toggle';
 import { useEffect, useState, type MouseEvent, type CSSProperties } from 'react';
-import { Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
+import NotificationsMenu from '@/app/components/navigation/notifications-menu/notifications-menu';
+import { Bell, Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
 
 export type HeaderWidth = 'boxed' | 'full';
 
@@ -19,7 +21,7 @@ type HeaderProps = {
   cartButtonFilled?: boolean;
 };
 
-const navigationIcons = { Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, ShieldCheck, ShoppingBag, WandSparkles };
+const navigationIcons = { Bell, Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, ShieldCheck, ShoppingBag, WandSparkles };
 const navigationItems = navigationRoutes.map((route) => ({
   ...route,
   locator: route.section ?? route.href.slice(1),
@@ -62,9 +64,23 @@ export default function Header({
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notificationCloseCount, setNotificationCloseCount] = useState(0);
   const closeMobile = () => setMobileOpen(false);
+  const closeNotifications = () => setNotificationCloseCount((count) => count + 1);
+  const openBag = () => {
+    closeMobile();
+    closeNotifications();
+    onBag();
+  };
+  const openBooking = () => {
+    closeMobile();
+    closeNotifications();
+    onBook();
+  };
   const navigateToSection = (event: MouseEvent<HTMLAnchorElement>, section?: string) => {
     closeMobile();
+    closeNotifications();
     if (!section || pathname !== `/` || !isRegularClick(event)) return;
     if (!document.getElementById(section)) return;
     event.preventDefault();
@@ -114,7 +130,7 @@ export default function Header({
   const headerClassName = [
     `bb-header`,
     sticky ? `is-sticky` : ``,
-    mobileOpen ? `is-menu-open` : ``,
+    mobileOpen || notificationsOpen ? `is-menu-open` : ``,
     sticky && scrolled ? `is-scrolled` : ``,
   ].filter(Boolean).join(` `);
   const containerClassName = width === `full` ? `bb-header-inner is-full-width` : `bb-container bb-header-inner`;
@@ -138,10 +154,16 @@ export default function Header({
             </Link>
           ))}
         </nav>
-        <div className="bb-header-actions">
+        <div id={`bb-header-actions`} className="bb-header-actions">
+          <NotificationsMenu
+            onOpen={closeMobile}
+            onOpenChange={setNotificationsOpen}
+            closeSignal={`${pathname}:${notificationCloseCount}`}
+          />
           <span id={`bb-bag-control`} className={`bb-bag-control`}>
             <button
-              onClick={onBag}
+              type={`button`}
+              onClick={openBag}
               id={`bb-bag-button`}
               className={`bb-bag-button${cartButtonFilled ? ` is-filled` : ``}`}
               aria-label={`Open shopping cart`}
@@ -155,8 +177,9 @@ export default function Header({
               </span>
             )}
           </span>
+          <ThemeToggle />
           <Link
-            onClick={closeMobile}
+            onClick={() => { closeMobile(); closeNotifications(); }}
             href={siteRoutes.signin.href}
             id={`bb-header-sign-in`}
             className={`bb-ghost-button`}
@@ -169,7 +192,7 @@ export default function Header({
             aria-controls="mobile-navigation"
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? `Close menu` : `Open menu`}
-            onClick={() => setMobileOpen((current) => !current)}
+            onClick={() => { closeNotifications(); setMobileOpen((current) => !current); }}
             data-testid="button-mobile-menu"
           >
             <span className="bb-menu-icon" aria-hidden="true"><span /><span /><span /></span>
@@ -201,7 +224,7 @@ export default function Header({
               </Link>
             ))}
           </div>
-          <button className="bb-mobile-menu-book" onClick={() => { closeMobile(); onBook(); }} data-testid="button-mobile-book">
+          <button className="bb-mobile-menu-book" onClick={openBooking} data-testid="button-mobile-book">
             <span><small>Reserve your chair</small><strong>Book your appointment</strong></span>
             <span className="bb-mobile-menu-book-icon" aria-hidden="true"><CalendarDays size={17} strokeWidth={1.9} /></span>
           </button>

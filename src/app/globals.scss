@@ -2,6 +2,7 @@
 @use '../styles/effects';
 @use '../styles/motion';
 @use '../styles/inner-pages';
+@use '../styles/shop-links';
 @use './components/about/about-page';
 @use './components/blog/blog-card/blog-card.scss';
 @use './components/blog/blog-index/blog-index.scss';
@@ -17,3 +18,15 @@
 @use './components/services/landing-services/landing-services.scss';
 @use './components/services/service-details-page/service-details-page.scss';
 @use './components/services/service-booking-button/service-booking-button.scss';
+@use './components/reviews/review-card/review-card';
+@use './components/reviews/reviews-page/reviews-page';
+@use './components/shop/product-card/product-card.scss';
+@use './components/shop/shop-index/shop-index.scss';
+@use './components/shop/product-details/product-details.scss';
+@use './components/shop/shop-loading/shop-loading.scss';
+@use './components/shop/checkout-steps/checkout-steps.scss';
+@use './components/shop/order-summary/order-summary.scss';
+@use './components/shop/cart-summary/cart-summary.scss';
+@use './components/shop/checkout-page/checkout-page.scss';
+@use '../styles/theme-mode';
+@use './components/navigation/theme-toggle/theme-toggle';

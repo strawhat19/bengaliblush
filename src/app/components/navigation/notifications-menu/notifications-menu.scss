@@ -1,0 +1,222 @@
+.bb-notifications-control { display: inline-flex; }
+.bb-notifications-button.is-active { border-color: hsl(var(--secondary)); }
+.bb-notifications-count {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+  margin-left: -16px;
+  margin-top: -1px;
+  border-radius: 50%;
+  pointer-events: none;
+  position: relative;
+  background: hsl(var(--secondary));
+  color: hsl(340 65% 15%);
+  font-size: 9px;
+  font-family: var(--app-font-mono);
+}
+
+.bb-notifications-panel {
+  left: auto;
+  z-index: 3;
+  opacity: 0;
+  display: block;
+  position: absolute;
+  visibility: hidden;
+  border-radius: 18px;
+  pointer-events: none;
+  width: min(400px, calc(100vw - 36px));
+  top: calc(100% + 10px);
+  right: 0;
+  color: var(--bb-panel-text, hsl(var(--foreground)));
+  border: 1px solid var(--bb-panel-border, hsl(var(--border)));
+  background: radial-gradient(circle at 100% 0, hsl(var(--accent) / .12), transparent 260px), var(--bb-panel-surface, hsl(var(--card)));
+  box-shadow: 0 24px 60px hsl(340 32% 10% / .3);
+  transform: translate3d(0, calc(-100% - 120px), 0);
+  -webkit-backdrop-filter: blur(20px) saturate(125%);
+  backdrop-filter: blur(20px) saturate(125%);
+  transition: visibility 0s linear .68s, opacity 0s linear .68s, transform .68s cubic-bezier(.76, 0, .24, 1);
+
+  &.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0);
+    transition: visibility 0s linear, opacity .22s ease, transform .68s cubic-bezier(.76, 0, .24, 1);
+  }
+
+  .bb-liquid-edge { fill: var(--bb-panel-surface, hsl(var(--card))); }
+}
+
+.bb-header[data-width='full'] .bb-notifications-panel { right: clamp(18px, 3.2vw, 54px); }
+.bb-notifications-content {
+  padding: 22px;
+  overflow-y: auto;
+  border-radius: inherit;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+  max-height: calc(100dvh - 140px);
+}
+
+.bb-notifications-heading {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bb-notifications-heading-copy { display: grid; gap: 7px; }
+.bb-notifications-eyebrow {
+  font-size: 8px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  font-family: var(--app-font-mono);
+  color: var(--bb-panel-muted, hsl(var(--muted-foreground)));
+}
+
+.bb-notifications-title {
+  margin: 0;
+  font-size: 33px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.04em;
+  font-family: var(--app-font-serif);
+  color: var(--bb-panel-text, hsl(var(--foreground)));
+}
+
+.bb-notifications-close {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  --bb-liquid-front: hsl(var(--secondary));
+  --bb-liquid-back: hsl(var(--accent) / .45);
+  color: var(--bb-panel-text, hsl(var(--foreground)));
+  border-color: var(--bb-panel-border, hsl(var(--border)));
+
+  &:is(:hover, :focus-visible, :active) { color: hsl(340 65% 15%); }
+}
+
+.bb-notifications-meta {
+  display: flex;
+  gap: 14px;
+  margin-top: 22px;
+  padding-bottom: 12px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--bb-panel-border, hsl(var(--border)));
+}
+
+.bb-notifications-update-label {
+  font-size: 9px;
+  letter-spacing: .07em;
+  font-family: var(--app-font-mono);
+  color: var(--bb-panel-muted, hsl(var(--muted-foreground)));
+}
+
+.bb-notifications-read-all {
+  border: 0;
+  padding: 0;
+  display: flex;
+  gap: 5px;
+  font-size: 10px;
+  background: transparent;
+  align-items: center;
+  color: var(--bb-panel-text, hsl(var(--foreground)));
+  transition: color .2s ease;
+
+  &:hover { color: hsl(var(--accent)); }
+  &:focus-visible { outline: 2px solid hsl(var(--secondary)); outline-offset: 4px; }
+}
+
+.bb-notifications-heading,
+.bb-notifications-meta,
+.bb-notifications-list {
+  opacity: 0;
+  transform: translateY(-7px);
+  transition: opacity .22s ease .05s, transform .32s cubic-bezier(.2, .85, .25, 1) .05s;
+}
+
+.bb-notifications-meta { transition-delay: .09s; }
+.bb-notifications-list { transition-delay: .13s; }
+.bb-notifications-panel.is-open :is(.bb-notifications-heading, .bb-notifications-meta, .bb-notifications-list) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bb-notifications-loading > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.bb-notifications-skeleton {
+  display: grid;
+  gap: 10px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--bb-panel-border, hsl(var(--border)));
+
+  span { height: 9px; border-radius: 9px; background: var(--bb-panel-border, hsl(var(--border))); }
+  span:first-child { width: 55%; height: 18px; }
+  span:last-child { width: 80%; }
+}
+
+.bb-notifications-empty {
+  display: grid;
+  gap: 12px;
+  padding: 36px 12px;
+  text-align: center;
+  justify-items: center;
+  color: var(--bb-panel-muted, hsl(var(--muted-foreground)));
+
+  strong { font-size: 24px; font-weight: 500; font-family: var(--app-font-serif); color: var(--bb-panel-text, hsl(var(--foreground))); }
+  p { margin: 0; font-size: 12px; }
+}
+
+.bb-notifications-feedback {
+  margin: 16px 0 0;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--bb-panel-muted, hsl(var(--muted-foreground)));
+
+  p { margin: 0 0 10px; }
+}
+
+.bb-notifications-view-all {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  margin-top: 14px;
+  padding-top: 17px;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--bb-panel-text, hsl(var(--foreground)));
+  border-top: 1px solid var(--bb-panel-border, hsl(var(--border)));
+  transition: color .2s ease;
+
+  &:hover { color: hsl(var(--accent)); }
+  &:focus-visible { outline: 2px solid hsl(var(--secondary)); outline-offset: 4px; }
+}
+
+@media (max-width: 800px) {
+  .bb-notifications-panel,
+  .bb-header[data-width='full'] .bb-notifications-panel { width: auto; left: 0; right: 0; }
+  .bb-header[data-width='full'] .bb-notifications-panel { left: 18px; right: 18px; }
+}
+
+@media (max-width: 480px) {
+  .bb-notifications-panel,
+  .bb-header[data-width='full'] .bb-notifications-panel { left: 0; right: 0; border-radius: 15px; }
+  .bb-header[data-width='full'] .bb-notifications-panel { left: 10px; right: 10px; }
+  .bb-notifications-content { padding: 19px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-notifications-panel,
+  .bb-notifications-heading,
+  .bb-notifications-meta,
+  .bb-notifications-list,
+  .bb-notifications-view-all,
+  .bb-notifications-read-all { transition: none; }
+}

@@ -1,4 +1,4 @@
-.bb-nav { gap: clamp(15px, 2.4vw, 30px); }
+.bb-nav { gap: clamp(24px, 2.8vw, 36px); }
 .bb-nav .bb-nav-link { position: relative; display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 0; background: transparent; color: rgba(255, 242, 226, .96); font-size: 13px; font-weight: 600; }
 .bb-nav .bb-nav-link::after { position: absolute; right: 0; bottom: -7px; left: 0; height: 1px; background: hsl(var(--secondary)); content: ''; transform: scaleX(0); transform-origin: right; transition: transform .3s ease; }
 .bb-nav .bb-nav-link:hover::after, .bb-nav .bb-nav-link:focus-visible::after, .bb-nav .bb-nav-link[aria-current='page']::after { transform: scaleX(1); transform-origin: left; }
@@ -7,15 +7,26 @@
 .bb-menu-icon { width: 16px; }
 .bb-menu-icon > span { height: 1.5px; }
 .bb-nav-link > svg, .bb-mobile-nav-copy > span > svg { flex: none; }
+.bb-header-actions { flex: none; }
 
-@media (min-width: 801px) and (max-width: 1000px) {
-  .bb-nav { gap: 14px; }
+@media (min-width: 801px) and (max-width: 1180px) {
+  .bb-header-inner { gap: 16px; }
+  .bb-header-actions { gap: 8px; }
+  .bb-nav { gap: 22px; }
   .bb-nav .bb-nav-link { font-size: 12px; }
   .bb-header .bb-logo-text { font-size: 18px; }
+  .bb-header .bb-ghost-button { padding-inline: 11px; }
+}
+
+@media (min-width: 801px) and (max-width: 1000px) {
+  .bb-nav { gap: 18px; }
+  .bb-nav .bb-nav-link { font-size: 12px; }
+  .bb-header .bb-logo-text { display: none; }
   .bb-header .bb-ghost-button { padding-inline: 12px; }
 }
 
 @media (max-width: 800px) {
+  .bb-header-actions { gap: 9px; }
   .bb-mobile-panel { transition: visibility 0s linear .68s, opacity 0s linear .68s, transform .68s cubic-bezier(.76, 0, .24, 1); }
   .bb-mobile-panel.is-open { transition: visibility 0s linear, opacity .22s ease, transform .68s cubic-bezier(.76, 0, .24, 1); }
   .bb-mobile-nav-index { font-size: 9px; font-weight: 500; }
@@ -26,8 +37,17 @@
 }
 
 @media (max-width: 480px) {
+  .bb-header-actions { gap: 7px; }
+  .bb-header .bb-logo { gap: 7px; }
+  .bb-header .bb-logo-mark { width: 32px; height: 32px; }
+  .bb-header .bb-logo-text { max-width: 88px; font-size: 17px; line-height: 1.05; }
+  .bb-header .bb-bag-button, .bb-header .bb-menu-button { width: 36px; height: 36px; }
   .bb-mobile-nav-copy > span { font-size: 18px; }
   .bb-mobile-nav-copy small { font-size: 10px; }
+}
+
+@media (max-width: 360px) {
+  .bb-header .bb-logo-text { max-width: 76px; font-size: 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

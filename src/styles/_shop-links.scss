@@ -1,0 +1,50 @@
+.bb-landing-section-links {
+  max-width: 330px;
+  p { margin-bottom: 18px; }
+}
+
+.bb-landing-page-link {
+  gap: 9px;
+  display: inline-flex;
+  align-items: center;
+  color: hsl(var(--primary));
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transition: color .25s ease;
+  &:hover { color: hsl(var(--foreground)); }
+}
+
+.bb-product-name-link {
+  transition: color .25s ease;
+  &:hover { color: hsl(var(--primary)); }
+}
+
+.bb-landing-reviews-link {
+  display: flex;
+  margin-top: 18px;
+  color: hsl(var(--secondary));
+  &:hover { color: hsl(var(--card)); }
+  &:focus-visible { outline-color: hsl(var(--secondary)); }
+}
+
+.bb-product-name-link:focus-visible,
+.bb-product-visual:focus-visible,
+.bb-landing-page-link:focus-visible {
+  outline-offset: 5px;
+  outline: 2px solid hsl(var(--primary));
+}
+
+.bb-cart-storage-notice {
+  margin: 0;
+  padding: 14px 24px;
+  text-align: center;
+  color: hsl(var(--primary));
+  background: hsl(var(--secondary));
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-product-name-link, .bb-landing-page-link { transition: none; }
+}

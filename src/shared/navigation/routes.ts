@@ -1,4 +1,4 @@
-export type NavigationIcon = `Info` | `Home` | `LogIn` | `Quote` | `MapPin` | `BookOpen` | `FileText` | `UserPlus` | `ShieldCheck` | `ShoppingBag` | `WandSparkles`;
+export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `MapPin` | `BookOpen` | `FileText` | `UserPlus` | `ShieldCheck` | `ShoppingBag` | `WandSparkles`;
 
 export type SiteRoute = {
   href: string;
@@ -40,17 +40,40 @@ export const siteRoutes = {
   },
   shop: {
     label: `Shop`,
-    href: `/#shop`,
-    section: `shop`,
+    href: `/shop`,
     icon: `ShoppingBag`,
+    title: `Shop | Bengali Blush`,
     description: `Curated rituals and beauty essentials`,
   },
   reviews: {
     icon: `Quote`,
     label: `Reviews`,
-    href: `/#reviews`,
-    section: `reviews`,
+    href: `/reviews`,
+    title: `Reviews | Bengali Blush`,
     description: `Kind words from lash clients`,
+  },
+  notifications: {
+    icon: `Bell`,
+    href: `/notifications`,
+    label: `Notifications`,
+    title: `Notifications | Bengali Blush`,
+    description: `The latest notes and announcements from Bengali Blush`,
+    aliases: [`/alert`, `/alerts`, `/update`, `/updates`, `/notification`, `/announcement`, `/announcements`],
+  },
+  cart: {
+    href: `/cart`,
+    label: `Cart Summary`,
+    icon: `ShoppingBag`,
+    aliases: [`/bag`, `/cart-summary`],
+    title: `Your Bag | Bengali Blush`,
+    description: `Review your edit before checkout`,
+  },
+  checkout: {
+    href: `/checkout`,
+    label: `Checkout`,
+    icon: `ShoppingBag`,
+    title: `Checkout | Bengali Blush`,
+    description: `Contact, delivery, and order review`,
   },
   contact: {
     icon: `MapPin`,
@@ -103,6 +126,13 @@ export const navigationRoutes: readonly SiteRoute[] = [
   siteRoutes.contact,
 ];
 
-export const siteRedirects = Object.values<SiteRoute>(siteRoutes).flatMap(({ href, aliases }) =>
-  aliases?.map((source) => ({ source, destination: href, permanent: true })) ?? [],
-);
+export const siteRedirects = [
+  ...Object.values<SiteRoute>(siteRoutes).flatMap(({ href, aliases }) =>
+    aliases?.map((source) => ({ source, destination: href, permanent: true })) ?? [],
+  ),
+  ...siteRoutes.notifications.aliases.map((source) => ({
+    permanent: true,
+    source: `${source}/:slug`,
+    destination: `${siteRoutes.notifications.href}/:slug`,
+  })),
+];

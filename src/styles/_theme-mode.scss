@@ -1,0 +1,143 @@
+:root {
+  color-scheme: light;
+  --bb-surface: hsl(var(--card));
+  --bb-highlight: hsl(var(--primary));
+  --bb-brand-ink: hsl(340 32% 15%);
+  --bb-brand-cream: hsl(29 50% 98%);
+  --bb-panel-text: hsl(var(--foreground));
+  --bb-panel-muted: hsl(var(--muted-foreground));
+  --bb-panel-border: hsl(var(--border));
+  --bb-panel-surface: hsl(var(--card));
+  --bb-surface-raised: hsl(var(--background));
+}
+
+body { transition: background-color .38s ease, color .38s ease; }
+
+:is(.bb-intro, .bb-shop, .bb-services, .bb-booking, .bb-footer, .bb-about-philosophy, .bb-contact-location) {
+  transition: background-color .38s ease, color .38s ease;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  // Cream stays available for text on burgundy chrome; surfaces have their own tokens.
+  :is(.bb-drawer, .bb-cart-footer, .bb-auth-page, .bb-booking-modal, .bb-booking-modal-content, .bb-product-card, .bb-blog-card, .bb-service-card, .bb-shop-card, .bb-review-card, .bb-blog-prose-figure, .bb-cart-summary-empty, .bb-cart-summary-loading, .bb-cart-summary-preview-note, .bb-checkout-empty, .bb-checkout-loading, .bb-checkout-payment-preview, .bb-auth-review, .bb-auth-ritual-option, .bb-auth-story-art-note, .bb-auth-story-founder-letter, .bb-form-success, .bb-contact-draft-status) {
+    background: var(--bb-surface);
+    border-color: hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  :is(.bb-product-card, .bb-blog-card, .bb-service-card, .bb-shop-card, .bb-review-card) {
+    transition: background-color .38s ease, color .38s ease, border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+  }
+
+  .bb-order-summary { background: linear-gradient(145deg, var(--bb-surface), hsl(var(--baby-pink))); border-color: hsl(var(--border)); }
+  .bb-liquid-edge { fill: var(--bb-surface); }
+  .bb-footer { background: hsl(var(--background)); border-top: 1px solid hsl(var(--border)); }
+  .bb-story { background: linear-gradient(135deg, hsl(var(--primary) / .4), var(--bb-surface)); }
+  .bb-hero::after { background: linear-gradient(90deg, hsl(var(--background) / .86), hsl(var(--background) / .4) 49%, hsl(var(--background) / .18)); }
+  .bb-inner-page .bb-header::before { background: hsl(var(--background) / .94); }
+  .bb-header.is-sticky.is-scrolled::before, .bb-header.is-menu-open::before { background: hsl(var(--background) / .84); }
+  .bb-mobile-panel { background: radial-gradient(circle at 100% 0, hsl(var(--accent) / .14), transparent 290px), linear-gradient(145deg, hsl(var(--card) / .04), transparent 44%), hsl(var(--background) / .9); }
+  .bb-mobile-panel .bb-liquid-edge { fill: hsl(var(--background) / .9); }
+  .bb-mobile-menu-book, .bb-bag-count { color: var(--bb-brand-ink); }
+  .bb-mobile-menu-book-icon { border-color: hsl(340 32% 15% / .3); }
+
+  :is(.bb-eyebrow, .bb-section-marker, .bb-founder-meta, .bb-founder-signature, .bb-intro-stamp, .bb-service-number, .bb-service-price, .bb-service-book, .bb-product-price, .bb-cart-total, .bb-cart-quantity-value, .bb-cart-quantity-button, .bb-cart-continue, .bb-landing-page-link, .bb-contact-detail, .bb-contact-social-link, .bb-contact-email-fallback, .bb-legal-contact, .bb-legal-section-number, .bb-about-detail-marker, .bb-blog-heading-accent, .bb-blog-hero-note, .bb-blog-card-read-link, .bb-blog-breadcrumb-current, .bb-blog-article-author, .bb-blog-contents-heading, .bb-blog-contents-number, .bb-blog-contents-category, .bb-blog-tips-heading, .bb-blog-faq-icon, .bb-blog-source-link, .bb-blog-all-articles-link, .bb-services-index-heading-accent, .bb-services-index-location, .bb-service-card-price, .bb-service-card-details, .bb-service-details-breadcrumb-title, .bb-service-details-meta-value, .bb-service-details-contact-link, .bb-service-details-preparation-icon, .bb-service-details-preparation-contact, .bb-service-details-faq-icon, .bb-service-details-all-link) {
+    color: var(--bb-highlight);
+  }
+
+  :is(.bb-shop-index-heading-accent, .bb-shop-index-preview-note, .bb-shop-index-search-label, .bb-shop-index-sort-label, .bb-shop-index-clear-search, .bb-shop-index-empty, .bb-shop-index-closing, .bb-shop-card-price, .bb-shop-card-add, .bb-shop-card-quantity-button, .bb-product-details-breadcrumb-current, .bb-product-details-gallery-caption-label, .bb-product-details-price, .bb-product-details-quantity-button, .bb-product-details-view-bag, .bb-product-details-contact-link, .bb-product-details-story-icon, .bb-product-details-story-signature, .bb-product-details-back-to-shop, .bb-cart-summary-product-label, .bb-cart-summary-quantity-button, .bb-cart-summary-line-total, .bb-cart-summary-continue-shopping, .bb-cart-summary-empty-icon, .bb-order-summary-eyebrow, .bb-order-summary-product-price, .bb-order-summary-subtotal, .bb-order-summary-signature, .bb-checkout-preview-title, .bb-checkout-signin, .bb-checkout-back-to-bag, .bb-checkout-review-block-title, .bb-checkout-edit-details, .bb-review-card-rating, .bb-review-card-name) {
+    color: var(--bb-highlight);
+  }
+
+  :is(.bb-auth-back-link, .bb-auth-text-button, .bb-auth-previous-step, .bb-auth-mode-switch-link, .bb-auth-form-eyebrow, .bb-auth-section-label, .bb-auth-password-toggle, .bb-auth-review-label, .bb-auth-inline-link, .bb-auth-notice, .bb-auth-story-studio-pill, .bb-auth-story-eyebrow, .bb-auth-story-title-accent, .bb-auth-story-control) {
+    color: var(--bb-highlight);
+  }
+
+  :is(.bb-intro-copy h2, .bb-about-heading, .bb-about-section-heading, .bb-contact-title, .bb-contact-location-title, .bb-legal-title, .bb-cart-summary-title, .bb-checkout-title, .bb-auth-form-heading, .bb-reviews-heading, .bb-reviews-stories-heading, .bb-review-card-heading) em { color: var(--bb-highlight); }
+  .bb-auth-story-brand-row .bb-logo { color: var(--bb-highlight); }
+  .bb-auth-progress-step.is-active { color: var(--bb-highlight); border-color: hsl(var(--secondary)); }
+  .bb-auth-progress-step.is-complete .bb-auth-progress-marker { color: var(--bb-brand-ink); }
+  .bb-checkout-step.is-current { color: var(--bb-highlight); }
+  .bb-checkout-step.is-complete .bb-checkout-step-number { color: var(--bb-highlight); }
+  .bb-product-details-summary svg, .bb-shop-slider-arrows button, .bb-checkout-section-title > svg, .bb-checkout-preview > svg, .bb-checkout-empty > svg, .bb-cart-summary-preview-note > svg, .bb-service-details-highlight svg { color: var(--bb-highlight); }
+
+  :is(.bb-shop-card-title-link:hover .bb-shop-card-title, .bb-product-card:hover .bb-product-info h3, .bb-product-name-link:hover, .bb-cart-summary-product-link:hover, .bb-cart-summary-remove:hover, .bb-order-summary-product-link:hover, .bb-blog-breadcrumb-link:hover, .bb-blog-contents-link:hover, .bb-auth-footer-link:hover, .bb-product-details-breadcrumb-link:hover, .bb-service-details-breadcrumb-link:hover) { color: hsl(var(--secondary)); }
+
+  :is(.bb-shop-card-label, .bb-shop-card-explore, .bb-blog-card-category, .bb-service-card-number, .bb-product-label, .bb-product-photo-link, .bb-product-details-artwork-label) {
+    background: var(--bb-surface);
+    border-color: hsl(var(--secondary) / .24);
+    color: var(--bb-highlight);
+  }
+
+  .bb-product-photo-link:is(:hover, :focus-visible) { background: hsl(var(--secondary)); color: var(--bb-brand-ink); }
+  :is(.bb-product-visual, .bb-product-visual.has-photo, .bb-shop-card-visual, .bb-shop-index-featured, .bb-cart-thumb, .bb-category-thumb) { background: var(--bb-surface-raised); }
+  .bb-product-details-artwork { background: radial-gradient(ellipse at 40% 20%, hsl(var(--secondary) / .13), transparent 65%), var(--bb-surface-raised); }
+  .bb-product-details-artwork-signature { color: var(--bb-highlight); }
+  .bb-product-details-artwork.has-photo .bb-product-details-artwork-signature { color: var(--bb-brand-cream); text-shadow: 0 2px 10px hsl(340 32% 15% / .45); }
+  :is(.bb-product-visual::before, .bb-shop-card-visual::before, .bb-product-details-artwork::before, .bb-product-details-artwork::after) { border-color: hsl(var(--secondary) / .22); }
+
+  // Image overlays retain dark ink after the page's foreground becomes cream.
+  :is(.bb-blog-featured, .bb-shop-index-featured, .bb-services-index-featured)::after { background: linear-gradient(transparent, hsl(340 32% 15% / .87)); }
+  .bb-review-card-portrait::after { background: linear-gradient(transparent, hsl(340 32% 15% / .55)); }
+  .bb-auth-story-photo-caption { background: linear-gradient(transparent, hsl(340 32% 15% / .75)); }
+
+  :is(.bb-blog-category-link, .bb-shop-index-category) { background: var(--bb-surface); border-color: hsl(var(--border)); color: var(--bb-highlight); }
+  .bb-blog-category-link:is(:hover, .is-current), .bb-shop-index-category.is-active { border-color: hsl(var(--secondary) / .5); background: hsl(var(--primary)); color: var(--bb-brand-cream); }
+  .bb-shop-index-category:hover { border-color: hsl(var(--secondary) / .5); }
+  .bb-category-tab:is(:hover, .is-active) { color: var(--bb-highlight); border-color: hsl(var(--secondary) / .4); }
+  .bb-category-tab::after { background: hsl(var(--secondary)); }
+  .bb-shop-slider-arrows button:is(:hover, :focus-visible, :active):not(:disabled) { color: var(--bb-brand-ink); }
+
+  :is(.bb-button-primary, .bb-mobile-menu-book), .bb-header-actions :is(.bb-bag-button.is-filled, .bb-menu-button, .bb-ghost-button) { color: var(--bb-brand-ink); }
+  .bb-button-primary:is(:hover, :focus-visible, :active), .bb-header-actions :is(.bb-bag-button.is-filled, .bb-menu-button, .bb-ghost-button):is(:hover, :focus-visible, :active) { color: var(--bb-brand-cream); }
+  .bb-button-outline-dark { border-color: hsl(var(--secondary) / .55); color: var(--bb-highlight); }
+  .bb-button-outline-dark:is(:hover, :focus-visible, :active) { color: var(--bb-brand-cream); }
+  :is(.bb-button-outline, .bb-bag-button:not(.is-filled), .bb-submit, .bb-add-button, .bb-mobile-booking, .bb-cart-checkout, .bb-cart-summary-checkout, .bb-scroll-to-top, .bb-intro-about-link, .bb-product-quantity-button, .bb-auth-submit):is(:hover, :focus-visible, :active) { color: var(--bb-brand-ink); }
+  :is(.bb-service-book, .bb-cart-continue, .bb-cart-quantity-button, .bb-close):is(:hover, :focus-visible, :active) { color: var(--bb-brand-cream); }
+  .bb-notifications-close:is(:hover, :focus-visible, :active) { color: var(--bb-brand-ink); }
+  .bb-cart-storage-notice { color: var(--bb-brand-ink); }
+  .bb-intro-stamp, .bb-contact-detail-icon, .bb-product-details-story-icon { border-color: hsl(var(--secondary) / .35); }
+
+  .bb-booking { background: radial-gradient(ellipse at 20% 15%, hsl(var(--secondary) / .07), transparent 65%), var(--bb-surface); }
+  .bb-booking-copy p, .bb-field label, .bb-form-success p { color: hsl(var(--muted-foreground)); }
+  .bb-booking-note { color: var(--bb-highlight); }
+  .bb-booking-note::before { background: currentColor; }
+  .bb-field input, .bb-field select, .bb-field textarea { border-color: hsl(var(--border)); }
+  .bb-booking .bb-field input::placeholder, .bb-booking .bb-field textarea::placeholder { color: hsl(var(--muted-foreground)); }
+  .bb-field input:focus, .bb-field select:focus, .bb-field textarea:focus { border-color: hsl(var(--secondary)); box-shadow: 0 1px 0 hsl(var(--secondary)); }
+  .bb-contact-field-help, .bb-contact-delivery-note, .bb-contact-appointment-delivery-note { color: hsl(var(--muted-foreground)); }
+  .bb-contact-inquiry-tabs { background: var(--bb-surface-raised); border-color: hsl(var(--border)); }
+  .bb-contact-inquiry-tab:hover { background: hsl(var(--secondary) / .12); }
+  .bb-contact-inquiry-tab[aria-selected='true'] { background: hsl(var(--primary)); color: var(--bb-brand-cream); }
+
+  .bb-auth-input, .bb-checkout-input { background: var(--bb-surface); border-color: hsl(var(--border)); }
+  .bb-auth-input:focus, .bb-checkout-input:focus { background: var(--bb-surface-raised); border-color: hsl(var(--secondary)); box-shadow: 0 0 0 3px hsl(var(--secondary) / .1); }
+  .bb-checkout-input:user-invalid { border-color: hsl(var(--destructive)); }
+  .bb-auth-google { background: var(--bb-surface-raised); border-color: hsl(var(--border)); color: hsl(var(--foreground)); }
+  .bb-auth-ritual-option { color: var(--bb-highlight); }
+  .bb-auth-ritual-option.is-selected { background: hsl(var(--secondary) / .09); border-color: hsl(var(--secondary) / .5); }
+  .bb-auth-story-photo { border-color: hsl(var(--border)); }
+  .bb-auth-story-control { border-color: hsl(var(--secondary) / .35); }
+  .bb-auth-story-control:hover { background: hsl(var(--primary)); color: var(--bb-brand-cream); }
+  .bb-auth-story-dot { background: hsl(var(--secondary) / .25); }
+  .bb-auth-story-dot-button.is-active .bb-auth-story-dot { background: hsl(var(--secondary)); }
+  .bb-auth-story-form-link:hover { color: var(--bb-brand-ink); }
+
+  :is(.bb-service-list, .bb-service, .bb-about-details, .bb-about-detail, .bb-shop-card-bottom, .bb-shop-card-quantity, .bb-product-details-purchase, .bb-product-details-panel, .bb-product-details-quantity-control, .bb-product-details-collection-label, .bb-cart-summary-lines, .bb-cart-summary-line, .bb-cart-summary-quantity, .bb-checkout-preview, .bb-checkout-form-actions, .bb-checkout-review-block, .bb-order-summary-products, .bb-blog-categories, .bb-blog-article-contents, .bb-blog-article-introduction, .bb-blog-faq, .bb-blog-article-sources, .bb-service-details-meta, .bb-service-details-content-grid, .bb-service-details-faq, .bb-service-card-booking, .bb-legal-links, .bb-auth-footer, .bb-auth-review-row + .bb-auth-review-row) { border-color: hsl(var(--border)); }
+  .bb-service:hover { border-color: hsl(var(--secondary) / .3); }
+  .bb-service-row:hover .bb-service-number { color: var(--bb-highlight); }
+  .bb-service-details-preparation { border-color: hsl(var(--border)); }
+  :is(.bb-blog-tip, .bb-blog-source, .bb-service-details-preparation-step)::marker { color: var(--bb-highlight); }
+  :is(a, button, summary):focus-visible { outline-color: hsl(var(--secondary)); }
+
+  @media (max-width: 800px) {
+    .bb-hero::after { background: linear-gradient(0deg, hsl(var(--background) / .96), hsl(var(--background) / .25) 85%); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body, :is(.bb-intro, .bb-shop, .bb-services, .bb-booking, .bb-footer, .bb-about-philosophy, .bb-contact-location) { transition: none; }
+  :root[data-theme='dark'] :is(.bb-product-card, .bb-blog-card, .bb-service-card, .bb-shop-card, .bb-review-card) { transition: none; }
+}

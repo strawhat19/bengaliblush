@@ -4,8 +4,11 @@ import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import { siteConfig, siteUrl } from '@/shared/config/site';
 import BlushLoader from '@/app/components/loaders/blush-loader';
+import { ThemeProvider } from '@/shared/themeContext/ThemeContext';
+import { themeBootstrapScript } from '@/shared/themeContext/theme';
 import PwaRegistration from '@/app/components/pwa/pwa-registration';
 import { Allura, DM_Mono, DM_Sans, Fraunces } from 'next/font/google';
+import { NotificationsProvider } from '@/shared/notifications/notifications-context';
 
 const sans = DM_Sans({
   subsets: ['latin'],
@@ -35,7 +38,7 @@ const signature = Allura({
 });
 
 export const viewport: Viewport = {
-  colorScheme: `light`,
+  colorScheme: `light dark`,
   themeColor: `#3e0d23`,
 };
 
@@ -71,12 +74,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable} ${signature.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${serif.variable} ${mono.variable} ${signature.variable}`}>
+      <head>
+        <script id={`bb-theme-bootstrap`} dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+      </head>
       <body>
-        <BlushLoader />
-        {children}
-        <PwaRegistration />
-        <Analytics />
+        <ThemeProvider>
+          <NotificationsProvider>
+            <BlushLoader />
+            {children}
+            <PwaRegistration />
+            <Analytics />
+          </NotificationsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

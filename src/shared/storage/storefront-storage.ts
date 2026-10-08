@@ -1,3 +1,4 @@
+import { useLocalStorage } from '@/shared/config/storefront';
 import type { BookingRequest, Product } from '@/shared/types/storefront';
 
 const STORAGE_VERSION = 1;
@@ -7,6 +8,8 @@ const emptyCart: Product[] = [];
 
 let cartSnapshot = emptyCart;
 let cartInitialized = false;
+let cartStorageReadable = true;
+let cartStorageNotice: string | null = null;
 const cartListeners = new Set<() => void>();
 
 type StoredRecord = {
@@ -15,6 +18,7 @@ type StoredRecord = {
 };
 
 const readRecord = (key: string) => {
+  if (!useLocalStorage || typeof window === `undefined`) return null;
   try {
     const rawValue = window.localStorage.getItem(key);
     if (!rawValue) return null;
@@ -26,14 +30,17 @@ const readRecord = (key: string) => {
 };
 
 const writeRecord = (key: string, value: unknown) => {
+  if (!useLocalStorage || typeof window === `undefined`) return;
+  if (key === CART_STORAGE_KEY && !cartStorageReadable) return;
   try {
     window.localStorage.setItem(key, JSON.stringify({
       version: STORAGE_VERSION,
       updatedAt: new Date().toISOString(),
       value,
     }));
+    if (key === CART_STORAGE_KEY) cartStorageNotice = null;
   } catch {
-    // Keep the storefront usable when browser storage is unavailable.
+    if (key === CART_STORAGE_KEY) cartStorageNotice = `Your bag is available for this visit. Browser storage could not be updated.`;
   }
 };
 
@@ -42,12 +49,34 @@ const isProduct = (value: unknown): value is Product => {
   const product = value as Partial<Product>;
   return typeof product.id === `string`
     && typeof product.name === `string`
-    && typeof product.price === `number`;
+    && typeof product.price === `number`
+    && Number.isFinite(product.price)
+    && product.price >= 0;
 };
 
-export const readStoredCart = () => {
-  const cart = readRecord(CART_STORAGE_KEY);
-  return Array.isArray(cart) ? cart.filter(isProduct) : [];
+export const readStoredCart = (): Product[] => {
+  if (typeof window === `undefined`) return [];
+  if (!useLocalStorage) {
+    cartStorageNotice = `Your bag is saved for this visit only.`;
+    return [];
+  }
+  cartStorageReadable = true;
+  cartStorageNotice = null;
+  try {
+    const rawValue = window.localStorage.getItem(CART_STORAGE_KEY);
+    if (!rawValue) return [];
+    const record = JSON.parse(rawValue) as StoredRecord | null;
+    if (record?.version !== STORAGE_VERSION || !Array.isArray(record.value) || !record.value.every(isProduct)) {
+      cartStorageReadable = false;
+      cartStorageNotice = `Your saved bag could not be read. New changes will last for this visit.`;
+      return [];
+    }
+    return record.value;
+  } catch {
+    cartStorageReadable = false;
+    cartStorageNotice = `Your saved bag could not be read. New changes will last for this visit.`;
+    return [];
+  }
 };
 
 const ensureCartInitialized = () => {
@@ -59,6 +88,7 @@ const ensureCartInitialized = () => {
 const emitCartChange = () => cartListeners.forEach(listener => listener());
 
 const handleCartStorageChange = (event: StorageEvent) => {
+  if (!useLocalStorage) return;
   if (event.key !== CART_STORAGE_KEY && event.key !== null) return;
   cartSnapshot = readStoredCart();
   cartInitialized = true;
@@ -82,6 +112,13 @@ export const getStoredCartSnapshot = () => {
 };
 
 export const getStoredCartServerSnapshot = () => emptyCart;
+
+export const getStoredCartNotice = () => {
+  ensureCartInitialized();
+  return cartStorageNotice;
+};
+
+export const getStoredCartServerNotice = () => null;
 
 export const writeStoredCart = (cart: Product[]) => {
   cartSnapshot = cart;

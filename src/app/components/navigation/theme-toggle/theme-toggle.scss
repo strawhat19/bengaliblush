@@ -1,0 +1,43 @@
+.bb-theme-control { position: relative; display: inline-flex; }
+
+.bb-theme-toggle {
+  --bb-liquid-front: hsl(var(--secondary));
+  --bb-liquid-back: hsl(var(--accent) / .7);
+  flex: none;
+
+  &:is(:hover, :focus-visible, :active) { color: var(--bb-brand-ink, hsl(340 32% 15%)); }
+}
+
+.bb-theme-icon {
+  position: absolute;
+  pointer-events: none;
+  transition: opacity .28s ease, transform .48s cubic-bezier(.2, .85, .25, 1);
+}
+
+.bb-theme-icon-moon { opacity: 1; transform: rotate(-12deg) scale(1); }
+.bb-theme-icon-sun { opacity: 0; transform: rotate(65deg) scale(.55); }
+
+:root[data-theme='dark'] {
+  .bb-theme-icon-moon { opacity: 0; transform: rotate(-65deg) scale(.55); }
+  .bb-theme-icon-sun { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+.bb-theme-preference-notice {
+  z-index: 2;
+  right: 0;
+  top: calc(100% + 12px);
+  position: absolute;
+  width: min(230px, 65vw);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--bb-panel-text);
+  background: var(--bb-panel-surface);
+  border: 1px solid var(--bb-panel-border);
+  font-size: 11px;
+  line-height: 1.6;
+  box-shadow: 0 12px 30px hsl(340 32% 15% / .18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-theme-icon { transition: none; }
+}

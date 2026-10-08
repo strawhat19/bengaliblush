@@ -1,127 +1,53 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { siteContact } from '@/shared/config/site';
 import { siteRoutes } from '@/shared/navigation/routes';
+import { getProductHref } from '@/shared/shop/shop-utils';
+import { productCategories } from '@/shared/shop/shop-content';
 import ScrollToTop from '@/app/components/effects/scroll-to-top';
+import type { Product, Service } from '@/shared/types/storefront';
 import { BookingContext } from '@/shared/services/booking-context';
 import LandingMotion from '@/app/components/effects/landing-motion';
+import { sampleTestimonials } from '@/shared/reviews/review-content';
 import Header, { BrandMark } from '@/app/components/navigation/header';
 import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import BookingForm from '@/app/components/booking/booking-form/booking-form';
-import LandingServices from '@/app/components/services/landing-services/landing-services';
-import type { Product, ProductCategory, Service } from '@/shared/types/storefront';
+import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
+import LandingServices from '@/app/components/services/landing-services/landing-services';
+import { ShopProvider, getCartLines, removeCartProduct, decrementCartProduct } from '@/shared/shop/shop-context';
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
-import { getStoredCartServerSnapshot, getStoredCartSnapshot, storeBookingRequest, subscribeStoredCart, writeStoredCart } from '@/shared/storage/storefront-storage';
+import { getStoredCartNotice, getStoredCartSnapshot, storeBookingRequest, subscribeStoredCart, writeStoredCart, getStoredCartServerNotice, getStoredCartServerSnapshot } from '@/shared/storage/storefront-storage';
 import {
-  ArrowUpRight,
-  CalendarDays,
+  X,
+  Mail,
+  Plus,
+  Star,
   Check,
-  ChevronLeft,
-  ChevronRight,
-  BookOpen,
-  FileText,
   Globe,
   Heart,
-  Instagram,
-  Mail,
-  MapPin,
   Phone,
-  Plus,
   Minus,
   Quote,
-  Star,
+  MapPin,
+  Trash2,
+  FileText,
+  Sparkles,
+  Instagram,
+  ChevronLeft,
   ShoppingBag,
   ShieldCheck,
-  Sparkles,
-  Trash2,
+  ArrowUpRight,
+  CalendarDays,
+  ChevronRight,
   WandSparkles,
-  X,
   type LucideIcon,
 } from 'lucide-react';
 
-const sampleTestimonials = [
-  {
-    name: `Nabila`,
-    rating: 5,
-    heading: { first: `Get`, accent: `ready`, last: `with me` },
-    service: `lash set client`,
-    image: `/hair-styling.jpg`,
-    imageAlt: `Editorial beauty portrait of a woman in a red sari`,
-    quote: `Sadia listened when I asked for natural lashes. They look fuller, but still like me.`,
-  },
-  {
-    name: `Aisha`,
-    rating: 5,
-    heading: { first: `You`, accent: `shine`, last: `your way` },
-    service: `first-time lash client`,
-    image: `/testimonial-aisha.png`,
-    imageAlt: `Editorial portrait of a fictional client in cream silk against an earthy brown backdrop`,
-    quote: `I was nervous for my first set. Sadia explained everything and made me feel comfortable.`,
-  },
-  {
-    name: `Maya`,
-    rating: 5,
-    heading: { first: `The`, accent: `magic`, last: `is yours` },
-    service: `lash fill client`,
-    image: `/testimonial-maya.png`,
-    imageAlt: `Editorial portrait of a fictional woman with a dark shoulder-length bob in burgundy satin against an earthy brown backdrop`,
-    quote: `I came in for a fill before a wedding. Sadia took her time, and they looked fresh again.`,
-  },
-];
-
-const productCategories: ProductCategory[] = [
-  {
-    id: `health`,
-    name: `Health`,
-    products: [
-      { id: `lash-luxe`, name: `Lash Luxe Serum`, description: `A nightly ritual for stronger, softer-looking lashes.`, price: 34, label: `Bestseller`, shade: `gold`, visual: `serum` },
-      { id: `brow-bloom`, name: `Brow Bloom Serum`, description: `A conditioning touch for fuller-looking brows.`, price: 29, label: `Daily ritual`, shade: `pearl`, visual: `serum` },
-      { id: `rosewater-glow`, name: `Rosewater Glow Serum`, description: `Lightweight hydration for a fresh, dewy finish.`, price: 32, label: `Skin favorite`, shade: `rose`, visual: `serum` },
-      { id: `scalp-revival`, name: `Scalp Revival Serum`, description: `A soothing step for healthy-looking roots.`, price: 36, label: `Hair ritual`, shade: `green`, visual: `serum` },
-      { id: `night-repair`, name: `Night Repair Serum`, description: `A soft overnight veil for nourished skin.`, price: 38, label: `After dark`, shade: `plum`, visual: `serum` },
-    ],
-  },
-  {
-    id: `apparel`,
-    name: `Apparel`,
-    products: [
-      { id: `pakistani-lehenga`, name: `Pakistani Embroidered Lehenga`, description: `A festive skirt, blouse, and dupatta with delicate detail.`, price: 249, label: `Pakistani style`, shade: `berry`, visual: `apparel`, image: `/apparel-pakistani-lehenga.png`, imageAlt: `Woman wearing an embroidered Pakistani lehenga and dupatta` },
-      { id: `bengali-jamdani`, name: `Bengali Jamdani Saree`, description: `An airy floral weave with a timeless drape.`, price: 189, label: `Bengali style`, shade: `cream`, visual: `apparel`, image: `/apparel-bengali-jamdani.png`, imageAlt: `Woman wearing a floral Bengali Jamdani saree` },
-      { id: `indian-banarasi`, name: `Indian Banarasi Saree`, description: `Brocade-inspired elegance for every celebration.`, price: 219, label: `Indian style`, shade: `gold`, visual: `apparel`, image: `/apparel-indian-banarasi.png`, imageAlt: `Woman wearing a brocade Indian Banarasi saree` },
-      { id: `pakistani-lawn`, name: `Pakistani Lawn Kurta Set`, description: `A printed kurta, trousers, and matching dupatta.`, price: 95, label: `Everyday edit`, shade: `green`, visual: `apparel`, image: `/apparel-pakistani-lawn.png`, imageAlt: `Woman wearing a printed Pakistani lawn kurta, trousers, and dupatta` },
-      { id: `bengali-muslin`, name: `Bengali Muslin Salwar Set`, description: `Lightweight festive layers with an easy silhouette.`, price: 129, label: `New arrival`, shade: `coral`, visual: `apparel`, image: `/apparel-bengali-muslin.png`, imageAlt: `Woman wearing a light Bengali muslin salwar set` },
-    ],
-  },
-  {
-    id: `candles`,
-    name: `Candles`,
-    products: [
-      { id: `saffron-amber`, name: `Saffron Amber Candle`, description: `Warm saffron and amber for a welcoming glow.`, price: 28, label: `Bestseller`, shade: `amber`, visual: `candle` },
-      { id: `rose-oud`, name: `Rose & Oud Candle`, description: `A rich floral note made for slow evenings.`, price: 30, label: `After dark`, shade: `rose`, visual: `candle` },
-      { id: `jasmine-evening`, name: `Jasmine Evening Candle`, description: `Soft jasmine with a calm, lingering finish.`, price: 26, label: `Soft glow`, shade: `cream`, visual: `candle` },
-      { id: `chai-spice`, name: `Chai Spice Candle`, description: `Cozy cardamom and spice in every room.`, price: 28, label: `Home favorite`, shade: `gold`, visual: `candle` },
-      { id: `velvet-rose`, name: `Velvet Rose Candle`, description: `A romantic rose scent with a hint of musk.`, price: 32, label: `Giftable`, shade: `plum`, visual: `candle` },
-    ],
-  },
-  {
-    id: `tools`,
-    name: `Tools`,
-    products: [
-      { id: `ceramic-straightener`, name: `Ceramic Hair Straightener`, description: `Smooth, polished styling with easy heat control.`, price: 89, label: `Studio essential`, shade: `plum`, visual: `tool` },
-      { id: `curling-wand`, name: `32 mm Curling Wand`, description: `Soft, sweeping curls and party-ready waves.`, price: 74, label: `Artist pick`, shade: `rose`, visual: `tool` },
-      { id: `travel-straightener`, name: `Mini Travel Straightener`, description: `A compact touch-up tool for days on the move.`, price: 49, label: `On the go`, shade: `gold`, visual: `tool` },
-      { id: `heated-brush`, name: `Heated Styling Brush`, description: `Volume and smoothness in one quick pass.`, price: 68, label: `Daily styling`, shade: `coral`, visual: `tool` },
-      { id: `wave-iron`, name: `Wave Styling Iron`, description: `Easy texture for effortless, lived-in waves.`, price: 79, label: `New in`, shade: `green`, visual: `tool` },
-    ],
-  },
-];
-
-const productCatalog = productCategories.flatMap((category) => category.products);
 
 function RevealLine({ children, index = 0 }: { children: ReactNode; index?: number }) {
   return (
@@ -255,51 +181,6 @@ function Marquee() {
   );
 }
 
-function ProductBottle({ shade }: { shade: string }) {
-  return <div className={`bb-product-bottle ${shade}`} aria-hidden="true" />;
-}
-
-function ProductArtwork({ product, context = `card` }: { product: Product; context?: `card` | `category` | `cart` }) {
-  if (product.visual === `apparel` && product.image && context !== `category`) return (
-    <Image
-      className="bb-product-photo"
-      src={product.image}
-      alt={product.imageAlt ?? product.name}
-      fill
-      sizes={context === `cart` ? `62px` : `(max-width: 800px) 100vw, (max-width: 1050px) 40vw, 36vw`}
-    />
-  );
-  if (product.visual === `apparel`) return (
-    <svg className={`bb-product-art ${product.shade}`} viewBox="0 0 180 220" fill="none" aria-hidden="true">
-      <path d="M72 20h36l9 16 21 12-11 25-20-10-6 23H79l-6-23-20 10-11-25 21-12 9-16Z" fill="var(--art-main)" stroke="currentColor" strokeOpacity=".36" />
-      <path d="M78 84h24l48 121H30L78 84Z" fill="var(--art-main)" stroke="currentColor" strokeOpacity=".36" />
-      <path d="M70 32c14 18 31 35 42 53l20 106" stroke="var(--art-accent)" strokeWidth="11" strokeOpacity=".8" />
-      <path d="M41 188h98M49 173h82M76 97h28" stroke="var(--art-accent)" strokeWidth="2" strokeOpacity=".7" />
-    </svg>
-  );
-  if (product.visual === `candle`) return (
-    <svg className={`bb-product-art ${product.shade}`} viewBox="0 0 180 220" fill="none" aria-hidden="true">
-      <path d="M90 31c-14 17-13 30 0 37 13-8 14-21 0-37Z" fill="var(--art-accent)" />
-      <path d="M90 68v18" stroke="currentColor" strokeOpacity=".5" strokeWidth="2" />
-      <rect x="43" y="86" width="94" height="111" rx="14" fill="var(--art-main)" stroke="currentColor" strokeOpacity=".36" />
-      <path d="M44 102h92" stroke="currentColor" strokeOpacity=".32" />
-      <rect x="61" y="122" width="58" height="41" rx="2" fill="#F8E8D1" fillOpacity=".75" />
-      <text x="90" y="150" fill="#3E0D23" fontFamily="Georgia, serif" fontSize="25" fontStyle="italic" textAnchor="middle">bb</text>
-    </svg>
-  );
-  if (product.visual === `tool`) return (
-    <svg className={`bb-product-art ${product.shade}`} viewBox="0 0 180 220" fill="none" aria-hidden="true">
-      <g transform="rotate(-22 90 110)">
-        <rect x="60" y="22" width="23" height="174" rx="11" fill="var(--art-main)" stroke="currentColor" strokeOpacity=".36" />
-        <rect x="97" y="22" width="23" height="174" rx="11" fill="var(--art-accent)" stroke="currentColor" strokeOpacity=".36" />
-        <rect x="66" y="33" width="11" height="79" rx="5" fill="#F8E8D1" fillOpacity=".75" />
-        <rect x="103" y="33" width="11" height="79" rx="5" fill="#F8E8D1" fillOpacity=".75" />
-        <path d="M71 184c8 22 30 22 38 0" stroke="currentColor" strokeOpacity=".55" strokeWidth="3" />
-      </g>
-    </svg>
-  );
-  return <ProductBottle shade={product.shade} />;
-}
 
 function ProductCardCartControl({ product, quantity, isActive, onAdd, onDecrement }: { product: Product; quantity: number; isActive: boolean; onAdd: (product: Product) => void; onDecrement: (id: string) => void }) {
   if (quantity === 0) return (
@@ -387,7 +268,12 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
       <div className="bb-container">
         <div className="bb-section-heading" data-reveal>
           <div><SectionMarker icon={ShoppingBag} index="04" title="Shop" /><span className="bb-eyebrow">The Misty Market</span><h2 aria-label="Little luxuries for your ritual."><RevealLine>Little luxuries</RevealLine><br /><RevealLine index={1}>for your ritual.</RevealLine></h2></div>
-          <p>Explore feel-good essentials, festive fashion, cozy candles, and the tools behind your favorite looks.</p>
+          <div id={`bb-landing-shop-introduction`} className={`bb-landing-section-links`}>
+            <p>Explore feel-good essentials, festive fashion, cozy candles, and the tools behind your favorite looks.</p>
+            <Link href={siteRoutes.shop.href} id={`bb-landing-shop-link`} className={`bb-landing-page-link`}>
+              Explore The Shop <ArrowUpRight size={15} aria-hidden={`true`} />
+            </Link>
+          </div>
         </div>
         <div className="bb-product-slider-viewport" data-reveal>
           <div
@@ -417,24 +303,20 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
               >
                 {category.products.map((product) => (
                   <article className="bb-product-card" id={`product-${product.id}`} key={product.id} data-testid={`card-product-${product.id}`}>
-                    <div className={`bb-product-visual${product.image ? ` has-photo` : ``}`}>
+                    <Link
+                      href={getProductHref(product.id)}
+                      id={`product-detail-link-${product.id}`}
+                      className={`bb-product-visual${product.image ? ` has-photo` : ``}`}
+                      aria-label={`Explore ${product.name}`}
+                    >
                       <span className="bb-product-label" id={`product-label-${product.id}`}>{product.label}</span>
                       <ProductArtwork product={product} />
-                      {product.image && (
-                        <a
-                          className="bb-product-photo-link"
-                          id={`product-photo-link-${product.id}`}
-                          href={product.image}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label={`View full outfit photo of ${product.name}`}
-                        >
-                          View outfit <ArrowUpRight size={13} aria-hidden="true" />
-                        </a>
-                      )}
-                    </div>
+                      <span id={`product-explore-${product.id}`} className={`bb-product-photo-link`}>
+                        Explore Product <ArrowUpRight size={13} aria-hidden={`true`} />
+                      </span>
+                    </Link>
                     <div className="bb-product-info">
-                      <h3>{product.name}</h3>
+                      <h3><Link href={getProductHref(product.id)} id={`product-name-link-${product.id}`} className={`bb-product-name-link`}>{product.name}</Link></h3>
                       <p>{product.description}</p>
                       <div className="bb-product-bottom"><span className="bb-product-price">${product.price.toFixed(2)}</span><ProductCardCartControl product={product} quantity={quantities[product.id] ?? 0} isActive={categoryIndex === activeCategoryIndex} onAdd={onAdd} onDecrement={onDecrement} /></div>
                     </div>
@@ -615,7 +497,10 @@ function Reviews() {
         </div>
         <div className="bb-story-copy" id="review-copy" data-reveal {...dragHandlers}>
           <SectionMarker icon={Quote} index="05" title="Reviews" inverse />
-          <span className="bb-eyebrow bb-review-eyebrow">From Beloved Clients</span>
+          <span className="bb-eyebrow bb-review-eyebrow">A Little Beauty Inspiration</span>
+          <Link href={siteRoutes.reviews.href} id={`bb-landing-reviews-link`} className={`bb-landing-page-link bb-landing-reviews-link`}>
+            Explore Reviews <ArrowUpRight size={15} aria-hidden={`true`} />
+          </Link>
           <div className="bb-review-heading-viewport">
             <div className={`bb-review-heading-track${isDragging ? ` is-dragging` : ``}`} style={trackStyle}>
               {sampleTestimonials.map((testimonial, index) => (
@@ -635,7 +520,7 @@ function Reviews() {
                       aria-hidden="true"
                     />
                     <div className="bb-review-rating-details" id={`review-rating-details-${index + 1}`}>
-                      <span className="bb-review-rating-label">Client rating</span>
+                      <span className="bb-review-rating-label">Sample rating</span>
                       <span className="bb-review-rating-stars" aria-hidden="true">
                         {Array.from({ length: 5 }, (_, starIndex) => (
                           <Star
@@ -765,9 +650,6 @@ function Footer({ onBook }: { onBook: () => void }) {
             />
             <h4>Say hello</h4>
             <div className="bb-footer-links">
-              <Link href={siteRoutes.blog.href} id={`bb-footer-blog-link`} className={`bb-footer-page-link`} data-testid={`footer-link-blog`}>
-                <BookOpen size={13} aria-hidden={`true`} />Beauty Blog
-              </Link>
               <Link href={siteRoutes.services.href} id={`bb-footer-services-link`} className={`bb-footer-page-link`} data-testid={`footer-link-services`}>
                 <WandSparkles size={13} aria-hidden={`true`} />Services
               </Link>
@@ -800,13 +682,7 @@ function Footer({ onBook }: { onBook: () => void }) {
 
 function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, onCheckout }: { cart: Product[]; isOpen: boolean; onClose: () => void; onRemove: (id: string) => void; onIncrement: (product: Product) => void; onDecrement: (id: string) => void; onCheckout: () => void }) {
   const drawerRef = useRef<HTMLElement>(null);
-  const cartLines = Array.from(cart.reduce((lines, item) => {
-    const product = productCatalog.find((candidate) => candidate.id === item.id) ?? item;
-    const line = lines.get(product.id);
-    if (line) line.quantity += 1;
-    else lines.set(product.id, { product, quantity: 1 });
-    return lines;
-  }, new Map<string, { product: Product; quantity: number }>()).values());
+  const cartLines = getCartLines(cart);
   const subtotal = cartLines.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0);
   useEffect(() => {
     if (isOpen) drawerRef.current?.focus({ preventScroll: true });
@@ -832,9 +708,9 @@ function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, 
               <div className="bb-cart-lines" id="bb-cart-lines">
                 {cartLines.map(({ product, quantity }) => (
                   <div className="bb-cart-line" id={`bb-cart-line-${product.id}`} key={product.id}>
-                    <div className="bb-cart-thumb" id={`bb-cart-thumb-${product.id}`}><ProductArtwork product={product} context="cart" /></div>
+                    <Link href={getProductHref(product.id)} onClick={onClose} className="bb-cart-thumb" id={`bb-cart-thumb-${product.id}`} aria-label={`Explore ${product.name}`}><ProductArtwork product={product} context="cart" /></Link>
                     <div className="bb-cart-details" id={`bb-cart-details-${product.id}`}>
-                      <h3 className="bb-cart-product-name" id={`bb-cart-product-name-${product.id}`}>{product.name}</h3>
+                      <h3 className="bb-cart-product-name" id={`bb-cart-product-name-${product.id}`}><Link href={getProductHref(product.id)} onClick={onClose} id={`bb-cart-product-link-${product.id}`} className={`bb-product-name-link`}>{product.name}</Link></h3>
                       <p className="bb-cart-unit-price" id={`bb-cart-unit-price-${product.id}`}>${product.price.toFixed(2)} each</p>
                       <div className="bb-cart-quantity" id={`bb-cart-quantity-${product.id}`}>
                         <button type="button" className="bb-cart-quantity-button" onClick={() => onDecrement(product.id)} aria-label={`Decrease quantity of ${product.name}`} data-testid={`button-decrease-${product.id}`}><Minus size={13} /></button>
@@ -850,7 +726,7 @@ function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, 
             </div>
             <div className="bb-cart-footer" id="bb-cart-footer">
               <div className="bb-cart-total" id="bb-cart-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
-              <button className="bb-button bb-cart-checkout" onClick={onCheckout} data-testid="button-checkout">Continue to checkout <ChevronRight size={16} /></button>
+              <button className="bb-button bb-cart-checkout" id={`bb-bag-summary-button`} onClick={onCheckout} data-testid="button-checkout">Continue to checkout <ChevronRight size={16} /></button>
             </div>
           </>
         )}
@@ -881,7 +757,9 @@ function BookingModal({ service, isOpen, onClose, onSuccess }: { service?: Servi
 }
 
 export default function BengaliBlushLanding({ children }: { children?: ReactNode }) {
+  const router = useRouter();
   const cart = useSyncExternalStore(subscribeStoredCart, getStoredCartSnapshot, getStoredCartServerSnapshot);
+  const storageNotice = useSyncExternalStore(subscribeStoredCart, getStoredCartNotice, getStoredCartServerNotice);
   const [bagPhase, setBagPhase] = useState<`closed` | `opening` | `open` | `closing`>(`closed`);
   const bagOpenerRef = useRef<HTMLElement | null>(null);
   const [bookingService, setBookingService] = useState<Service | undefined>();
@@ -966,50 +844,53 @@ export default function BengaliBlushLanding({ children }: { children?: ReactNode
   };
   const closeBag = () => setBagPhase((current) => current === `closed` || current === `closing` ? current : `closing`);
   const handleSuccess = (name: string, service: string) => { storeBookingRequest(name, service); setConfirmation({ name, service }); setToast(`Thanks, ${name}. Your ${service.toLowerCase()} request is in.`); };
-  const addProduct = (product: Product) => {
+  const addProduct = (product: Product, quantity = 1) => {
+    const amount = Math.min(99, Math.max(1, Math.floor(quantity)));
+    if (!Number.isFinite(amount)) return;
     const currentCart = getStoredCartSnapshot();
-    writeStoredCart([...currentCart, product]);
+    writeStoredCart([...currentCart, ...Array.from({ length: amount }, () => product)]);
     if (!currentCart.some((item) => item.id === product.id)) setToast(`Added ${product.name} to Cart`);
   };
-  const removeProduct = (id: string) => writeStoredCart(getStoredCartSnapshot().filter((item) => item.id !== id));
+  const removeProduct = removeCartProduct;
   const incrementProduct = (product: Product) => writeStoredCart([...getStoredCartSnapshot(), product]);
-  const decrementProduct = (id: string) => {
-    const currentCart = getStoredCartSnapshot();
-    const itemIndex = currentCart.findIndex((item) => item.id === id);
-    if (itemIndex < 0) return;
-    writeStoredCart(currentCart.filter((_, index) => index !== itemIndex));
+  const decrementProduct = decrementCartProduct;
+  const handleCheckout = () => {
+    closeBag();
+    router.push(siteRoutes.cart.href);
   };
-  const handleCheckout = () => { setToast('Checkout is being prepared for you.'); closeBag(); };
 
   return (
     <BookingContext.Provider value={openBooking}>
-      <main id={`bb-storefront-page`} className={`bb-page${children ? ` bb-inner-page` : ``}`}>
-        <LandingMotion />
-        <Header sticky width="boxed" bagCount={bagCount} onBag={openBag} onBook={() => openBooking()} />
-        {children ?? (
-          <>
-            <Hero onBook={() => openBooking()} />
-            <Intro />
-            <LandingServices />
-            <Marquee />
-            <Shop cart={cart} onAdd={addProduct} onDecrement={decrementProduct} />
-            <Reviews />
-            <BookingSection onSuccess={(name, service) => {
-              if (!name && !service) {
-                setConfirmation(null);
-                return;
-              }
-              handleSuccess(name, service);
-            }} confirmation={confirmation} />
-          </>
-        )}
-        <Footer onBook={() => children ? openBooking() : scrollToElement(`#contact`)} />
-        <div className={`bb-toast ${toast ? '' : 'is-hidden'}`} style={{ display: toast ? 'block' : 'none' }} data-testid="status-toast"><Check size={14} style={{ verticalAlign: 'middle', marginRight: 8 }} />{toast}</div>
-        {bagPhase !== `closed` && <BagDrawer cart={cart} isOpen={bagPhase === `open`} onClose={closeBag} onRemove={removeProduct} onIncrement={incrementProduct} onDecrement={decrementProduct} onCheckout={handleCheckout} />}
-        {bookingPhase !== `closed` && <BookingModal service={bookingService} isOpen={bookingPhase === `open`} onClose={closeBooking} onSuccess={(name, service) => { handleSuccess(name, service); closeBooking(); }} />}
-        <ScrollToTop />
-        <button className="bb-mobile-booking" onClick={() => openBooking()} data-testid="button-mobile-sticky-book"><CalendarDays size={14} strokeWidth={1.6} />Book Now</button>
-      </main>
+      <ShopProvider cart={cart} onAdd={addProduct} onOpenBag={openBag}>
+        <main id={`bb-storefront-page`} className={`bb-page${children ? ` bb-inner-page` : ``}`}>
+          <LandingMotion />
+          <Header sticky width="boxed" bagCount={bagCount} onBag={openBag} onBook={() => openBooking()} />
+          {children ?? (
+            <>
+              <Hero onBook={() => openBooking()} />
+              <Intro />
+              <LandingServices />
+              <Marquee />
+              <Shop cart={cart} onAdd={addProduct} onDecrement={decrementProduct} />
+              <Reviews />
+              <BookingSection onSuccess={(name, service) => {
+                if (!name && !service) {
+                  setConfirmation(null);
+                  return;
+                }
+                handleSuccess(name, service);
+              }} confirmation={confirmation} />
+            </>
+          )}
+          <Footer onBook={() => children ? openBooking() : scrollToElement(`#contact`)} />
+          {storageNotice && <p id={`bb-cart-storage-notice`} className={`bb-cart-storage-notice`} role={`status`}>{storageNotice}</p>}
+          <div className={`bb-toast ${toast ? '' : 'is-hidden'}`} style={{ display: toast ? 'block' : 'none' }} data-testid="status-toast"><Check size={14} style={{ verticalAlign: 'middle', marginRight: 8 }} />{toast}</div>
+          {bagPhase !== `closed` && <BagDrawer cart={cart} isOpen={bagPhase === `open`} onClose={closeBag} onRemove={removeProduct} onIncrement={incrementProduct} onDecrement={decrementProduct} onCheckout={handleCheckout} />}
+          {bookingPhase !== `closed` && <BookingModal service={bookingService} isOpen={bookingPhase === `open`} onClose={closeBooking} onSuccess={(name, service) => { handleSuccess(name, service); closeBooking(); }} />}
+          <ScrollToTop />
+          <button className="bb-mobile-booking" onClick={() => openBooking()} data-testid="button-mobile-sticky-book"><CalendarDays size={14} strokeWidth={1.6} />Book Now</button>
+        </main>
+      </ShopProvider>
     </BookingContext.Provider>
   );
 }

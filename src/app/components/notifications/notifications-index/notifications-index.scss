@@ -1,0 +1,58 @@
+.bb-notifications-index {
+  .bb-notifications-page-hero { padding: 163px 0 70px; background: radial-gradient(ellipse at 18% 20%, hsl(var(--baby-pink) / .55), transparent 60%); }
+  .bb-notifications-page-hero-grid { display: grid; gap: 10%; align-items: center; grid-template-columns: 1.2fr .8fr; }
+  .bb-notifications-page-heading { margin: 25px 0 23px; font-size: clamp(56px, 6.5vw, 87px); font-weight: 500; line-height: 1.02; letter-spacing: -.055em; font-family: var(--app-font-serif); }
+  .bb-notifications-page-heading-accent { color: var(--bb-highlight); }
+  .bb-notifications-page-introduction { margin: 0; max-width: 430px; font-size: 14px; line-height: 1.85; color: hsl(var(--muted-foreground)); }
+  .bb-notifications-page-emblem { position: relative; display: grid; min-height: 300px; gap: 20px; padding: 55px 35px 42px; justify-items: center; align-content: center; border-radius: 170px 170px 5px 5px; color: var(--bb-highlight); background: var(--bb-surface); border: 1px solid hsl(var(--secondary) / .35); transition: background-color .38s ease, color .38s ease, border-color .3s ease; }
+  .bb-notifications-page-emblem::before { position: absolute; inset: 11px; content: ''; pointer-events: none; border-radius: inherit; border: 1px solid hsl(var(--secondary) / .22); }
+  .bb-notifications-page-emblem-label { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; font-family: var(--app-font-mono); }
+  .bb-notifications-page-emblem-signature { font-size: 39px; line-height: 1.1; font-family: var(--app-font-signature); }
+  .bb-notifications-page-updates { padding: 10px 0 110px; }
+  .bb-notifications-page-updates-container { max-width: 1000px; }
+  .bb-notifications-page-toolbar { display: flex; gap: 24px; padding: 0 0 26px; align-items: center; justify-content: space-between; border-bottom: 1px solid hsl(var(--border)); }
+  .bb-notifications-page-list-heading { margin: 0 0 10px; font-size: clamp(31px, 3.5vw, 41px); font-weight: 500; line-height: 1.2; letter-spacing: -.04em; font-family: var(--app-font-serif); }
+  .bb-notifications-page-count { margin: 0; font-size: 10px; letter-spacing: .06em; color: hsl(var(--muted-foreground)); font-family: var(--app-font-mono); }
+  .bb-notifications-page-action { flex: none; min-height: 43px; font-size: 9px; }
+  .bb-notifications-page-action:is(:hover, :focus-visible, :active) { color: var(--bb-brand-cream); }
+  .bb-notifications-page-list { margin-top: 10px; }
+  .bb-notification-card { gap: 23px; padding: 30px 20px; border-radius: 4px; grid-template-columns: 48px minmax(0, 1fr) 15px; }
+  .bb-notification-icon { width: 48px; height: 48px; }
+  .bb-notification-title { margin-bottom: 12px; font-size: clamp(23px, 2.8vw, 29px); }
+  .bb-notification-body { max-width: 740px; font-size: 13px; line-height: 1.9; }
+  .bb-notifications-page-loading-label { display: block; padding: 24px 0 0; font-size: 12px; color: hsl(var(--muted-foreground)); }
+  .bb-notifications-page-skeleton { display: grid; gap: 17px; padding: 34px 20px; border-bottom: 1px solid hsl(var(--border)); }
+  .bb-notifications-page-skeleton > span { height: 13px; border-radius: 3px; background: hsl(var(--muted) / .65); }
+  .bb-notifications-page-skeleton-title { width: min(45%, 280px); }
+  .bb-notifications-page-skeleton-body { width: 82%; }
+  .bb-notifications-page-empty { padding: 70px 24px; text-align: center; color: hsl(var(--muted-foreground)); }
+  .bb-notifications-page-empty > svg { margin: 0 auto 18px; color: var(--bb-highlight); }
+  .bb-notifications-page-empty-heading { margin: 0 0 12px; font-size: 29px; font-weight: 500; font-family: var(--app-font-serif); color: hsl(var(--foreground)); }
+  .bb-notifications-page-empty-copy { margin: 0; font-size: 13px; }
+  .bb-notifications-page-feedback { margin: 24px 0 0; padding: 17px 20px; border-radius: 4px; font-size: 12px; line-height: 1.7; background: var(--bb-surface); border: 1px solid hsl(var(--secondary) / .3); color: hsl(var(--muted-foreground)); }
+  .bb-notifications-page-feedback.is-error { display: flex; gap: 18px; align-items: center; justify-content: space-between; color: hsl(var(--destructive)); border-color: hsl(var(--destructive) / .35); }
+  .bb-notifications-page-feedback-copy { margin: 0; }
+
+  @media (max-width: 850px) {
+    .bb-notifications-page-hero { padding: 135px 0 58px; }
+    .bb-notifications-page-hero-grid { gap: 6%; grid-template-columns: 1.15fr .85fr; }
+    .bb-notifications-page-emblem { min-height: 270px; padding: 44px 20px 35px; }
+    .bb-notifications-page-emblem-signature { font-size: 31px; }
+    .bb-notifications-page-updates { padding-bottom: 80px; }
+  }
+
+  @media (max-width: 600px) {
+    .bb-notifications-page-hero { padding-top: 125px; }
+    .bb-notifications-page-hero-grid { gap: 30px; grid-template-columns: 1fr; }
+    .bb-notifications-page-heading { font-size: clamp(54px, 12vw, 72px); }
+    .bb-notifications-page-emblem { display: none; }
+    .bb-notifications-page-toolbar { gap: 18px; align-items: start; flex-direction: column; }
+    .bb-notification-card { gap: 14px; padding: 27px 8px; grid-template-columns: 36px minmax(0, 1fr) 15px; }
+    .bb-notification-icon { width: 36px; height: 36px; }
+    .bb-notifications-page-feedback.is-error { align-items: start; flex-direction: column; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bb-notifications-page-action, .bb-notifications-page-emblem { transition: none; }
+  }
+}
