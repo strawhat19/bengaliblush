@@ -1,15 +1,36 @@
 .bb-nav { gap: clamp(15px, 2.4vw, 30px); }
-.bb-nav .bb-nav-link { position: relative; display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 0; background: transparent; color: rgba(255, 242, 226, .8); font-size: 12px; font-weight: 600; }
+.bb-nav .bb-nav-link { position: relative; display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 0; background: transparent; color: rgba(255, 242, 226, .96); font-size: 13px; font-weight: 600; }
 .bb-nav .bb-nav-link::after { position: absolute; right: 0; bottom: -7px; left: 0; height: 1px; background: hsl(var(--secondary)); content: ''; transform: scaleX(0); transform-origin: right; transition: transform .3s ease; }
 .bb-nav .bb-nav-link:hover::after, .bb-nav .bb-nav-link:focus-visible::after, .bb-nav .bb-nav-link[aria-current='page']::after { transform: scaleX(1); transform-origin: left; }
 .bb-mobile-nav-link[aria-current='page'] { border-color: hsl(var(--secondary) / .5); background: hsl(var(--card) / .1); }
+.bb-header .bb-ghost-button { font-size: 11px; font-weight: 600; }
+.bb-menu-icon { width: 16px; }
+.bb-menu-icon > span { height: 1.5px; }
+.bb-nav-link > svg, .bb-mobile-nav-copy > span > svg { flex: none; }
 
 @media (min-width: 801px) and (max-width: 1000px) {
   .bb-nav { gap: 14px; }
+  .bb-nav .bb-nav-link { font-size: 12px; }
   .bb-header .bb-logo-text { font-size: 18px; }
   .bb-header .bb-ghost-button { padding-inline: 12px; }
 }
 
+@media (max-width: 800px) {
+  .bb-mobile-panel { transition: visibility 0s linear .68s, opacity 0s linear .68s, transform .68s cubic-bezier(.76, 0, .24, 1); }
+  .bb-mobile-panel.is-open { transition: visibility 0s linear, opacity .22s ease, transform .68s cubic-bezier(.76, 0, .24, 1); }
+  .bb-mobile-nav-index { font-size: 9px; font-weight: 500; }
+  .bb-mobile-nav-copy > span { font-size: 20px; font-weight: 600; line-height: 1.15; }
+  .bb-mobile-nav-copy small { color: hsl(var(--card) / .8); font-size: 10px; font-weight: 500; }
+  .bb-mobile-menu-book small { font-size: 9px; font-weight: 500; }
+  .bb-mobile-menu-book strong { font-size: 19px; font-weight: 500; }
+}
+
+@media (max-width: 480px) {
+  .bb-mobile-nav-copy > span { font-size: 18px; }
+  .bb-mobile-nav-copy small { font-size: 10px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .bb-mobile-panel { transition-delay: 0s !important; }
   .bb-nav .bb-nav-link::after { transition: none; }
 }

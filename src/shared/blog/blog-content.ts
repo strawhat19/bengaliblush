@@ -32,9 +32,9 @@ export const blogArticles: readonly BlogArticle[] = [
   {
     category: `bridal`,
     publishedAt: `2026-10-07`,
-    image: `/blog/bridal-beauty-cover-v2.jpg`,
+    image: `/blog/bridal-beauty-cover-v3.jpg`,
     slug: `south-asian-bridal-makeup-guide`,
-    imageAlt: `South Asian bridal portrait with soft rose makeup, gold jewelry, and a burgundy dupatta`,
+    imageAlt: `Burgundy embroidered dupatta, gold jewelry, bridal makeup brushes, and berry lipstick on a cream vanity`,
     title: `South Asian Bridal Makeup: A Practical Wedding-Day Planning Guide`,
     description: `Plan South Asian bridal makeup with a useful trial checklist, outfit details, realistic timing and a personal wedding-day touch-up kit.`,
     excerpt: `A beautiful bridal look begins with clear choices and a comfortable plan. Prepare for your trial, coordinate your outfit and make room for the wedding morning.`,
@@ -68,7 +68,7 @@ export const blogArticles: readonly BlogArticle[] = [
         id: `bridal-outfit-details`,
         title: `Bring the outfit and accessory details`,
         image: {
-          src: `/blog/bridal-beauty-details.jpg`,
+          src: `/blog/bridal-beauty-details-v2.jpg`,
           alt: `Gold earrings and bangles beside a burgundy dupatta, makeup brush and lipstick`,
           caption: `Share outfit and accessory details when planning the colors and shape of your bridal look.`,
         },
@@ -119,9 +119,9 @@ export const blogArticles: readonly BlogArticle[] = [
   {
     category: `makeup`,
     publishedAt: `2026-10-07`,
-    image: `/blog/everyday-makeup-cover-v2.jpg`,
+    image: `/blog/everyday-makeup-cover-v3.jpg`,
     slug: `everyday-makeup-for-brown-skin`,
-    imageAlt: `Woman with warm brown skin wearing subtle everyday makeup and a muted rose lip`,
+    imageAlt: `Foundation bottles in medium and deep brown shades beside warm eyeshadows, rose lipstick, blush, and brushes`,
     title: `Everyday Makeup for Brown Skin: Building a Balanced Look`,
     description: `Build an everyday makeup look for brown skin with thoughtful shade matching, light layers, balanced color and a routine that suits your preferences.`,
     excerpt: `Find a makeup routine that feels like you. Start with the finish you enjoy, compare shades thoughtfully and build color a little at a time.`,
@@ -163,8 +163,8 @@ export const blogArticles: readonly BlogArticle[] = [
         id: `makeup-color-balance`,
         title: `Add color and choose a focal point`,
         image: {
-          src: `/blog/everyday-makeup-brown-skin.jpg`,
-          alt: `Adult South Asian woman with medium-deep brown skin applying makeup with a brush at her cheek`,
+          src: `/blog/everyday-makeup-brown-skin-v2.jpg`,
+          alt: `Terracotta and rose blush, bronze eyeshadows, berry lipstick, and a makeup brush on a cream tabletop`,
           caption: `Start with a small amount of color, then build toward a finish you enjoy.`,
         },
         paragraphs: [
@@ -301,9 +301,9 @@ export const blogArticles: readonly BlogArticle[] = [
   {
     category: `hair-care`,
     publishedAt: `2026-10-07`,
-    image: `/blog/hair-care-cover-v2.jpg`,
+    image: `/blog/hair-care-cover-v3.jpg`,
     slug: `hair-care-before-heat-styling`,
-    imageAlt: `Woman with long dark hair in soft waves wearing a cream blouse`,
+    imageAlt: `Wide-tooth comb, round brush, sectioning clips, heat-protection bottle, and unplugged curling wand on a cream vanity`,
     title: `Hair Care Before Heat Styling: Preparing for Weddings and Events`,
     description: `Prepare hair for event styling with a familiar wash routine, gentle detangling, thoughtful heat use and practical notes for your chosen stylist.`,
     excerpt: `Good event preparation starts before the curling iron comes out. Work with your hair's texture, discuss the style and give accessories and comfort a place in the plan.`,
@@ -345,7 +345,7 @@ export const blogArticles: readonly BlogArticle[] = [
         id: `hair-heat-preparation`,
         title: `Keep heat use thoughtful`,
         image: {
-          src: `/blog/gentle-hair-care.jpg`,
+          src: `/blog/gentle-hair-care-v2.jpg`,
           alt: `Comb, hair clips and a heat-protection bottle beside an unplugged curling wand`,
           caption: `Prepare your tools and follow heat-protection product directions before styling.`,
         },

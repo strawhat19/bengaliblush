@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowUpRight, WandSparkles } from 'lucide-react';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { services } from '@/shared/services/service-content';
-import ServiceCard from '@/app/components/services/service-card/service-card';
+import ServiceRow from '@/app/components/services/service-row/service-row';
 
 const LandingServices = () => (
   <section
@@ -11,7 +11,7 @@ const LandingServices = () => (
     className={`bb-section bb-services bb-landing-services`}
   >
     <div id={`bb-landing-services-container`} className={`bb-container`}>
-      <div id={`bb-landing-services-title-row`} className={`bb-section-heading bb-landing-services-title-row`}>
+      <div data-reveal id={`bb-landing-services-title-row`} className={`bb-section-heading bb-landing-services-title-row`}>
         <div id={`bb-landing-services-heading-copy`} className={`bb-landing-services-heading-copy`}>
           <div id={`bb-landing-services-marker`} className={`bb-section-marker`}>
             <span id={`bb-landing-services-marker-icon`} className={`bb-section-marker-icon`}>
@@ -21,7 +21,7 @@ const LandingServices = () => (
             <span id={`bb-landing-services-marker-line`} className={`bb-section-marker-line`} aria-hidden={`true`} />
             <span id={`bb-landing-services-marker-index`} className={`bb-section-marker-index`} aria-hidden={`true`}>03</span>
           </div>
-          <span id={`bb-landing-services-eyebrow`} className={`bb-eyebrow`}>Choose Your Look</span>
+          <span id={`bb-landing-services-eyebrow`} className={`bb-eyebrow`}>Choose Services</span>
           <h2 id={`bb-landing-services-heading`} className={`bb-landing-services-heading`}>Services Menu</h2>
         </div>
         <div id={`bb-landing-services-heading-actions`} className={`bb-landing-services-heading-actions`}>
@@ -35,9 +35,9 @@ const LandingServices = () => (
           </Link>
         </div>
       </div>
-      <div id={`bb-landing-services-grid`} className={`bb-landing-services-grid`}>
+      <div data-reveal id={`bb-landing-services-list`} className={`bb-service-list`}>
         {services.map((service) => (
-          <ServiceCard key={service.id} service={service} idPrefix={`bb-landing-service`} />
+          <ServiceRow key={service.id} service={service} />
         ))}
       </div>
     </div>

@@ -5,7 +5,7 @@ import type { ServiceDetails } from './service-types';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { siteConfig, siteUrl } from '@/shared/config/site';
 
-const servicesDescription = `Explore lash sets, lash fills, lash lift and tint, hair styling, and party makeup at Bengali Blush in Atlanta. Find your next look and plan your visit.`;
+const servicesDescription = `Explore lash sets, lash fills, lash lift and tint, hair styling, party makeup, and bridal makeup at Bengali Blush in Atlanta. Find your next look and plan your visit.`;
 const absoluteUrl = (href: string) => new URL(href, siteUrl).toString();
 
 export const getServicesMetadata = (service?: ServiceDetails): Metadata => {
@@ -36,6 +36,7 @@ export const getServicesMetadata = (service?: ServiceDetails): Metadata => {
 };
 
 export const getServicesSchema = (service?: ServiceDetails) => {
+  const price = service?.price.replace(/[^0-9.]/g, ``);
   const href = service ? getServiceHref(service.slug) : siteRoutes.services.href;
   const breadcrumbs = [
     { name: `Home`, href: siteRoutes.home.href },
@@ -54,9 +55,8 @@ export const getServicesSchema = (service?: ServiceDetails) => {
     offers: {
       '@type': `Offer`,
       url: absoluteUrl(href),
-      priceCurrency: `USD`,
-      price: service.price.replace(/[^0-9.]/g, ``),
-      description: `Listed price; prices are negotiable.`,
+      ...(price ? { price, priceCurrency: `USD` } : {}),
+      description: price ? `Listed price; prices are negotiable.` : `Pricing confirmed with the studio before booking.`,
     },
   } : {
     '@type': `CollectionPage`,

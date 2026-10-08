@@ -1,4 +1,5 @@
 @use './contact-form/contact-form';
+@use './contact-inquiry/contact-inquiry';
 
 .bb-contact-intro { padding-top: 170px; }
 .bb-contact-intro-layout, .bb-contact-location-layout { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 10%; }

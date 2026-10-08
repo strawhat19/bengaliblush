@@ -1,5 +1,5 @@
 import { siteContact } from '@/shared/config/site';
-import ContactForm from './contact-form/contact-form';
+import ContactInquiry from './contact-inquiry/contact-inquiry';
 import { Mail, Phone, MapPin, Instagram, ArrowUpRight, MessageCircle } from 'lucide-react';
 
 const contactDetails = [
@@ -56,16 +56,7 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-      <section id={`bb-contact-message-section`} className={`bb-section bb-booking bb-contact-message-section`} aria-labelledby={`bb-contact-message-title`}>
-        <div id={`bb-contact-form-layout`} className={`bb-container bb-booking-layout`}>
-          <div id={`bb-contact-form-copy`} className={`bb-booking-copy`} data-reveal>
-            <span id={`bb-contact-form-eyebrow`} className={`bb-eyebrow`}>Straight from you to us</span>
-            <h2 id={`bb-contact-message-title`} className={`bb-contact-message-title`}>Leave a<br /><em>little note.</em></h2>
-            <p id={`bb-contact-form-description`} className={`bb-contact-form-description`}>Tell us what you’re dreaming up. Share your email or phone number and a message, and we’ll take it from there.</p>
-          </div>
-          <div id={`bb-contact-form-wrap`} className={`bb-contact-form-wrap`} data-reveal><ContactForm /></div>
-        </div>
-      </section>
+      <ContactInquiry />
       <section id={`bb-contact-location`} className={`bb-section bb-contact-location`} aria-labelledby={`bb-contact-location-title`}>
         <div id={`bb-contact-location-layout`} className={`bb-container bb-contact-location-layout`}>
           <div id={`bb-contact-location-copy`} className={`bb-contact-location-copy`} data-reveal>

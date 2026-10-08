@@ -322,6 +322,8 @@ a { color: inherit; text-decoration: none; }
 .bb-field-full { grid-column: 1 / -1; }
 .bb-field label { color: hsl(340 24% 27%); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 .bb-field input, .bb-field select, .bb-field textarea { width: 100%; border: 0; border-bottom: 1px solid hsl(340 24% 27% / .45); border-radius: 0; outline: 0; padding: 12px 0; background: transparent; color: hsl(var(--foreground)); }
+.bb-booking .bb-field input::placeholder,
+.bb-booking .bb-field textarea::placeholder { color: hsl(340 24% 27% / .65); opacity: 1; }
 .bb-field input:focus, .bb-field select:focus, .bb-field textarea:focus { border-color: hsl(var(--primary)); box-shadow: 0 1px 0 hsl(var(--primary)); }
 .bb-field textarea { min-height: 60px; resize: vertical; }
 .bb-submit { grid-column: 1 / -1; justify-self: start; margin-top: 14px; background: hsl(var(--primary)); color: hsl(var(--card)); }

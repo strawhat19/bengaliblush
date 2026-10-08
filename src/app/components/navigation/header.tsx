@@ -134,7 +134,7 @@ export default function Header({
               aria-current={pathname === href || (!section && pathname.startsWith(`${href}/`)) ? `page` : undefined}
               onClick={(event) => navigateToSection(event, section)}
             >
-              <Icon size={13} strokeWidth={1.6} aria-hidden="true" />{label}
+              <Icon size={14} strokeWidth={1.9} aria-hidden={`true`} />{label}
             </Link>
           ))}
         </nav>
@@ -147,7 +147,7 @@ export default function Header({
               aria-label={`Open shopping cart`}
               data-testid={`button-open-bag`}
             >
-              <ShoppingCart size={19} strokeWidth={1.5} />
+              <ShoppingCart size={19} strokeWidth={1.9} />
             </button>
             {bagCount > 0 && (
               <span id={`bb-bag-count`} className={`bb-bag-count`} data-testid={`text-bag-count`}>
@@ -162,7 +162,7 @@ export default function Header({
             className={`bb-ghost-button`}
             data-testid={`button-header-sign-in`}
           >
-            <LogIn size={14} strokeWidth={1.6} aria-hidden={`true`} />Sign In
+            <LogIn size={14} strokeWidth={1.9} aria-hidden={`true`} />Sign In
           </Link>
           <button
             className="bb-menu-button"
@@ -196,14 +196,14 @@ export default function Header({
                 data-testid={`mobile-link-${locator}`}
               >
                 <span className="bb-mobile-nav-index">{String(index + 1).padStart(2, `0`)}</span>
-                <span className="bb-mobile-nav-copy"><span><Icon size={16} strokeWidth={1.5} aria-hidden="true" />{label}</span><small>{description}</small></span>
-                <ArrowUpRight size={15} strokeWidth={1.5} aria-hidden="true" />
+                <span className="bb-mobile-nav-copy"><span><Icon size={17} strokeWidth={1.9} aria-hidden={`true`} />{label}</span><small>{description}</small></span>
+                <ArrowUpRight size={15} strokeWidth={1.9} aria-hidden={`true`} />
               </Link>
             ))}
           </div>
           <button className="bb-mobile-menu-book" onClick={() => { closeMobile(); onBook(); }} data-testid="button-mobile-book">
             <span><small>Reserve your chair</small><strong>Book your appointment</strong></span>
-            <span className="bb-mobile-menu-book-icon" aria-hidden="true"><CalendarDays size={17} strokeWidth={1.5} /></span>
+            <span className="bb-mobile-menu-book-icon" aria-hidden="true"><CalendarDays size={17} strokeWidth={1.9} /></span>
           </button>
         </div>
       </nav>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
 import { landingRevealReadyEvent } from '@/app/components/effects/motion-events';
 
 const loaderStatuses = [
@@ -120,6 +121,13 @@ export default function BlushLoader() {
         Beauty Studio
       </span>
       <div className="bb-loader-core">
+        <div
+          aria-hidden={`true`}
+          id={`bb-loader-promo`}
+          className={`bb-loader-promo`}
+        >
+          <HeroPromoWheel alternateSpin />
+        </div>
         <div className="bb-loader-brand" aria-hidden="true">
           <span className="bb-loader-mark" />
           <span className="bb-loader-name">

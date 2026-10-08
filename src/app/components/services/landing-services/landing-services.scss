@@ -1,19 +1,10 @@
 .bb-landing-services {
-  .bb-landing-services-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 25px; }
   .bb-landing-services-heading-actions { display: flex; flex: none; flex-direction: column; align-items: end; gap: 17px; }
   .bb-landing-services-view-all:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
-
-  @media (max-width: 1000px) {
-    .bb-landing-services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
 
   @media (max-width: 700px) {
     .bb-landing-services-title-row { align-items: start; flex-direction: column; gap: 24px; }
     .bb-landing-services-heading-actions { align-items: start; }
-  }
-
-  @media (max-width: 600px) {
-    .bb-landing-services-grid { grid-template-columns: 1fr; gap: 23px; }
   }
 
   @media (prefers-reduced-motion: reduce) {

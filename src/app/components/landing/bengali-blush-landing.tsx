@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { siteContact } from '@/shared/config/site';
 import { siteRoutes } from '@/shared/navigation/routes';
-import { services } from '@/shared/services/service-content';
 import ScrollToTop from '@/app/components/effects/scroll-to-top';
 import { BookingContext } from '@/shared/services/booking-context';
 import LandingMotion from '@/app/components/effects/landing-motion';
@@ -12,10 +11,11 @@ import Header, { BrandMark } from '@/app/components/navigation/header';
 import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
+import BookingForm from '@/app/components/booking/booking-form/booking-form';
 import LandingServices from '@/app/components/services/landing-services/landing-services';
 import type { Product, ProductCategory, Service } from '@/shared/types/storefront';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
-import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type FormEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { getStoredCartServerSnapshot, getStoredCartSnapshot, storeBookingRequest, subscribeStoredCart, writeStoredCart } from '@/shared/storage/storefront-storage';
 import {
   ArrowUpRight,
@@ -691,45 +691,6 @@ function Reviews() {
         </div>
       </div>
     </section>
-  );
-}
-
-function BookingForm({
-  selectedService,
-  onSuccess,
-  compact = false,
-}: {
-  selectedService?: Service;
-  onSuccess: (name: string, service: string) => void;
-  compact?: boolean;
-}) {
-  const [name, setName] = useState('');
-  const [service, setService] = useState(selectedService?.id ?? '');
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [email, setEmail] = useState('');
-  const [notes, setNotes] = useState('');
-  const dateInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (dateInputRef.current) dateInputRef.current.min = new Date().toISOString().split(`T`)?.[0] ?? ``;
-  }, []);
-
-  const submit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const chosen = services.find((item) => item.id === service)?.name ?? 'your beauty appointment';
-    onSuccess(name || 'there', chosen);
-  };
-  return (
-    <form className="bb-booking-form" onSubmit={submit} data-testid={compact ? 'form-modal-booking' : 'form-booking'}>
-      <div className="bb-field"><label htmlFor={`${compact ? 'modal-' : ''}name`}>Your name</label><input id={`${compact ? 'modal-' : ''}name`} value={name} onChange={(e) => setName(e.target.value)} placeholder="First and last" required data-testid="input-booking-name" /></div>
-      <div className="bb-field"><label htmlFor={`${compact ? 'modal-' : ''}service`}>I’m here for</label><select id={`${compact ? 'modal-' : ''}service`} value={service} onChange={(e) => setService(e.target.value)} required data-testid="select-booking-service"><option value="" disabled>Choose a service</option>{services.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select></div>
-      <div className="bb-field"><label htmlFor={`${compact ? 'modal-' : ''}date`}>Preferred date</label><input id={`${compact ? 'modal-' : ''}date`} ref={dateInputRef} type="date" value={date} onChange={(e) => setDate(e.target.value)} required data-testid="input-booking-date" /></div>
-      <div className="bb-field"><label htmlFor={`${compact ? 'modal-' : ''}time`}>Preferred time</label><select id={`${compact ? 'modal-' : ''}time`} value={time} onChange={(e) => setTime(e.target.value)} required data-testid="select-booking-time"><option value="" disabled>Pick a window</option><option>10:00 AM</option><option>12:30 PM</option><option>3:00 PM</option><option>5:30 PM</option></select></div>
-      <div className="bb-field bb-field-full"><label htmlFor={`${compact ? 'modal-' : ''}email`}>Email address</label><input id={`${compact ? 'modal-' : ''}email`} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required data-testid="input-booking-email" /></div>
-      <div className="bb-field bb-field-full"><label htmlFor={`${compact ? 'modal-' : ''}notes`}>Anything I should know? <span style={{ opacity: .55 }}>(optional)</span></label><textarea id={`${compact ? 'modal-' : ''}notes`} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Tell me about the occasion..." data-testid="input-booking-notes" /></div>
-      <button type="submit" className="bb-button bb-submit" data-testid="button-submit-booking">Request this appointment <ArrowUpRight size={16} /></button>
-    </form>
   );
 }
 

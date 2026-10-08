@@ -1,0 +1,24 @@
+.bb-contact-inquiry-tabs { display: inline-flex; max-width: 100%; gap: 4px; margin-bottom: 28px; border: 1px solid hsl(var(--primary) / .3); border-radius: 999px; padding: 4px; background: hsl(var(--card) / .16); }
+.bb-contact-inquiry-tab { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; padding: 0 18px; background: transparent; color: hsl(var(--foreground)); font-size: 12px; font-weight: 600; transition: background-color .2s ease, color .2s ease; }
+.bb-contact-inquiry-tab > svg { flex: none; }
+.bb-contact-inquiry-tab:hover { background: hsl(var(--card) / .35); }
+.bb-contact-inquiry-tab[aria-selected='true'] { background: hsl(var(--primary)); color: hsl(var(--card)); }
+.bb-contact-inquiry-tab:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.bb-contact-inquiry-panel[hidden] { display: none; }
+.bb-contact-inquiry-panel:not([hidden]) { animation: bb-contact-form-enter .24s ease; }
+.bb-contact-appointment-delivery-note { max-width: 360px; margin: 15px 0 20px; color: hsl(340 24% 27%); font-size: 11px; line-height: 1.6; }
+
+@keyframes bb-contact-form-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .bb-contact-inquiry-tabs { display: flex; }
+  .bb-contact-inquiry-tab { flex: 1; padding-inline: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-contact-inquiry-tab { transition: none; }
+  .bb-contact-inquiry-panel:not([hidden]) { animation: none; }
+}
