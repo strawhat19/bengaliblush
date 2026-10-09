@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { getPageName } from '@/shared/navigation/page-name';
 import { loaderOnPageTransitions } from '@/shared/config/storefront';
 import { landingRevealReadyEvent } from '@/app/components/effects/motion-events';
-import { pageTransitionStartEvent, type PageTransitionRequest } from '@/shared/navigation/page-transition';
+import { pageTransitionStartEvent, sessionTransitionStartEvent, type SessionTransition, type PageTransitionRequest, type SessionTransitionRequest } from '@/shared/navigation/page-transition';
 
 const loaderStatuses = [
   { at: 0, label: `Preparing Your Glow` },
@@ -47,6 +47,7 @@ export const useBlushLoader = () => {
     let lastStatus: string = loaderStatuses[0].label;
     let pageContentReady = true;
     let waitingForRoute = false;
+    let waitingForSession = false;
     let transitionLoad = false;
     let heroRevealPaused = false;
     let entrancePainted = false;
@@ -60,6 +61,9 @@ export const useBlushLoader = () => {
     let hideTimer = 0;
     let fallbackTimer = 0;
     let frame = 0;
+    let effectActive = true;
+    let sessionController: SessionTransition | null = null;
+    let invalidateSession: ((detached: boolean) => void) | null = null;
     const backgroundElements = new Map<HTMLElement, boolean>();
 
     document.documentElement.classList.add(`bb-motion-ready`);
@@ -113,6 +117,7 @@ export const useBlushLoader = () => {
     };
 
     const hide = () => {
+      if (waitingForSession) return;
       loading = false;
       pendingNavigation = null;
       overlay.hidden = true;
@@ -126,7 +131,7 @@ export const useBlushLoader = () => {
     };
 
     const finish = (now: number) => {
-      if (exitStartedAt !== null) return;
+      if (waitingForSession || exitStartedAt !== null) return;
       paint(100);
       exitStartedAt = now;
       overlay.classList.add(`is-complete`);
@@ -138,18 +143,30 @@ export const useBlushLoader = () => {
 
     const startRouteFallback = () => {
       window.clearTimeout(fallbackTimer);
-      fallbackTimer = window.setTimeout(() => {
+      if (waitingForSession) return;
+      const timer = window.setTimeout(() => {
+        if (!effectActive || !loading || waitingForSession || fallbackTimer !== timer) return;
         setPageName(committedPathname);
         finish(performance.now());
       }, 15_000);
+      fallbackTimer = timer;
     };
 
     const navigateWhenCovered = () => {
-      if (!coverReady || !pendingNavigation) return;
+      if (waitingForSession || !coverReady || !pendingNavigation) return;
       const navigate = pendingNavigation;
       pendingNavigation = null;
       startRouteFallback();
-      navigate();
+      try {
+        navigate();
+      } catch {
+        pendingHistory = null;
+        waitingForRoute = false;
+        completionStartedAt = null;
+        destinationPathname = committedPathname;
+        updatePageContent();
+        setPageName(committedPathname);
+      }
     };
 
     const tick = (now: number) => {
@@ -164,7 +181,7 @@ export const useBlushLoader = () => {
       } else {
         const elapsed = now - startedAt;
         const minimumDuration = reducedMotion ? 120 : transitionLoad ? entranceDuration : 640;
-        if (transitionLoad) {
+        if (transitionLoad && !coverReady) {
           if (!reducedMotion) paintLiquidEdge(Math.min(1, elapsed / entranceDuration));
           if (elapsed >= entranceDuration) {
             if (!reducedMotion && !heroRevealPaused) {
@@ -179,7 +196,7 @@ export const useBlushLoader = () => {
             entrancePainted = true;
           }
         }
-        const canComplete = (transitionLoad ? !pendingNavigation && !waitingForRoute && pageContentReady : resourcesReady) && elapsed >= minimumDuration;
+        const canComplete = !waitingForSession && (transitionLoad ? !pendingNavigation && !waitingForRoute && pageContentReady : resourcesReady) && elapsed >= minimumDuration;
         if (canComplete && completionStartedAt === null) completionStartedAt = now;
         if (completionStartedAt !== null) {
           const completion = Math.min(1, (now - completionStartedAt) / completionDuration);
@@ -246,6 +263,58 @@ export const useBlushLoader = () => {
       pendingHistory = null;
       begin(request.pathname, true, routeReady, request.navigate);
     };
+    const handleSessionStart = (event: Event) => {
+      const request = (event as CustomEvent<SessionTransitionRequest>).detail;
+      if (!request?.pathname || request.controller) return;
+      event.preventDefault();
+      invalidateSession?.(false);
+      let active = true;
+      let detached = false;
+      const controller: SessionTransition = {
+        cancel: () => {
+          if (!active) return;
+          active = false;
+          if (detached || !effectActive || sessionController !== controller) return;
+          sessionController = null;
+          invalidateSession = null;
+          waitingForSession = false;
+          pendingNavigation = null;
+          if (pendingHistory) {
+            const path = window.location.pathname;
+            begin(path, true, path === committedPathname, replayPendingHistory);
+          } else begin(committedPathname, true, true);
+          updatePageContent();
+        },
+        complete: (navigate) => {
+          if (!active) return;
+          active = false;
+          if (detached) {
+            try { navigate(); } catch { return; }
+            return;
+          }
+          if (!effectActive || sessionController !== controller) return;
+          sessionController = null;
+          invalidateSession = null;
+          waitingForSession = false;
+          pendingHistory = null;
+          begin(request.pathname, true, request.pathname === committedPathname, navigate);
+        },
+      };
+      invalidateSession = (allowCompletion) => {
+        detached = allowCompletion;
+        if (!allowCompletion) active = false;
+      };
+      request.controller = controller;
+      sessionController = controller;
+      waitingForSession = true;
+      pendingHistory = null;
+      begin(request.pathname, true, request.pathname === committedPathname);
+      coverReady = true;
+      entrancePainted = true;
+      heroRevealPaused = true;
+      paintLiquidEdge(1);
+      document.body.classList.remove(`bb-page-ready`);
+    };
     const replayPendingHistory = () => {
       const destination = pendingHistory;
       pendingHistory = null;
@@ -290,10 +359,17 @@ export const useBlushLoader = () => {
     if (loaderOnPageTransitions) {
       window.addEventListener(`popstate`, handlePopState, true);
       window.addEventListener(pageTransitionStartEvent, handleTransitionStart);
+      window.addEventListener(sessionTransitionStartEvent, handleSessionStart);
     }
     begin(committedPathname, false);
 
     return () => {
+      const heldSession = waitingForSession;
+      effectActive = false;
+      invalidateSession?.(true);
+      invalidateSession = null;
+      sessionController = null;
+      waitingForSession = false;
       routeCommittedRef.current = null;
       contentObserver.disconnect();
       releaseBackground();
@@ -302,11 +378,14 @@ export const useBlushLoader = () => {
       window.clearTimeout(fallbackTimer);
       const navigate = pendingNavigation;
       pendingNavigation = null;
-      if (pendingHistory) replayPendingHistory();
-      else navigate?.();
+      try {
+        if (pendingHistory) replayPendingHistory();
+        else if (!heldSession) navigate?.();
+      } catch { pendingHistory = null; }
       window.removeEventListener(`load`, handleLoad);
       window.removeEventListener(`popstate`, handlePopState, true);
       window.removeEventListener(pageTransitionStartEvent, handleTransitionStart);
+      window.removeEventListener(sessionTransitionStartEvent, handleSessionStart);
       document.body.classList.remove(`bb-page-loading`);
       if (heroRevealPaused) document.body.classList.add(`bb-page-ready`);
     };

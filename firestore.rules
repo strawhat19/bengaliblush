@@ -1,0 +1,184 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function hasStatus(data, status) {
+      return data.keys().hasAny(['account_status']) ? data.account_status == status : status == 'active';
+    }
+    function ownProfile(id) {
+      return signedIn() && exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid))
+        && get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id == id;
+    }
+    function activeAccount() {
+      return signedIn() && exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid))
+        && !get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.keys().hasAny(['account_status'])
+        && exists(/databases/$(database)/documents/users/$(get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id))
+        && get(/databases/$(database)/documents/users/$(get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id)).data.firebase_uid == request.auth.uid
+        && hasStatus(get(/databases/$(database)/documents/users/$(get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id)).data, 'active');
+    }
+    function activeAccountAfter() {
+      let mapping = getAfter(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data;
+      let account = getAfter(/databases/$(database)/documents/users/$(mapping.user_id)).data;
+      return !mapping.keys().hasAny(['account_status']) && account.firebase_uid == request.auth.uid && hasStatus(account, 'active');
+    }
+    function isOwner() {
+      return activeAccount()
+        && get(/databases/$(database)/documents/users/$(get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id)).data.role == 'owner';
+    }
+    function recentlyAuthenticated() {
+      return signedIn() && request.auth.token.auth_time is int
+        && request.time.toMillis() - request.auth.token.auth_time * 1000 <= 600000;
+    }
+    function deletingAccount() {
+      return signedIn() && exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid))
+        && get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.account_status == 'deleting';
+    }
+    function validText(value, minimum, maximum) {
+      return value is string && value.size() >= minimum && value.size() <= maximum;
+    }
+    function exactKeys(data, keys) {
+      return data.keys().hasAll(keys) && data.keys().hasOnly(keys);
+    }
+    function validIdentity(data, id, type) {
+      return data.id == id && data.number is int && data.number > 0
+        && id.matches(type + '_' + string(data.number) + '_[A-Za-z0-9]+_[A-Za-z0-9_]+_[a-f0-9-]+');
+    }
+    function matchingCounter(collectionName, id, number) {
+      let counter = getAfter(/databases/$(database)/documents/counters/$(collectionName)).data;
+      return counter.record_id == id && counter.number == number;
+    }
+    function validUser(data, id) {
+      return data.keys().hasAll(['id', 'name', 'email', 'number', 'role', 'photo_url', 'created_at', 'updated_at', 'firebase_uid', 'provider', 'profile_visibility'])
+        && data.keys().hasOnly(['id', 'name', 'email', 'number', 'role', 'photo_url', 'created_at', 'updated_at', 'firebase_uid', 'provider', 'profile_visibility', 'theme_mode', 'account_status'])
+        && validIdentity(data, id, 'User')
+        && validText(data.name, 1, 120) && validText(data.email, 3, 254)
+        && validText(data.photo_url, 0, 2048) && validText(data.firebase_uid, 1, 128)
+        && data.role in ['subscriber', 'owner'] && data.provider in ['google', 'password'] && data.profile_visibility == 'private'
+        && (!data.keys().hasAny(['theme_mode']) || data.theme_mode in ['light', 'dark'])
+        && (!data.keys().hasAny(['account_status']) || data.account_status in ['active', 'deactivated', 'deleting'])
+        && data.created_at is timestamp && data.updated_at is timestamp;
+    }
+    function validSubmission(data, id, type) {
+      return validIdentity(data, id, type)
+        && validText(data.user_id, 1, 200) && validText(data.firebase_uid, 1, 128)
+        && data.created_at is timestamp && data.updated_at is timestamp;
+    }
+    function validContact(data, id) {
+      return exactKeys(data, ['id', 'number', 'user_id', 'created_at', 'updated_at', 'firebase_uid', 'status', 'contact', 'message'])
+        && validSubmission(data, id, 'ContactSubmission')
+        && validText(data.contact, 1, 254) && validText(data.message, 1, 5000)
+        && data.status in ['new', 'reviewed', 'completed'];
+    }
+    function validAppointment(data, id) {
+      return exactKeys(data, ['id', 'number', 'user_id', 'created_at', 'updated_at', 'firebase_uid', 'status', 'name', 'date', 'time', 'email', 'notes', 'service'])
+        && validSubmission(data, id, 'AppointmentSubmission')
+        && validText(data.name, 1, 120) && validText(data.time, 1, 40) && validText(data['service'], 1, 160)
+        && validText(data.notes, 0, 5000) && validText(data.email, 3, 254)
+        && data.email.matches('[^\\s@]+@[^\\s@]+\\.[^\\s@]+')
+        && data.date is string && data.date.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        && data.status in ['requested', 'confirmed', 'declined', 'completed'];
+    }
+    function ownSubmission(data, collectionName, id) {
+      return activeAccount() && data.firebase_uid == request.auth.uid
+        && data.user_id == get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id
+        && data.created_at == request.time && data.updated_at == request.time
+        && matchingCounter(collectionName, id, data.number);
+    }
+    function immutableSubmissionFields(data) {
+      return data.id == resource.data.id && data.number == resource.data.number
+        && data.user_id == resource.data.user_id && data.firebase_uid == resource.data.firebase_uid
+        && data.created_at == resource.data.created_at && data.updated_at == request.time;
+    }
+    function ownLifecycleUpdate(data, id) {
+      return ownProfile(id) && resource.data.firebase_uid == request.auth.uid && recentlyAuthenticated()
+        && data.diff(resource.data).affectedKeys().hasOnly(['account_status', 'updated_at'])
+        && ((hasStatus(resource.data, 'active') && data.account_status == 'deactivated')
+          || (hasStatus(resource.data, 'deactivated') && data.account_status == 'active')
+          || ((hasStatus(resource.data, 'active') || hasStatus(resource.data, 'deactivated')) && data.account_status == 'deleting'
+            && getAfter(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.account_status == 'deleting'
+            && getAfter(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id == id));
+    }
+    function ownSubmissionDelete(data) {
+      return deletingAccount() && recentlyAuthenticated() && data.firebase_uid == request.auth.uid
+        && data.user_id == get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id;
+    }
+    function ownerSubmissionWrite(data) {
+      return isOwner() && (!exists(/databases/$(database)/documents/accountAccess/$(data.firebase_uid))
+        || !get(/databases/$(database)/documents/accountAccess/$(data.firebase_uid)).data.keys().hasAny(['account_status']));
+    }
+    // Infrastructure indices use deterministic keys; business records use numbered app-owned IDs.
+    match /accountAccess/{firebaseUid} {
+      allow get: if signedIn() && (request.auth.uid == firebaseUid || isOwner());
+      allow list: if isOwner();
+      allow create: if signedIn() && request.auth.uid == firebaseUid
+        && exactKeys(request.resource.data, ['user_id'])
+        && validText(request.resource.data.user_id, 1, 200)
+        && !exists(/databases/$(database)/documents/users/$(request.resource.data.user_id))
+        && getAfter(/databases/$(database)/documents/users/$(request.resource.data.user_id)).data.firebase_uid == request.auth.uid
+        && getAfter(/databases/$(database)/documents/users/$(request.resource.data.user_id)).data.role == 'subscriber'
+        && hasStatus(getAfter(/databases/$(database)/documents/users/$(request.resource.data.user_id)).data, 'active')
+        && matchingCounter('users', request.resource.data.user_id, getAfter(/databases/$(database)/documents/users/$(request.resource.data.user_id)).data.number);
+      allow update: if signedIn() && request.auth.uid == firebaseUid && recentlyAuthenticated()
+        && !resource.data.keys().hasAny(['account_status'])
+        && exactKeys(request.resource.data, ['user_id', 'account_status'])
+        && request.resource.data.user_id == resource.data.user_id && request.resource.data.account_status == 'deleting'
+        && getAfter(/databases/$(database)/documents/users/$(resource.data.user_id)).data.firebase_uid == request.auth.uid
+        && getAfter(/databases/$(database)/documents/users/$(resource.data.user_id)).data.account_status == 'deleting';
+      allow delete: if isOwner() && !resource.data.keys().hasAny(['account_status']);
+    }
+    match /counters/{collectionName} {
+      allow get: if signedIn() && collectionName in ['users', 'contactSubmissions', 'appointmentSubmissions']
+        && (!exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid)) || activeAccount());
+      allow list: if isOwner();
+      allow create, update: if signedIn() && activeAccountAfter() && collectionName in ['users', 'contactSubmissions', 'appointmentSubmissions']
+        && exactKeys(request.resource.data, ['number', 'record_id'])
+        && request.resource.data.number is int
+        && request.resource.data.number == (exists(/databases/$(database)/documents/counters/$(collectionName)) ? resource.data.number + 1 : 1)
+        && validText(request.resource.data.record_id, 1, 200)
+        && !exists(/databases/$(database)/documents/$(collectionName)/$(request.resource.data.record_id))
+        && getAfter(/databases/$(database)/documents/$(collectionName)/$(request.resource.data.record_id)).data.firebase_uid == request.auth.uid
+        && getAfter(/databases/$(database)/documents/$(collectionName)/$(request.resource.data.record_id)).data.number == request.resource.data.number;
+      allow delete: if false;
+    }
+    match /users/{id} {
+      allow get: if signedIn() && ((ownProfile(id)
+        && (!exists(/databases/$(database)/documents/users/$(id)) || resource.data.firebase_uid == request.auth.uid)) || isOwner());
+      allow list: if isOwner();
+      allow create: if signedIn() && validUser(request.resource.data, id) && hasStatus(request.resource.data, 'active')
+        && request.resource.data.firebase_uid == request.auth.uid && request.resource.data.email == request.auth.token.email
+        && ((request.resource.data.provider == 'google' && request.auth.token.firebase.sign_in_provider == 'google.com' && request.auth.token.email_verified == true)
+          || (request.resource.data.provider == 'password' && request.auth.token.firebase.sign_in_provider == 'password'))
+        && request.resource.data.role == 'subscriber'
+        && request.resource.data.created_at == request.time && request.resource.data.updated_at == request.time
+        && !exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid))
+        && getAfter(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id == id
+        && matchingCounter('users', id, request.resource.data.number);
+      allow update: if validUser(request.resource.data, id)
+        && request.resource.data.id == resource.data.id && request.resource.data.number == resource.data.number
+        && request.resource.data.firebase_uid == resource.data.firebase_uid && request.resource.data.provider == resource.data.provider
+        && request.resource.data.created_at == resource.data.created_at && request.resource.data.updated_at == request.time
+        && ((isOwner() && !hasStatus(resource.data, 'deleting') && hasStatus(request.resource.data, resource.data.get('account_status', 'active')))
+          || (activeAccount() && ownProfile(id) && resource.data.firebase_uid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'photo_url', 'theme_mode', 'updated_at']))
+          || ownLifecycleUpdate(request.resource.data, id));
+      allow delete: if (isOwner() && !hasStatus(resource.data, 'deleting'))
+        || (ownProfile(id) && resource.data.firebase_uid == request.auth.uid && hasStatus(resource.data, 'deleting') && deletingAccount() && recentlyAuthenticated());
+    }
+    match /contactSubmissions/{id} {
+      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isOwner());
+      allow create: if validContact(request.resource.data, id) && request.resource.data.status == 'new'
+        && ownSubmission(request.resource.data, 'contactSubmissions', id);
+      allow update: if ownerSubmissionWrite(resource.data) && validContact(request.resource.data, id) && immutableSubmissionFields(request.resource.data);
+      allow delete: if ownerSubmissionWrite(resource.data) || ownSubmissionDelete(resource.data);
+    }
+    match /appointmentSubmissions/{id} {
+      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isOwner());
+      allow create: if validAppointment(request.resource.data, id) && request.resource.data.status == 'requested'
+        && ownSubmission(request.resource.data, 'appointmentSubmissions', id);
+      allow update: if ownerSubmissionWrite(resource.data) && validAppointment(request.resource.data, id) && immutableSubmissionFields(request.resource.data);
+      allow delete: if ownerSubmissionWrite(resource.data) || ownSubmissionDelete(resource.data);
+    }
+  }
+}

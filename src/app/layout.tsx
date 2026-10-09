@@ -3,6 +3,7 @@ import './globals.scss';
 import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import { siteConfig, siteUrl } from '@/shared/config/site';
+import { AuthProvider } from '@/shared/authContext/AuthContext';
 import BlushLoader from '@/app/components/loaders/blush-loader';
 import { ThemeProvider } from '@/shared/themeContext/ThemeContext';
 import { themeBootstrapScript } from '@/shared/themeContext/theme';
@@ -79,14 +80,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script id={`bb-theme-bootstrap`} dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
       <body>
-        <ThemeProvider>
-          <NotificationsProvider>
-            <BlushLoader />
-            {children}
-            <PwaRegistration />
-            <Analytics />
-          </NotificationsProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <NotificationsProvider>
+              <BlushLoader />
+              {children}
+              <PwaRegistration />
+              <Analytics />
+            </NotificationsProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

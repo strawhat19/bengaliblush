@@ -7,8 +7,9 @@ import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { navigationRoutes, siteRoutes } from '@/shared/navigation/routes';
 import ThemeToggle from '@/app/components/navigation/theme-toggle/theme-toggle';
 import { useEffect, useState, type MouseEvent, type CSSProperties } from 'react';
+import ProfileMenu from '@/app/components/authentication/profile-menu/profile-menu';
 import NotificationsMenu from '@/app/components/navigation/notifications-menu/notifications-menu';
-import { Bell, Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles } from 'lucide-react';
+import { Bell, Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, UserRound, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles, LayoutDashboard } from 'lucide-react';
 
 export type HeaderWidth = 'boxed' | 'full';
 
@@ -21,7 +22,7 @@ type HeaderProps = {
   cartButtonFilled?: boolean;
 };
 
-const navigationIcons = { Bell, Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, ShieldCheck, ShoppingBag, WandSparkles };
+const navigationIcons = { Bell, Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, UserRound, ShieldCheck, ShoppingBag, WandSparkles, LayoutDashboard };
 const navigationItems = navigationRoutes.map((route) => ({
   ...route,
   locator: route.section ?? route.href.slice(1),
@@ -64,22 +65,28 @@ export default function Header({
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [profileCloseCount, setProfileCloseCount] = useState(0);
   const [notificationCloseCount, setNotificationCloseCount] = useState(0);
   const closeMobile = () => setMobileOpen(false);
+  const closeProfile = () => setProfileCloseCount((count) => count + 1);
   const closeNotifications = () => setNotificationCloseCount((count) => count + 1);
   const openBag = () => {
     closeMobile();
+    closeProfile();
     closeNotifications();
     onBag();
   };
   const openBooking = () => {
     closeMobile();
+    closeProfile();
     closeNotifications();
     onBook();
   };
   const navigateToSection = (event: MouseEvent<HTMLAnchorElement>, section?: string) => {
     closeMobile();
+    closeProfile();
     closeNotifications();
     if (!section || pathname !== `/` || !isRegularClick(event)) return;
     if (!document.getElementById(section)) return;
@@ -130,7 +137,7 @@ export default function Header({
   const headerClassName = [
     `bb-header`,
     sticky ? `is-sticky` : ``,
-    mobileOpen || notificationsOpen ? `is-menu-open` : ``,
+    mobileOpen || profileOpen || notificationsOpen ? `is-menu-open` : ``,
     sticky && scrolled ? `is-scrolled` : ``,
   ].filter(Boolean).join(` `);
   const containerClassName = width === `full` ? `bb-header-inner is-full-width` : `bb-container bb-header-inner`;
@@ -155,8 +162,9 @@ export default function Header({
           ))}
         </nav>
         <div id={`bb-header-actions`} className="bb-header-actions">
+          <ThemeToggle />
           <NotificationsMenu
-            onOpen={closeMobile}
+            onOpen={() => { closeMobile(); closeProfile(); }}
             onOpenChange={setNotificationsOpen}
             closeSignal={`${pathname}:${notificationCloseCount}`}
           />
@@ -177,22 +185,17 @@ export default function Header({
               </span>
             )}
           </span>
-          <ThemeToggle />
-          <Link
-            onClick={() => { closeMobile(); closeNotifications(); }}
-            href={siteRoutes.signin.href}
-            id={`bb-header-sign-in`}
-            className={`bb-ghost-button`}
-            data-testid={`button-header-sign-in`}
-          >
-            <LogIn size={14} strokeWidth={1.9} aria-hidden={`true`} />Sign In
-          </Link>
+          <ProfileMenu
+            onOpenChange={setProfileOpen}
+            closeSignal={`${pathname}:${profileCloseCount}`}
+            onOpen={() => { closeMobile(); closeNotifications(); }}
+          />
           <button
             className="bb-menu-button"
             aria-controls="mobile-navigation"
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? `Close menu` : `Open menu`}
-            onClick={() => { closeNotifications(); setMobileOpen((current) => !current); }}
+            onClick={() => { closeProfile(); closeNotifications(); setMobileOpen((current) => !current); }}
             data-testid="button-mobile-menu"
           >
             <span className="bb-menu-icon" aria-hidden="true"><span /><span /><span /></span>

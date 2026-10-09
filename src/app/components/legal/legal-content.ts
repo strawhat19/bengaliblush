@@ -25,15 +25,23 @@ export const legalContent = {
         id: `contact`,
         title: `When you get in touch`,
         paragraphs: [
-          `The contact form uses the email address or phone number and message you enter to prepare a draft in your email app. It does not send the message automatically. If you send the draft, Bengali Blush receives the information included in your email and can use it to respond to your enquiry.`,
+          `When you sign in and send a contact message, your email address or phone number, message, account reference, and submission date are stored in Firebase Firestore. Bengali Blush uses this information to review and respond to your enquiry.`,
+          `Appointment requests store your name, email address, chosen service, preferred date and time, notes, account reference, and submission date in Firestore. Your request is available to you and authorised studio owners. A saved request does not reserve or confirm an appointment.`,
+        ],
+      },
+      {
+        id: `accounts`,
+        title: `Your account`,
+        paragraphs: [
+          `Google and email/password sign-in are handled by Firebase Authentication. Bengali Blush stores your account name, email address, optional Google profile photo, provider reference, and account role in Firestore. Email/password credentials are sent to Firebase Authentication and are not saved in Firestore. The website does not receive or store your Google password. Account and submission access is restricted through Firebase security rules.`,
         ],
       },
       {
         id: `browser-storage`,
         title: `What stays in your browser`,
         paragraphs: [
-          `Your shopping bag is saved in your browser’s local storage so your selected items remain available when you return. The current booking form also saves your name and selected service locally, together with a generated reference and the date of the request.`,
-          `Booking entries are not transmitted to the studio by this form. Contact Bengali Blush directly to arrange an appointment. The current checkout does not process payments or complete orders.`,
+          `Your shopping bag is saved in your browser’s local storage so your selected items remain available when you return. Firebase Authentication also keeps sign-in state in your browser so you can remain signed in between visits.`,
+          `The current checkout does not process payments or complete orders. Contact and appointment submissions are saved only after the form confirms a successful submission.`,
         ],
       },
       {
@@ -47,8 +55,8 @@ export const legalContent = {
         id: `your-choices`,
         title: `Your choices`,
         paragraphs: [
-          `You can browse without using the booking or contact forms. Clearing this website’s data in your browser removes locally saved shopping bag and booking entries. This does not remove messages you have already sent by email.`,
-          `For questions about information shared directly with the studio, use the contact details below.`,
+          `You can browse without signing in or using the booking or contact forms. Sign out to end your session on this device. Clearing this website’s browser data removes locally saved shopping bag and sign-in state; it does not delete your account or submissions stored in Firestore.`,
+          `To ask about your account or request changes or deletion of information shared with the studio, use the contact details below.`,
         ],
       },
       {
@@ -77,7 +85,7 @@ export const legalContent = {
         id: `appointments`,
         title: `Arranging an appointment`,
         paragraphs: [
-          `Submitting the current booking form saves a request in your browser only. It does not send the request to Bengali Blush, reserve a time, or confirm an appointment. Contact the studio directly to arrange your visit.`,
+          `Sign in to submit an appointment request. A successfully submitted request is saved for Bengali Blush to review. It does not reserve a time or confirm an appointment; the studio must confirm availability and the details with you.`,
           `Confirm the service, availability, price, and any preparation or cancellation arrangements with the studio before your appointment. Listed service durations are a guide for planning your visit.`,
         ],
       },
@@ -92,7 +100,7 @@ export const legalContent = {
         id: `contact`,
         title: `Sending an enquiry`,
         paragraphs: [
-          `The contact form prepares an email draft. Review and send it from your email app to deliver your enquiry. Opening the draft alone does not send a message to the studio.`,
+          `Sign in to send a contact message. A successfully submitted message is stored for the studio to review and reply using the contact details you provide. You can also contact the studio directly using the email address or phone number shown on the website.`,
         ],
       },
       {

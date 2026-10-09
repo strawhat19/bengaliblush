@@ -7,5 +7,3 @@
 4. Carry useful independent work forward while a clarification is pending. Request missing information only when it materially affects the requested result, and distinguish a required answer from an optional preference.
 
 5. Complete the authorized implementation and make it reviewable. Respect AGENTS.md on validation; do not run builds, tests, or UI checks unless requested. Report the result, any unfinished requirement, and any material limitation without claiming checks that were not performed.
-
-i have bengaliblush running on localhost:3000, and another tab open with my firebase on blaze plan where i created a project BengaliBlush. i want to go ahead and create the database and auth with sign up with email password and google.

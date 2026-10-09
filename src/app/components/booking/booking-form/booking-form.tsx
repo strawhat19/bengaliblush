@@ -3,22 +3,16 @@
 import { ArrowUpRight } from 'lucide-react';
 import type { Service } from '@/shared/types/storefront';
 import { services } from '@/shared/services/service-content';
-import { useRef, useState, useEffect, type FormEvent } from 'react';
+import { useBookingForm, type BookingSuccessHandler } from './use-booking-form';
+import SubmissionAuthNote from '@/app/components/submissions/submission-auth-note/submission-auth-note';
 
-export type BookingFormValues = {
-  name: string;
-  date: string;
-  time: string;
-  email: string;
-  notes: string;
-  service: string;
-};
+export type { BookingFormValues } from './use-booking-form';
 
 type BookingFormProps = {
   compact?: boolean;
   idPrefix?: string;
   selectedService?: Service;
-  onSuccess: (name: string, service: string, values: BookingFormValues) => void;
+  onSuccess: BookingSuccessHandler;
 };
 
 const BookingForm = ({
@@ -27,39 +21,31 @@ const BookingForm = ({
   selectedService,
   idPrefix = compact ? `modal` : undefined,
 }: BookingFormProps) => {
-  const [name, setName] = useState(``);
-  const [date, setDate] = useState(``);
-  const [time, setTime] = useState(``);
-  const [email, setEmail] = useState(``);
-  const [notes, setNotes] = useState(``);
-  const [service, setService] = useState(selectedService?.id ?? ``);
-  const dateInputRef = useRef<HTMLInputElement>(null);
+  const {
+    name, date, time, email, notes, error, service, submitting,
+    canSubmit, dateInputRef, submit, setName, setDate, setTime, setEmail, setNotes, setError, setService,
+  } = useBookingForm(onSuccess, selectedService);
   const fieldId = (field: string) => `${idPrefix ? `${idPrefix}-` : ``}${field}`;
   const elementId = (element: string) => `${idPrefix ?? `bb-booking`}-${element}`;
-
-  useEffect(() => {
-    if (dateInputRef.current) dateInputRef.current.min = new Date().toISOString().split(`T`)?.[0] ?? ``;
-  }, []);
-
-  const submit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const chosen = services.find((item) => item.id === service)?.name ?? `your beauty appointment`;
-    onSuccess(name || `there`, chosen, { name, date, time, email, notes, service: chosen });
-  };
 
   return (
     <form
       onSubmit={submit}
       id={elementId(`form`)}
+      aria-busy={submitting}
       className={`bb-booking-form`}
+      onChange={() => setError(``)}
       data-testid={compact ? `form-modal-booking` : `form-booking`}
     >
+      <SubmissionAuthNote idPrefix={idPrefix ?? `bb-booking`} action={`request an appointment`} />
       <div className={`bb-field`} id={elementId(`name-field`)}>
         <label className={`bb-booking-label`} id={elementId(`name-label`)} htmlFor={fieldId(`name`)}>Your name</label>
         <input
           required
           value={name}
+          maxLength={120}
           id={fieldId(`name`)}
+          disabled={submitting}
           placeholder={`First and last`}
           className={`bb-booking-input`}
           data-testid={`input-booking-name`}
@@ -72,6 +58,7 @@ const BookingForm = ({
           required
           value={service}
           id={fieldId(`service`)}
+          disabled={submitting}
           className={`bb-booking-select`}
           data-testid={`select-booking-service`}
           onChange={(event) => setService(event.target.value)}
@@ -97,6 +84,7 @@ const BookingForm = ({
           value={date}
           id={fieldId(`date`)}
           ref={dateInputRef}
+          disabled={submitting}
           className={`bb-booking-input`}
           data-testid={`input-booking-date`}
           onChange={(event) => setDate(event.target.value)}
@@ -108,6 +96,7 @@ const BookingForm = ({
           required
           value={time}
           id={fieldId(`time`)}
+          disabled={submitting}
           className={`bb-booking-select`}
           data-testid={`select-booking-time`}
           onChange={(event) => setTime(event.target.value)}
@@ -124,7 +113,9 @@ const BookingForm = ({
           required
           type={`email`}
           value={email}
+          maxLength={254}
           id={fieldId(`email`)}
+          disabled={submitting}
           className={`bb-booking-input`}
           placeholder={`you@example.com`}
           data-testid={`input-booking-email`}
@@ -137,7 +128,9 @@ const BookingForm = ({
         </label>
         <textarea
           value={notes}
+          maxLength={5000}
           id={fieldId(`notes`)}
+          disabled={submitting}
           className={`bb-booking-textarea`}
           data-testid={`input-booking-notes`}
           placeholder={`Tell me about the occasion...`}
@@ -146,12 +139,14 @@ const BookingForm = ({
       </div>
       <button
         type={`submit`}
+        disabled={!canSubmit}
         id={elementId(`submit`)}
         className={`bb-button bb-submit`}
         data-testid={`button-submit-booking`}
       >
-        Request this appointment <ArrowUpRight size={16} aria-hidden className={`bb-booking-submit-icon`} id={elementId(`submit-icon`)} />
+        {submitting ? `Saving Request…` : `Request This Appointment`} <ArrowUpRight size={16} aria-hidden className={`bb-booking-submit-icon`} id={elementId(`submit-icon`)} />
       </button>
+      {error && <p role={`alert`} id={elementId(`error`)} className={`bb-submission-error bb-field-full`}>{error}</p>}
     </form>
   );
 };

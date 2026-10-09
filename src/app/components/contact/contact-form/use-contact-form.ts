@@ -1,11 +1,30 @@
-import { useState, type FormEvent } from 'react';
-import { siteContact } from '@/shared/config/site';
+import { useAuth } from '@/shared/authContext/useAuth';
+import { createContactSubmission } from '@/api/submissions';
+import { useRef, useState, useEffect, type FormEvent } from 'react';
 
 export const useContactForm = () => {
-  const [draftCreated, setDraftCreated] = useState(false);
+  const { user, loading } = useAuth();
+  const accountId = user?.id ?? null;
+  const pendingRef = useRef(false);
+  const contactInputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState(``);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [replyDraft, setReplyDraft] = useState<{ value?: string; accountId: string | null }>({ accountId });
+  let activeReply = replyDraft;
+  if (replyDraft.accountId !== accountId) {
+    activeReply = replyDraft.accountId === null && accountId ? { ...replyDraft, accountId } : { accountId };
+    setReplyDraft(activeReply);
+  }
+  const contact = activeReply.value ?? (loading ? `` : user?.email ?? ``);
+  const setContact = (value: string) => setReplyDraft({ value, accountId });
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  useEffect(() => { contactInputRef.current?.setCustomValidity(``); }, [contact]);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (loading || pendingRef.current) return;
+    if (!user) { setError(`Sign In To Send Your Message`); return; }
     const form = event.currentTarget;
     const formData = new FormData(form);
     const message = String(formData.get(`message`) ?? ``).trim();
@@ -20,16 +39,28 @@ export const useContactForm = () => {
     messageInput.setCustomValidity(message ? `` : `Enter Your Message`);
     if (!form.reportValidity()) return;
 
-    const subject = encodeURIComponent(`A Hello For Bengali Blush`);
-    const body = encodeURIComponent(`${message}\n\nReply to: ${contact}`);
-    window.location.href = `mailto:${siteContact.email}?subject=${subject}&body=${body}`;
-    setDraftCreated(true);
+    setError(``);
+    pendingRef.current = true;
+    setSubmitted(false);
+    setSubmitting(true);
+    try {
+      await createContactSubmission({ contact, message });
+      form.reset();
+      setReplyDraft({ accountId });
+      setSubmitted(true);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : `Unable To Save Your Message. Please Try Again`);
+    } finally {
+      pendingRef.current = false;
+      setSubmitting(false);
+    }
   };
 
   const handleInput = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     event.currentTarget.setCustomValidity(``);
-    setDraftCreated(false);
+    setError(``);
+    setSubmitted(false);
   };
 
-  return { handleInput, handleSubmit, draftCreated };
+  return { error, contact, loading, submitting, submitted, setContact, handleInput, handleSubmit, contactInputRef, canSubmit: !!user && !loading && !submitting };
 };

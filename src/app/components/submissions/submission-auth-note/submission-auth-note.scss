@@ -1,0 +1,8 @@
+.bb-submission-auth-note { display: grid; gap: 12px; padding: 16px; border: 1px solid hsl(var(--primary) / .25); background: hsl(var(--card) / .35); }
+.bb-submission-auth-message { margin: 0; color: hsl(var(--foreground)); font-size: 13px; line-height: 1.6; }
+.bb-submission-auth-actions { display: flex; gap: 18px; flex-wrap: wrap; }
+.bb-submission-auth-link { display: inline-flex; gap: 6px; align-items: center; color: hsl(var(--primary)); font-size: 12px; font-weight: 600; }
+.bb-submission-auth-link:hover { text-decoration: underline; }
+.bb-submission-auth-link:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
+.bb-submission-error { margin: 0; color: hsl(var(--destructive)); font-size: 13px; line-height: 1.6; }
+.bb-booking-form .bb-submit:disabled { cursor: default; opacity: .6; }

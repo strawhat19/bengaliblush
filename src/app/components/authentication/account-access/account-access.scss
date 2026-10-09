@@ -1,0 +1,10 @@
+.bb-account-access { min-height: 55svh; }
+.bb-account-access-content { display: grid; justify-items: center; gap: 20px; text-align: center; }
+.bb-account-access-content > svg { color: hsl(var(--primary)); }
+.bb-account-access-heading { margin: 0; color: hsl(var(--primary)); font-family: var(--app-font-serif); font-size: clamp(30px, 5vw, 48px); font-weight: 500; }
+.bb-account-access-description { color: hsl(var(--muted-foreground)); font-size: 13px; }
+.bb-account-access-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.bb-account-access-error { color: #be123c; font-size: 12px; line-height: 1.6; }
+.bb-account-loading-skeleton { display: grid; width: min(320px, 70vw); gap: 10px; }
+.bb-account-loading-skeleton > span { height: 16px; border-radius: 4px; background: hsl(var(--primary) / .08); }
+.bb-account-loading-skeleton > span:last-child { width: 65%; margin-inline: auto; }

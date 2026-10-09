@@ -1,0 +1,21 @@
+.bb-account-action-confirmation { display: grid; gap: 14px; margin-top: 20px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 10px; padding: 20px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-text, hsl(var(--foreground))); text-align: left; }
+.bb-account-action-confirmation.is-destructive { border-color: hsl(var(--primary)); }
+.bb-account-action-title { display: flex; align-items: center; gap: 9px; margin: 0; font-size: 15px; font-weight: 600; }
+.bb-account-action-title:focus { outline: none; }
+.bb-account-action-icon { flex: none; color: var(--bb-highlight, hsl(var(--primary))); }
+.is-destructive .bb-account-action-icon { color: hsl(var(--primary)); }
+.bb-account-action-description, .bb-account-action-method { margin: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 12px; line-height: 1.7; }
+.bb-account-action-method { display: flex; align-items: center; gap: 8px; }
+.bb-account-action-method > svg { flex: none; }
+.bb-account-action-field { display: grid; gap: 8px; font-size: 12px; }
+.bb-account-action-input { width: 100%; min-width: 0; min-height: 42px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 8px; padding: 10px 12px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 13px; transition: border-color .2s ease; }
+.bb-account-action-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.bb-account-action-cancel, .bb-account-action-confirm { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 8px; padding: 10px 14px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 12px; transition: opacity .2s ease, border-color .2s ease; }
+.bb-account-action-confirm { border-color: var(--bb-highlight, hsl(var(--primary))); color: var(--bb-highlight, hsl(var(--primary))); }
+.is-destructive .bb-account-action-confirm { border-color: hsl(var(--primary)); background: hsl(var(--primary)); color: var(--bb-brand-cream, hsl(var(--card))); }
+.bb-account-action-cancel:not(:disabled):hover, .bb-account-action-confirm:not(:disabled):hover { opacity: .8; }
+.bb-account-action-input:focus-visible, .bb-account-action-cancel:focus-visible, .bb-account-action-confirm:focus-visible { outline: 2px solid var(--bb-highlight, hsl(var(--primary))); outline-offset: 3px; }
+.bb-account-action-input:disabled, .bb-account-action-buttons > button:disabled { cursor: not-allowed; opacity: .55; }
+.bb-account-action-error { margin: 0; color: #be123c; font-size: 12px; line-height: 1.6; }
+@media (max-width: 480px) { .bb-account-action-confirmation { padding: 16px; } .bb-account-action-input { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { .bb-account-action-input, .bb-account-action-cancel, .bb-account-action-confirm { transition: none; } }

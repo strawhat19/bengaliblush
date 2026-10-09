@@ -38,6 +38,10 @@
   box-shadow: 0 12px 30px hsl(340 32% 15% / .18);
 }
 
+@media (max-width: 800px) {
+  .bb-theme-preference-notice { left: 0; right: auto; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bb-theme-icon { transition: none; }
 }

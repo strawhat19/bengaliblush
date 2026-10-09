@@ -1,0 +1,10 @@
+.bb-owner-dashboard {
+  .actionsCell { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .rowStatus { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .statusDotWrap { display: grid; width: 16px; height: 16px; place-items: center; border-radius: 50%; background: currentColor; }
+  .statusDot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .statusText { color: hsl(var(--foreground)); font-size: 11px; }
+  .rowStatus.is-green .statusDotWrap { background: #16a34a20; color: #16a34a; }
+  .rowStatus.is-gray .statusDotWrap { background: #64748b20; color: #64748b; }
+  .rowStatus.is-red .statusDotWrap { background: #dc262620; color: #dc2626; }
+}

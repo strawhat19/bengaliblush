@@ -19,7 +19,7 @@
 .bb-notifications-panel {
   left: auto;
   z-index: 3;
-  opacity: 0;
+  opacity: 1;
   display: block;
   position: absolute;
   visibility: hidden;
@@ -32,17 +32,16 @@
   border: 1px solid var(--bb-panel-border, hsl(var(--border)));
   background: radial-gradient(circle at 100% 0, hsl(var(--accent) / .12), transparent 260px), var(--bb-panel-surface, hsl(var(--card)));
   box-shadow: 0 24px 60px hsl(340 32% 10% / .3);
-  transform: translate3d(0, calc(-100% - 120px), 0);
+  transform: translate3d(0, calc(-100% - 240px), 0);
   -webkit-backdrop-filter: blur(20px) saturate(125%);
   backdrop-filter: blur(20px) saturate(125%);
-  transition: visibility 0s linear .68s, opacity 0s linear .68s, transform .68s cubic-bezier(.76, 0, .24, 1);
+  transition: visibility 0s linear .68s, transform .68s cubic-bezier(.76, 0, .24, 1);
 
   &.is-open {
-    opacity: 1;
     visibility: visible;
     pointer-events: auto;
     transform: translate3d(0, 0, 0);
-    transition: visibility 0s linear, opacity .22s ease, transform .68s cubic-bezier(.76, 0, .24, 1);
+    transition: visibility 0s linear, transform .68s cubic-bezier(.76, 0, .24, 1);
   }
 
   .bb-liquid-edge { fill: var(--bb-panel-surface, hsl(var(--card))); }
@@ -214,6 +213,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .bb-notifications-panel,
+  .bb-notifications-panel.is-open,
   .bb-notifications-heading,
   .bb-notifications-meta,
   .bb-notifications-list,

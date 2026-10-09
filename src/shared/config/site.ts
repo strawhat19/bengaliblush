@@ -9,8 +9,8 @@ export const siteConfig = {
 
 export const siteContact = {
   address: `Atlanta, GA, USA`,
-  phone: `+1 (123) 456-7890`,
-  phoneHref: `tel:+11234567890`,
+  phone: `213 691 5615`,
+  phoneHref: `tel:+12136915615`,
   email: `sadiaislam7222@gmail.com`,
   mapUrl: `https://www.google.com/maps/search/?api=1&query=Atlanta%2C%20GA%2C%20USA`,
   socials: [{

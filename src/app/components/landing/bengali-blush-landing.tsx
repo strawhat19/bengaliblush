@@ -22,7 +22,7 @@ import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-
 import LandingServices from '@/app/components/services/landing-services/landing-services';
 import { ShopProvider, getCartLines, removeCartProduct, decrementCartProduct } from '@/shared/shop/shop-context';
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
-import { getStoredCartNotice, getStoredCartSnapshot, storeBookingRequest, subscribeStoredCart, writeStoredCart, getStoredCartServerNotice, getStoredCartServerSnapshot } from '@/shared/storage/storefront-storage';
+import { getStoredCartNotice, getStoredCartSnapshot, subscribeStoredCart, writeStoredCart, getStoredCartServerNotice, getStoredCartServerSnapshot } from '@/shared/storage/storefront-storage';
 import {
   X,
   Mail,
@@ -594,7 +594,7 @@ function BookingSection({ onSuccess, confirmation }: { onSuccess: (name: string,
         {confirmation ? <div className="bb-form-success" data-reveal data-testid="status-booking-confirmation">
           <Check size={20} style={{ color: 'hsl(var(--primary))', marginBottom: 17 }} />
           <strong>We’re making room for you, {confirmation.name}.</strong>
-           <p>Your request for <b>{confirmation.service}</b> is on its way to the studio. Keep an eye on your inbox — Sadia will confirm the details within one studio day.</p>
+           <p>Your request for <b>{confirmation.service}</b> has been saved for the studio to review. Keep an eye on your inbox — Sadia will confirm availability and the details.</p>
           <button type="button" className="bb-button bb-button-outline bb-button-outline-dark" style={{ marginTop: 22 }} onClick={() => onSuccess('', '')} data-testid="button-book-another">Book another look <ArrowUpRight size={15} /></button>
         </div> : <div data-reveal><BookingForm onSuccess={onSuccess} /></div>}
       </div>
@@ -849,7 +849,7 @@ export default function BengaliBlushLanding({ children, onboarding = false }: { 
     setBagPhase((current) => current === `open` || current === `opening` ? current : `opening`);
   };
   const closeBag = () => setBagPhase((current) => current === `closed` || current === `closing` ? current : `closing`);
-  const handleSuccess = (name: string, service: string) => { storeBookingRequest(name, service); setConfirmation({ name, service }); setToast(`Thanks, ${name}. Your ${service.toLowerCase()} request is in.`); };
+  const handleSuccess = (name: string, service: string) => { setConfirmation({ name, service }); setToast(`Appointment Request Saved`); };
   const addProduct = (product: Product, quantity = 1) => {
     const amount = Math.min(99, Math.max(1, Math.floor(quantity)));
     if (!Number.isFinite(amount)) return;

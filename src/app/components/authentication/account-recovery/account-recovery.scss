@@ -1,0 +1,18 @@
+.bb-account-recovery { width: 100%; max-width: 640px; color: var(--bb-panel-text, hsl(var(--foreground))); text-align: left; }
+.bb-account-recovery-icon { margin-bottom: 15px; color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-account-recovery-title { margin: 0 0 15px; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: clamp(28px, 4vw, 40px); font-weight: 500; letter-spacing: -.03em; line-height: 1.2; }
+.bb-account-recovery-title:focus { outline: none; }
+.bb-account-recovery-description { margin: 0 0 22px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 13px; line-height: 1.8; }
+.bb-account-recovery-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.bb-account-recovery-start, .bb-account-recovery-sign-out { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 8px; padding: 10px 14px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-highlight, hsl(var(--primary))); font-size: 12px; transition: opacity .2s ease, border-color .2s ease; }
+.bb-account-recovery-start { border-color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-account-recovery-start.is-destructive { border-color: hsl(var(--primary)); background: hsl(var(--primary)); color: var(--bb-brand-cream, hsl(var(--card))); }
+.bb-account-recovery-sign-out { margin-top: 18px; }
+.bb-account-recovery-sign-out > svg { color: hsl(var(--primary)); }
+.bb-account-recovery-start:not(:disabled):hover, .bb-account-recovery-sign-out:not(:disabled):hover { opacity: .8; }
+.bb-account-recovery-start:focus-visible, .bb-account-recovery-sign-out:focus-visible { outline: 2px solid var(--bb-highlight, hsl(var(--primary))); outline-offset: 3px; }
+.bb-account-recovery-start:disabled, .bb-account-recovery-sign-out:disabled { opacity: .55; cursor: not-allowed; }
+.bb-account-recovery-error, .bb-account-recovery-status { margin: 12px 0 0; font-size: 12px; line-height: 1.6; }
+.bb-account-recovery-error { color: #be123c; }
+.bb-account-recovery-status { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
+@media (prefers-reduced-motion: reduce) { .bb-account-recovery-start, .bb-account-recovery-sign-out { transition: none; } }

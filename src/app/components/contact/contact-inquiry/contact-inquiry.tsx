@@ -1,9 +1,8 @@
 'use client';
 
-import { siteContact } from '@/shared/config/site';
 import ContactForm from '../contact-form/contact-form';
 import { useContactInquiry } from './use-contact-inquiry';
-import { CalendarDays, MessageCircle, ArrowUpRight } from 'lucide-react';
+import { CalendarDays, MessageCircle } from 'lucide-react';
 import BookingForm from '@/app/components/booking/booking-form/booking-form';
 
 const inquiryTabs = [
@@ -12,7 +11,7 @@ const inquiryTabs = [
 ] as const;
 
 const ContactInquiry = () => {
-  const { mode, setMode, handleTabKeyDown, clearAppointmentDraft, handleAppointmentSubmit, appointmentDraftCreated } = useContactInquiry();
+  const { mode, setMode, handleTabKeyDown, clearAppointmentStatus, handleAppointmentSubmit, appointmentSubmitted } = useContactInquiry();
   const isAppointment = mode === `appointment`;
 
   return (
@@ -76,30 +75,23 @@ const ContactInquiry = () => {
             hidden={!isAppointment}
             id={`bb-contact-appointment-panel`}
             className={`bb-contact-inquiry-panel`}
-            onChangeCapture={clearAppointmentDraft}
+            onChangeCapture={clearAppointmentStatus}
             aria-labelledby={`bb-contact-appointment-tab`}
           >
             <BookingForm idPrefix={`bb-contact-appointment`} onSuccess={handleAppointmentSubmit} />
             <p id={`bb-contact-appointment-delivery-note`} className={`bb-contact-appointment-delivery-note`}>
-              Opens a draft in your email app. Send it from there to request your appointment.
+              Your request is saved securely. The studio will confirm availability before your appointment is booked.
             </p>
-            {appointmentDraftCreated && (
+            {appointmentSubmitted && (
               <div
                 role={`status`}
-                id={`bb-contact-appointment-draft-status`}
-                className={`bb-contact-draft-status`}
-                data-testid={`status-contact-appointment-draft`}
+                id={`bb-contact-appointment-saved-status`}
+                className={`bb-contact-saved-status`}
+                data-testid={`status-contact-appointment-saved`}
               >
-                <p id={`bb-contact-appointment-draft-message`} className={`bb-contact-draft-message`}>
-                  Finish sending your appointment request in your email app.
+                <p id={`bb-contact-appointment-saved-message`} className={`bb-contact-saved-message`}>
+                  Your appointment request has been saved. The studio will be in touch to confirm the details.
                 </p>
-                <a
-                  href={`mailto:${siteContact.email}`}
-                  id={`bb-contact-appointment-email-fallback`}
-                  className={`bb-contact-email-fallback`}
-                >
-                  Email the studio <ArrowUpRight size={14} aria-hidden={`true`} />
-                </a>
               </div>
             )}
           </div>

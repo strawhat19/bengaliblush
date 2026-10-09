@@ -32,7 +32,7 @@ const LegalPage = ({ kind }: { kind: LegalPageKind }) => {
             </h1>
             <p id={`bb-${kind}-introduction`} className={`bb-legal-introduction`}>{content.introduction}</p>
             <p id={`bb-${kind}-updated`} className={`bb-legal-updated`}>
-              Last updated <time id={`bb-${kind}-updated-date`} className={`bb-legal-updated-date`} dateTime={`2026-10-07`}>October 7, 2026</time>
+              Last updated <time id={`bb-${kind}-updated-date`} className={`bb-legal-updated-date`} dateTime={`2026-10-09`}>October 9, 2026</time>
             </p>
           </div>
         </div>

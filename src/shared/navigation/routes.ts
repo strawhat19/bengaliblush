@@ -1,10 +1,13 @@
-export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `MapPin` | `BookOpen` | `FileText` | `UserPlus` | `ShieldCheck` | `ShoppingBag` | `WandSparkles`;
+import { Roles } from '../../types/types';
+
+export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `MapPin` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `ShieldCheck` | `ShoppingBag` | `WandSparkles` | `LayoutDashboard`;
 
 export type SiteRoute = {
   href: string;
   label: string;
   title?: string;
   section?: string;
+  minimumRole?: Roles;
   icon: NavigationIcon;
   description: string;
   aliases?: readonly string[];
@@ -114,6 +117,23 @@ export const siteRoutes = {
     title: `Sign Up | Bengali Blush`,
     description: `Make yourself at home at Bengali Blush`,
     aliases: [`/new`, `/sign-up`, `/register`, `/subscribe`, `/onboarding`],
+  },
+  profile: {
+    href: `/profile`,
+    label: `Profile`,
+    icon: `UserRound`,
+    minimumRole: Roles.Subscriber,
+    title: `Profile | Bengali Blush`,
+    aliases: [`/account`, `/preferences`],
+    description: `Your private Bengali Blush account`,
+  },
+  dashboard: {
+    href: `/dashboard`,
+    label: `Dashboard`,
+    icon: `LayoutDashboard`,
+    minimumRole: Roles.Owner,
+    title: `Dashboard | Bengali Blush`,
+    description: `Manage studio accounts and requests`,
   },
 } satisfies Record<string, SiteRoute>;
 

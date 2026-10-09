@@ -1,24 +1,29 @@
 'use client';
 
-import { siteContact } from '@/shared/config/site';
-import { Send, ArrowUpRight } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { useContactForm } from './use-contact-form';
+import SubmissionAuthNote from '@/app/components/submissions/submission-auth-note/submission-auth-note';
 
 export default function ContactForm() {
-  const { handleInput, handleSubmit, draftCreated } = useContactForm();
+  const { error, contact, submitting, submitted, canSubmit, setContact, handleInput, handleSubmit, contactInputRef } = useContactForm();
 
   return (
-    <form id={`bb-contact-form`} className={`bb-booking-form bb-contact-form`} onSubmit={handleSubmit} data-testid={`form-contact`}>
+    <form id={`bb-contact-form`} aria-busy={submitting} className={`bb-booking-form bb-contact-form`} onSubmit={handleSubmit} data-testid={`form-contact`}>
+      <SubmissionAuthNote idPrefix={`bb-contact`} action={`send your message`} />
       <div id={`bb-contact-reply-field`} className={`bb-field bb-field-full`}>
         <label id={`bb-contact-reply-label`} htmlFor={`bb-contact-reply`}>Email or phone number</label>
         <input
           required
+          disabled={submitting}
           type={`text`}
           name={`contact`}
+          value={contact}
           maxLength={254}
+          ref={contactInputRef}
           autoCorrect={`off`}
           onInput={handleInput}
           autoCapitalize={`none`}
+          onChange={(event) => setContact(event.currentTarget.value)}
           id={`bb-contact-reply`}
           className={`bb-contact-input`}
           data-testid={`input-contact-reply`}
@@ -32,6 +37,7 @@ export default function ContactForm() {
         <textarea
           required
           rows={5}
+          disabled={submitting}
           name={`message`}
           maxLength={5000}
           onInput={handleInput}
@@ -43,22 +49,21 @@ export default function ContactForm() {
       </div>
       <button
         type={`submit`}
+        disabled={!canSubmit}
         id={`bb-contact-submit`}
         data-testid={`button-submit-contact`}
         aria-describedby={`bb-contact-delivery-note`}
         className={`bb-button bb-submit bb-contact-submit`}
       >
-        Send message <Send size={15} aria-hidden={`true`} />
+        {submitting ? `Saving Message…` : `Send Message`} <Send size={15} aria-hidden={`true`} />
       </button>
       <p id={`bb-contact-delivery-note`} className={`bb-contact-delivery-note bb-field-full`}>
-        Opens a draft in your email app. Send it from there to reach the studio.
+        Your message is saved securely for the studio to review and reply.
       </p>
-      {draftCreated && (
-        <div role={`status`} id={`bb-contact-draft-status`} className={`bb-contact-draft-status bb-field-full`} data-testid={`status-contact-draft`}>
-          <p id={`bb-contact-draft-message`} className={`bb-contact-draft-message`}>Finish sending your message in your email app.</p>
-          <a id={`bb-contact-email-fallback`} className={`bb-contact-email-fallback`} href={`mailto:${siteContact.email}`}>
-            Email the studio <ArrowUpRight size={14} aria-hidden={`true`} />
-          </a>
+      {error && <p role={`alert`} id={`bb-contact-error`} className={`bb-submission-error bb-field-full`}>{error}</p>}
+      {submitted && (
+        <div role={`status`} id={`bb-contact-saved-status`} className={`bb-contact-saved-status bb-field-full`} data-testid={`status-contact-saved`}>
+          <p id={`bb-contact-saved-message`} className={`bb-contact-saved-message`}>Your message has been saved. The studio can reply using the contact details you shared.</p>
         </div>
       )}
     </form>

@@ -4,6 +4,7 @@ import { themePalettes, themeTokens, type ThemeMode } from '@/styles/theme/theme
 export { themePalettes, type ThemeMode, type ThemePalette } from '@/styles/theme/theme';
 
 export const THEME_STORAGE_KEY = `bengali-blush.theme.v1`;
+export const GUEST_THEME_STORAGE_KEY = `bengali-blush.theme.guest.v1`;
 
 export const isThemeMode = (value: unknown): value is ThemeMode => value === `light` || value === `dark`;
 
