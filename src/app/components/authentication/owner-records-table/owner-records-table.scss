@@ -1,0 +1,31 @@
+.bb-owner-records { min-width: 0; margin: 32px 0 0; }
+.bb-owner-records-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.bb-owner-records-title { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 26px; font-weight: 500; }
+.bb-owner-records-view-all { display: inline-flex; align-items: center; gap: 6px; color: var(--bb-highlight, hsl(var(--primary))); font-size: 10px; }
+.bb-owner-records-view-all:hover { text-decoration: underline; text-underline-offset: 3px; }
+.bb-owner-records-empty { margin: 0; border: 1px dashed hsl(var(--primary) / .2); border-radius: 10px; padding: 24px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 12px; line-height: 1.7; }
+.bb-owner-table-wrap { overflow-x: auto; border: 1px solid hsl(var(--primary) / .15); border-radius: 12px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-owner-table { width: 100%; border-collapse: collapse; color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 11px; text-align: left; }
+.bb-owner-table th, .bb-owner-table td { border-bottom: 1px solid hsl(var(--primary) / .1); padding: 15px 18px; vertical-align: top; }
+.bb-owner-table th { padding-block: 13px; background: hsl(var(--primary) / .035); color: var(--bb-highlight, hsl(var(--primary))); font-size: 9px; font-weight: 600; white-space: nowrap; }
+.bb-owner-table tr:last-child td { border-bottom: 0; }
+.bb-owner-table tbody tr { transition: background-color .2s ease; }
+.bb-owner-table tbody tr:hover { background: hsl(var(--primary) / .025); }
+.bb-owner-table-caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.bb-owner-user-number, .bb-owner-submission-number { font-family: var(--app-font-mono); font-size: 10px; }
+.bb-owner-user-account { min-width: 190px; }
+.bb-owner-user-name, .bb-owner-user-email { display: block; overflow-wrap: anywhere; }
+.bb-owner-user-name { margin-bottom: 5px; font-weight: 600; }
+.bb-owner-user-email { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-owner-user-role, .bb-owner-user-provider, .bb-owner-user-created { white-space: nowrap; }
+.bb-owner-user-created { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-owner-records-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 16px; }
+.bb-owner-records-search { display: flex; min-width: 0; max-width: 320px; flex: 1 1 200px; align-items: center; gap: 8px; border: 1px solid hsl(var(--primary) / .17); border-radius: 8px; padding: 0 12px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
+.bb-owner-records-search:focus-within { outline: 2px solid hsl(var(--primary) / .35); outline-offset: 2px; }
+.bb-owner-records-search-input { width: 100%; min-width: 0; min-height: 40px; border: 0; outline: 0; background: transparent; color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 11px; }
+.bb-owner-records-filter { min-height: 40px; max-width: 180px; border: 1px solid hsl(var(--primary) / .17); border-radius: 8px; padding: 8px 12px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 11px; }
+.bb-owner-records-filter-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-owner-records-results { margin-left: auto; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-owner-records-filter:focus-visible, .bb-owner-records-view-all:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+@media (max-width: 480px) { .bb-owner-table th, .bb-owner-table td { padding: 13px; } .bb-owner-records-search-input, .bb-owner-records-filter { font-size: 16px; } .bb-owner-records-results { width: 100%; margin: 0; } }
+@media (prefers-reduced-motion: reduce) { .bb-owner-table tbody tr { transition: none; } }

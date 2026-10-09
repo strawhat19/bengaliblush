@@ -9,7 +9,7 @@ import ThemeToggle from '@/app/components/navigation/theme-toggle/theme-toggle';
 import { useEffect, useState, type MouseEvent, type CSSProperties } from 'react';
 import ProfileMenu from '@/app/components/authentication/profile-menu/profile-menu';
 import NotificationsMenu from '@/app/components/navigation/notifications-menu/notifications-menu';
-import { Bell, Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, UserRound, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, WandSparkles, LayoutDashboard } from 'lucide-react';
+import { Bell, Home, Info, LogIn, Quote, Users, MapPin, Package, BookOpen, FileText, UserPlus, UserRound, CreditCard, ReceiptText, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, MessageCircle, WandSparkles, LayoutDashboard } from 'lucide-react';
 
 export type HeaderWidth = 'boxed' | 'full';
 
@@ -22,7 +22,7 @@ type HeaderProps = {
   cartButtonFilled?: boolean;
 };
 
-const navigationIcons = { Bell, Home, Info, LogIn, Quote, MapPin, BookOpen, FileText, UserPlus, UserRound, ShieldCheck, ShoppingBag, WandSparkles, LayoutDashboard };
+const navigationIcons = { Bell, Home, Info, LogIn, Quote, Users, MapPin, Package, BookOpen, FileText, UserPlus, UserRound, CreditCard, ReceiptText, ShieldCheck, CalendarDays, ShoppingBag, MessageCircle, WandSparkles, LayoutDashboard };
 const navigationItems = navigationRoutes.map((route) => ({
   ...route,
   locator: route.section ?? route.href.slice(1),

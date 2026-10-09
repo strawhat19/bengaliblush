@@ -1,15 +1,26 @@
-.bb-owner-submission { border: 1px solid hsl(var(--primary) / .14); border-radius: 12px; padding: 22px; background: hsl(var(--card)); }
-.bb-owner-submission-heading { display: flex; align-items: center; gap: 10px; color: hsl(var(--primary)); }
-.bb-owner-submission-title { flex: 1; min-width: 0; margin: 0; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
-.bb-owner-submission-number { font-family: var(--app-font-mono); font-size: 10px; }
-.bb-owner-submission-details { display: flex; flex-wrap: wrap; gap: 15px 30px; margin: 20px 0; }
-.bb-owner-submission-detail { display: grid; gap: 5px; }
-.bb-owner-submission-label { color: hsl(var(--muted-foreground)); font-size: 10px; }
-.bb-owner-submission-value { margin: 0; font-size: 12px; overflow-wrap: anywhere; }
-.bb-owner-submission-message { margin: 20px 0; font-size: 12px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
-.bb-owner-submission-received { margin: 16px 0; color: hsl(var(--muted-foreground)); font-size: 10px; }
-.bb-owner-status-label { margin-left: auto; color: hsl(var(--muted-foreground)); font-size: 10px; }
-.bb-owner-status-select { border: 1px solid hsl(var(--primary) / .2); border-radius: 6px; padding: 7px 10px; background: hsl(var(--card)); color: hsl(var(--foreground)); font-size: 11px; }
+.bb-owner-submission-request { min-width: 190px; max-width: 300px; }
+.bb-owner-submission-title, .bb-owner-submission-service, .bb-owner-submission-email { display: block; overflow-wrap: anywhere; }
+.bb-owner-submission-title { color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 11px; font-weight: 600; line-height: 1.5; }
+.bb-owner-submission-service { margin-top: 5px; color: var(--bb-highlight, hsl(var(--primary))); font-size: 10px; }
+.bb-owner-submission-email { margin-top: 4px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-owner-submission-details { margin-top: 10px; }
+.bb-owner-submission-summary { display: inline-flex; align-items: center; gap: 6px; border-radius: 3px; color: var(--bb-highlight, hsl(var(--primary))); font-size: 10px; cursor: pointer; list-style: none; }
+.bb-owner-submission-summary::-webkit-details-marker { display: none; }
+.bb-owner-submission-summary:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.bb-owner-submission-summary > svg { transition: transform .2s ease; }
+.bb-owner-submission-details[open] .bb-owner-submission-summary > svg { transform: rotate(180deg); }
+.bb-owner-submission-message { margin: 10px 0 0; border-left: 2px solid hsl(var(--primary) / .2); padding-left: 10px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; }
+.bb-owner-submission-submitter { min-width: 100px; }
+.bb-owner-submission-attribution { display: inline-flex; align-items: center; gap: 5px; color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 10px; }
+.bb-owner-submission-account-name { display: block; max-width: 150px; margin-top: 6px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; overflow-wrap: anywhere; }
+.bb-owner-submission-received, .bb-owner-submission-preferred-time { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; white-space: nowrap; }
+.bb-owner-submission-date, .bb-owner-submission-time { display: block; }
+.bb-owner-submission-time { margin-top: 5px; }
+.bb-owner-submission-status-cell { min-width: 145px; }
+.bb-owner-submission-status-cell .actionsCell { flex-direction: column; align-items: flex-start; gap: 8px; }
+.bb-owner-status-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; }
+.bb-owner-status-select { width: 100%; max-width: 140px; min-height: 32px; border: 1px solid hsl(var(--primary) / .2); border-radius: 6px; padding: 6px 8px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 10px; }
 .bb-owner-status-select:disabled { opacity: .6; cursor: wait; }
 .bb-owner-status-select:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
-@media (max-width: 480px) { .bb-owner-submission { padding: 18px; } .bb-owner-status-label { margin-left: 0; } }
+@media (max-width: 480px) { .bb-owner-status-select { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { .bb-owner-submission-summary > svg { transition: none; } }

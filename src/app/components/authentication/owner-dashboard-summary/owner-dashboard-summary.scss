@@ -1,0 +1,41 @@
+.bb-owner-dashboard-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 8px; margin: 18px 0 24px; }
+.bb-owner-dashboard-count { display: grid; min-width: 0; min-height: 40px; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 7px; border: 1px solid hsl(var(--primary) / .15); border-radius: 999px; padding: 8px 12px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-highlight, hsl(var(--primary))); transition: border-color .2s ease, background-color .2s ease; }
+a.bb-owner-dashboard-count:hover { border-color: hsl(var(--primary) / .4); background: hsl(var(--primary) / .04); }
+.bb-owner-dashboard-count:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.bb-owner-count-arrow { grid-column: 4; opacity: .5; }
+.bb-owner-dashboard-count-value { grid-column: 3; font-family: var(--app-font-serif); font-size: 18px; font-weight: 500; line-height: 1; }
+.bb-owner-dashboard-count-label { min-width: 0; grid-column: 2; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; line-height: 1.35; overflow-wrap: anywhere; }
+.bb-owner-dashboard-charts { display: flex; flex-wrap: wrap; gap: 18px; }
+.bb-owner-dashboard-charts > .bb-owner-chart-panel { flex: 1 1 220px; }
+.bb-owner-dashboard-charts > #bb-owner-activity { flex: 1.6 1 280px; }
+.bb-owner-chart-panel { min-width: 0; border: 1px solid hsl(var(--primary) / .15); border-radius: 12px; padding: 22px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-owner-chart-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 20px; }
+.bb-owner-chart-title { margin: 0; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 23px; font-weight: 500; }
+.bb-owner-chart-caption, .bb-owner-chart-note { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-owner-chart-note { margin: 16px 0 0; line-height: 1.5; }
+.bb-owner-chart-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.bb-owner-chart-key { display: inline-flex; align-items: center; gap: 5px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; }
+.bb-owner-chart-key > span { width: 7px; height: 7px; border-radius: 2px; }
+.bb-owner-chart-key.is-users > span, .bb-owner-activity-bar.is-users { background: #8d3047; }
+.bb-owner-chart-key.is-contacts > span, .bb-owner-activity-bar.is-contacts { background: #d4a017; }
+.bb-owner-chart-key.is-appointments > span, .bb-owner-activity-bar.is-appointments { background: #b98b97; }
+.bb-owner-chart-key.is-orders > span, .bb-owner-activity-bar.is-orders { background: #64748b; }
+.bb-owner-chart-key.is-reviews > span, .bb-owner-activity-bar.is-reviews { background: #16a34a; }
+.bb-owner-chart-key.is-notifications > span, .bb-owner-activity-bar.is-notifications { background: #78659b; }
+.bb-owner-activity-bars { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.bb-owner-activity-month { display: grid; gap: 9px; }
+.bb-owner-activity-group { display: flex; height: 140px; align-items: flex-end; justify-content: center; gap: 3px; border-bottom: 1px solid hsl(var(--primary) / .12); background: repeating-linear-gradient(to top, transparent 0, transparent calc(25% - 1px), hsl(var(--primary) / .05) calc(25% - 1px), hsl(var(--primary) / .05) 25%); }
+.bb-owner-activity-bar { width: 100%; max-width: 12px; height: var(--bb-bar-height); border-radius: 3px 3px 0 0; transition: height .4s ease; }
+.bb-owner-activity-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; text-align: center; }
+.bb-owner-status-chart-content { display: grid; justify-items: center; gap: 20px; }
+.bb-owner-status-donut { display: grid; width: 132px; height: 132px; place-items: center; border-radius: 50%; }
+.bb-owner-status-donut-center { display: grid; width: 104px; height: 104px; align-content: center; justify-items: center; gap: 5px; border-radius: 50%; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-owner-status-total { color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 32px; font-weight: 500; line-height: 1; }
+.bb-owner-status-total-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; }
+.bb-owner-status-legend { display: grid; width: 100%; min-width: 0; gap: 13px; margin: 0; padding: 0; list-style: none; }
+.bb-owner-status-legend-item { display: flex; min-width: 0; align-items: center; gap: 7px; font-size: 10px; }
+.bb-owner-status-legend-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; }
+.bb-owner-status-legend-label { min-width: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); overflow-wrap: anywhere; }
+.bb-owner-status-legend-count { flex: none; margin-left: auto; font-weight: 600; }
+@media (max-width: 480px) { .bb-owner-chart-panel { padding: 18px; } }
+@media (prefers-reduced-motion: reduce) { .bb-owner-dashboard-count, .bb-owner-activity-bar { transition: none; } }

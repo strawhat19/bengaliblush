@@ -1,8 +1,10 @@
+'use client';
+
 import Image from 'next/image';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { getBlogArticle } from '@/shared/blog/blog-utils';
+import { useCatalog } from '@/shared/shop/catalog-context';
 import type { BlogArticle } from '@/shared/blog/blog-types';
-import { services } from '@/shared/services/service-content';
 import BlogCard from '@/app/components/blog/blog-card/blog-card';
 import Link from '@/app/components/navigation/page-link/page-link';
 import type { ServiceDetails } from '@/shared/services/service-types';
@@ -16,8 +18,9 @@ type ServiceDetailsPageProps = {
 };
 
 const ServiceDetailsPage = ({ service }: ServiceDetailsPageProps) => {
+  const { services } = useCatalog();
   const pageId = `bb-service-details-${service.id}`;
-  const otherServices = services.filter((otherService) => otherService.id !== service.id).slice(0, 3);
+  const otherServices = services.records.filter((otherService) => otherService.id !== service.id).slice(0, 3);
   const relatedArticles = service.relatedBlogSlugs
     .map(getBlogArticle)
     .filter((article): article is BlogArticle => Boolean(article))
@@ -76,15 +79,16 @@ const ServiceDetailsPage = ({ service }: ServiceDetailsPageProps) => {
                 <div id={`${pageId}-visual`} className={`bb-service-details-visual`}>
                   <OrnamentalArch id={`${pageId}-visual-ornament`} />
                   <div id={`${pageId}-visual-clip`} className={`bb-service-details-visual-clip`}>
-                    <Image
+                    {service.image ? <Image
                       fill
                       priority
+                      unoptimized={/^https?:\/\//.test(service.image)}
                       src={service.image}
                       alt={service.imageAlt}
                       id={`${pageId}-image`}
                       className={`bb-service-details-image`}
                       sizes={`(max-width: 850px) calc(100vw - 36px), 540px`}
-                    />
+                    /> : <WandSparkles className={`bb-service-details-placeholder`} size={64} aria-hidden={`true`} />}
                   </div>
                 </div>
                 <figcaption id={`${pageId}-caption`} className={`bb-service-details-caption`}>Illustrative style inspiration for {service.name.toLowerCase()}.</figcaption>
@@ -97,11 +101,11 @@ const ServiceDetailsPage = ({ service }: ServiceDetailsPageProps) => {
             <section id={`${pageId}-overview`} className={`bb-service-details-overview`} aria-labelledby={`${pageId}-overview-heading`}>
               <span id={`${pageId}-overview-eyebrow`} className={`bb-eyebrow`}>The Details</span>
               <h2 id={`${pageId}-overview-heading`} className={`bb-service-details-section-heading`}>Your Appointment</h2>
-              {service.overview.map((paragraph, index) => (
+              {service.overview.length ? service.overview.map((paragraph, index) => (
                 <p id={`${pageId}-overview-paragraph-${index}`} className={`bb-service-details-paragraph`} key={`${service.id}-overview-${index}`}>{paragraph}</p>
-              ))}
+              )) : <p id={`${pageId}-overview-description`} className={`bb-service-details-paragraph`}>{service.description}</p>}
             </section>
-            <section id={`${pageId}-highlights`} className={`bb-service-details-highlights`} aria-labelledby={`${pageId}-highlights-heading`}>
+            {Boolean(service.highlights.length) && <section id={`${pageId}-highlights`} className={`bb-service-details-highlights`} aria-labelledby={`${pageId}-highlights-heading`}>
               <h2 id={`${pageId}-highlights-heading`} className={`bb-service-details-section-heading`}>What To Expect</h2>
               <ul id={`${pageId}-highlights-list`} className={`bb-service-details-highlights-list`}>
                 {service.highlights.map((highlight, index) => (
@@ -111,7 +115,7 @@ const ServiceDetailsPage = ({ service }: ServiceDetailsPageProps) => {
                   </li>
                 ))}
               </ul>
-            </section>
+            </section>}
             {service.faqs.length ? (
               <section id={`${pageId}-faqs`} className={`bb-service-details-faqs`} aria-labelledby={`${pageId}-faqs-heading`}>
                 <h2 id={`${pageId}-faqs-heading`} className={`bb-service-details-section-heading`}>Common Questions</h2>
@@ -130,11 +134,11 @@ const ServiceDetailsPage = ({ service }: ServiceDetailsPageProps) => {
           <aside id={`${pageId}-preparation`} className={`bb-service-details-preparation`} aria-labelledby={`${pageId}-preparation-heading`}>
             <WandSparkles size={22} className={`bb-service-details-preparation-icon`} aria-hidden={`true`} />
             <h2 id={`${pageId}-preparation-heading`} className={`bb-service-details-preparation-heading`}>Before Your Visit</h2>
-            <ul id={`${pageId}-preparation-list`} className={`bb-service-details-preparation-list`}>
+            {service.preparation.length ? <ul id={`${pageId}-preparation-list`} className={`bb-service-details-preparation-list`}>
               {service.preparation.map((step, index) => (
                 <li id={`${pageId}-preparation-step-${index}`} className={`bb-service-details-preparation-step`} key={`${service.id}-preparation-${index}`}>{step}</li>
               ))}
-            </ul>
+            </ul> : <p id={`${pageId}-preparation-note`} className={`bb-service-details-paragraph`}>Confirm appointment details and preparation with the studio before your visit.</p>}
             <Link id={`${pageId}-preparation-contact`} className={`bb-service-details-preparation-contact`} href={siteRoutes.contact.href}>
               Plan Your Visit <ArrowUpRight size={15} aria-hidden={`true`} />
             </Link>

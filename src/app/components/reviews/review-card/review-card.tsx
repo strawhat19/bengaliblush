@@ -13,27 +13,28 @@ const ReviewCard = ({ review }: ReviewCardProps) => (
     className={`bb-review-card`}
     aria-labelledby={`bb-review-card-heading-${review.id}`}
   >
-    <div id={`bb-review-card-portrait-frame-${review.id}`} className={`bb-review-card-portrait-frame`}>
+    {review.image && <div id={`bb-review-card-portrait-frame-${review.id}`} className={`bb-review-card-portrait-frame`}>
       <div id={`bb-review-card-portrait-${review.id}`} className={`bb-review-card-portrait`}>
-        <Image
+        {review.image && <Image
           fill
+          unoptimized={/^https?:\/\//.test(review.image)}
           src={review.image}
           alt={review.imageAlt}
           className={`bb-review-card-image`}
           id={`bb-review-card-image-${review.id}`}
           sizes={`(max-width: 600px) calc(100vw - 70px), (max-width: 900px) 45vw, 350px`}
-        />
+        />}
         <span id={`bb-review-card-portrait-label-${review.id}`} className={`bb-review-card-portrait-label`}>
           The Bengali Blush Feeling
         </span>
       </div>
       <OrnamentalArch id={`bb-review-card-portrait-arch-${review.id}`} />
-    </div>
+    </div>}
     <div id={`bb-review-card-copy-${review.id}`} className={`bb-review-card-copy`}>
       <div
         className={`bb-review-card-rating`}
         id={`bb-review-card-rating-${review.id}`}
-        aria-label={`Sample rating: ${review.rating} out of 5 stars`}
+        aria-label={`Rating: ${review.rating} out of 5 stars`}
       >
         {Array.from({ length: 5 }, (_, index) => (
           <Star
@@ -48,7 +49,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => (
         ))}
       </div>
       <h3 id={`bb-review-card-heading-${review.id}`} className={`bb-review-card-heading`}>
-        {review.heading.first} <em>{review.heading.accent}</em> {review.heading.last}.
+        {review.heading.first || review.heading.accent || review.heading.last ? <>{review.heading.first} <em>{review.heading.accent}</em> {review.heading.last}</> : review.service || `Shared With Love`}
       </h3>
       <blockquote id={`bb-review-card-quote-${review.id}`} className={`bb-review-card-quote`}>
         <Quote size={22} strokeWidth={1.2} aria-hidden={`true`} className={`bb-review-card-quote-mark`} />

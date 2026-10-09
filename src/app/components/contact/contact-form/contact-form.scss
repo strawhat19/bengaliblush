@@ -1,3 +1,5 @@
+@use '../../booking/booking-form/booking-form';
+
 .bb-contact-form { gap: 27px; }
 .bb-contact-form .bb-contact-message { min-height: 145px; }
 .bb-contact-field-help { color: hsl(340 24% 27%); font-size: 11px; line-height: 1.6; }

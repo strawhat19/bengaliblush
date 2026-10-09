@@ -9,6 +9,7 @@ export type PageTransitionRequest = {
 };
 
 export type SessionTransition = {
+  covered: Promise<void>;
   cancel: () => void;
   complete: (navigate: () => void) => void;
 };

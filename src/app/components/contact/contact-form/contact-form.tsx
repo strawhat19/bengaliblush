@@ -2,14 +2,12 @@
 
 import { Send } from 'lucide-react';
 import { useContactForm } from './use-contact-form';
-import SubmissionAuthNote from '@/app/components/submissions/submission-auth-note/submission-auth-note';
 
 export default function ContactForm() {
   const { error, contact, submitting, submitted, canSubmit, setContact, handleInput, handleSubmit, contactInputRef } = useContactForm();
 
   return (
     <form id={`bb-contact-form`} aria-busy={submitting} className={`bb-booking-form bb-contact-form`} onSubmit={handleSubmit} data-testid={`form-contact`}>
-      <SubmissionAuthNote idPrefix={`bb-contact`} action={`send your message`} />
       <div id={`bb-contact-reply-field`} className={`bb-field bb-field-full`}>
         <label id={`bb-contact-reply-label`} htmlFor={`bb-contact-reply`}>Email or phone number</label>
         <input
@@ -58,12 +56,12 @@ export default function ContactForm() {
         {submitting ? `Saving Message…` : `Send Message`} <Send size={15} aria-hidden={`true`} />
       </button>
       <p id={`bb-contact-delivery-note`} className={`bb-contact-delivery-note bb-field-full`}>
-        Your message is saved securely for the studio to review and reply.
+        Your message is saved securely for the studio to review. No account is needed.
       </p>
       {error && <p role={`alert`} id={`bb-contact-error`} className={`bb-submission-error bb-field-full`}>{error}</p>}
       {submitted && (
         <div role={`status`} id={`bb-contact-saved-status`} className={`bb-contact-saved-status bb-field-full`} data-testid={`status-contact-saved`}>
-          <p id={`bb-contact-saved-message`} className={`bb-contact-saved-message`}>Your message has been saved. The studio can reply using the contact details you shared.</p>
+          <p id={`bb-contact-saved-message`} className={`bb-contact-saved-message`}>Your message has been saved for the studio to review. The studio can reply using the contact details you shared.</p>
         </div>
       )}
     </form>

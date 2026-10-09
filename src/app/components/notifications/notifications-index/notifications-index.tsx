@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Bell, CheckCheck, RotateCcw } from 'lucide-react';
 import { useNotifications } from '@/shared/notifications/notifications-context';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
@@ -9,6 +10,7 @@ import './notifications-index.scss';
 const NotificationsIndex = () => {
   const { error, notice, reload, loading, markRead, markAllRead, unreadCount, notifications } = useNotifications();
   const notificationCount = notifications.length;
+  useEffect(() => { void reload(); }, [reload]);
 
   return (
     <div id={`bb-notifications-page`} className={`bb-notifications-index`}>
@@ -44,6 +46,8 @@ const NotificationsIndex = () => {
                 {loading ? `Loading updates` : `${notificationCount} ${notificationCount === 1 ? `notification` : `notifications`} · ${unreadCount} unread`}
               </p>
             </div>
+            <div id={`bb-notifications-page-toolbar-actions`} className={`bb-notifications-page-toolbar-actions`}>
+              <button type={`button`} disabled={loading} id={`bb-notifications-page-refresh`} className={`bb-button bb-button-outline-dark bb-notifications-page-action`} onClick={() => { void reload(); }}><RotateCcw size={15} aria-hidden={`true`} />Refresh</button>
             {!loading && unreadCount > 0 && (
               <button
                 type={`button`}
@@ -55,6 +59,7 @@ const NotificationsIndex = () => {
                 Mark All Read
               </button>
             )}
+            </div>
           </div>
           <div id={`bb-notifications-page-list`} className={`bb-notifications-page-list`} aria-busy={loading}>
             {loading ? (
@@ -96,6 +101,7 @@ const NotificationsIndex = () => {
               </button>
             </div>
           )}
+          <p id={`bb-notifications-page-read-note`} className={`bb-notifications-page-feedback`}>Read status is specific to this browser.</p>
           {notice && <p id={`bb-notifications-page-notice`} className={`bb-notifications-page-feedback`} role={`status`}>{notice}</p>}
         </div>
       </section>

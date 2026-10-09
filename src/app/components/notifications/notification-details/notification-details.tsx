@@ -5,6 +5,7 @@ import useNotificationDetails from './use-notification-details';
 import Link from '@/app/components/navigation/page-link/page-link';
 import { Heart, ArrowLeft, RotateCcw, Construction } from 'lucide-react';
 import type { Notification } from '@/shared/notifications/notification-types';
+import { getNotificationSpacing } from '@/shared/notifications/notification-utils';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import './notification-details.scss';
 
@@ -41,6 +42,7 @@ const NotificationDetails = ({ notification }: NotificationDetailsProps) => {
               <h1 id={`bb-notification-details-heading-${detailId}`} className={`bb-notification-details-heading`}>{notification.title}</h1>
               <p id={`bb-notification-details-body-${detailId}`} className={`bb-notification-details-body`}>
                 {notification.body}
+                {getNotificationSpacing(notification.body, notification.link?.label)}
                 {notification.link && (
                   <Link
                     href={notification.link.href}
@@ -50,7 +52,7 @@ const NotificationDetails = ({ notification }: NotificationDetailsProps) => {
                     {notification.link.label}
                   </Link>
                 )}
-                {notification.suffix}
+                {getNotificationSpacing(notification.link?.label ?? notification.body, notification.suffix)}{notification.suffix}
               </p>
               <dl id={`bb-notification-details-meta-${detailId}`} className={`bb-notification-details-meta`}>
                 <div id={`bb-notification-details-number-${detailId}`} className={`bb-notification-details-meta-item`}>
@@ -62,7 +64,7 @@ const NotificationDetails = ({ notification }: NotificationDetailsProps) => {
                   <dd id={`bb-notification-details-kind-value-${detailId}`} className={`bb-notification-details-meta-value`}>{notificationLabels[notification.kind]}</dd>
                 </div>
                 <div id={`bb-notification-details-status-${detailId}`} className={`bb-notification-details-meta-item`}>
-                  <dt id={`bb-notification-details-status-label-${detailId}`} className={`bb-notification-details-meta-label`}>Status</dt>
+                  <dt id={`bb-notification-details-status-label-${detailId}`} className={`bb-notification-details-meta-label`}>Read On This Browser</dt>
                   <dd id={`bb-notification-details-status-value-${detailId}`} className={`bb-notification-details-meta-value`} role={`status`}>
                     {loading ? `Loading` : error ? `Unavailable` : isRead ? `Read` : `Unread`}
                   </dd>

@@ -3,7 +3,7 @@ import './status-cell.scss';
 export const getStatusLabel = (status: string) => `${status?.[0]?.toUpperCase() ?? ``}${status.slice(1)}`;
 
 const StatusCell = ({ id, status }: { id: string; status: string }) => {
-  const color = status === `declined` ? `red` : [`owner`, `confirmed`, `completed`].includes(status) ? `green` : `gray`;
+  const color = [`declined`, `archived`, `cancelled`].includes(status) ? `red` : [`owner`, `active`, `published`, `confirmed`, `completed`, `fulfilled`].includes(status) ? `green` : `gray`;
 
   return (
     <span id={`${id}-status`} className={`rowStatus is-${color}`}>

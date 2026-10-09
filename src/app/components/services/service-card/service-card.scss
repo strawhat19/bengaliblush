@@ -37,3 +37,4 @@
     &:hover, &:hover .bb-service-card-image, &:hover .bb-service-card-details svg { transform: none; }
   }
 }
+.bb-service-card-placeholder { inset: 0; margin: auto; position: absolute; color: hsl(var(--primary)); }

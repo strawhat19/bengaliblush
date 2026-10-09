@@ -25,7 +25,7 @@ const ProductCard = ({ product, idPrefix = `bb-shop-card` }: ProductCardProps) =
     >
       <Link
         id={`${cardId}-artwork-link`}
-        href={getProductHref(product.id)}
+        href={getProductHref(product)}
         className={`bb-shop-card-visual${product.image ? ` has-photo` : ``}`}
         aria-label={`Explore ${product.name}`}
       >
@@ -36,7 +36,7 @@ const ProductCard = ({ product, idPrefix = `bb-shop-card` }: ProductCardProps) =
         </span>
       </Link>
       <div id={`${cardId}-body`} className={`bb-shop-card-body`}>
-        <Link id={`${cardId}-title-link`} className={`bb-shop-card-title-link`} href={getProductHref(product.id)}>
+        <Link id={`${cardId}-title-link`} className={`bb-shop-card-title-link`} href={getProductHref(product)}>
           <h3 id={`${cardId}-title`} className={`bb-shop-card-title`}>{product.name}</h3>
         </Link>
         <p id={`${cardId}-description`} className={`bb-shop-card-description`}>{product.description}</p>

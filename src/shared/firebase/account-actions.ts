@@ -148,6 +148,7 @@ export const deleteAccount = async (input: AccountActionInput): Promise<void> =>
   }
   await deleteOwnSubmissions(session, `contactSubmissions`);
   await deleteOwnSubmissions(session, `appointmentSubmissions`);
+  await deleteOwnSubmissions(session, `orders`);
   session = await readAccountSession(session.firebaseUser, input.expectedAccountId);
   if (!session.deleting) throw new Error(`Account Data Needs Attention`);
   if (session.account) {

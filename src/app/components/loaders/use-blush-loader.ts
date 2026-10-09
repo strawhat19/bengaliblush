@@ -36,18 +36,21 @@ export const useBlushLoader = () => {
     if (!overlay || !number || !status || !pageName || !liquidPath) return;
 
     const reducedMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches;
+    const settleDuration = reducedMotion ? 0 : 320;
     const completionDuration = reducedMotion ? 60 : 240;
     const entranceDuration = reducedMotion ? 0 : 680;
     const exitDuration = reducedMotion ? 120 : 620;
     let committedPathname = initialPathnameRef.current;
     let destinationPathname = committedPathname;
     let resourcesReady = document.readyState === `complete`;
+    let coveredAt: number | null = null;
     let completionStartedAt: number | null = null;
     let exitStartedAt: number | null = null;
     let lastStatus: string = loaderStatuses[0].label;
     let pageContentReady = true;
     let waitingForRoute = false;
     let waitingForSession = false;
+    let sessionLoad = false;
     let transitionLoad = false;
     let heroRevealPaused = false;
     let entrancePainted = false;
@@ -56,7 +59,7 @@ export const useBlushLoader = () => {
     let replayedPopState: PopStateEvent | null = null;
     let pendingHistory: { href: string; state: unknown } | null = null;
     let loading = false;
-    let startedAt = 0;
+    let startedAt: number | null = null;
     let lastRounded = -1;
     let hideTimer = 0;
     let fallbackTimer = 0;
@@ -64,6 +67,7 @@ export const useBlushLoader = () => {
     let effectActive = true;
     let sessionController: SessionTransition | null = null;
     let invalidateSession: ((detached: boolean) => void) | null = null;
+    const coverResolvers = new Set<() => void>();
     const backgroundElements = new Map<HTMLElement, boolean>();
 
     document.documentElement.classList.add(`bb-motion-ready`);
@@ -115,6 +119,10 @@ export const useBlushLoader = () => {
       backgroundElements.forEach((inert, element) => { element.inert = inert; });
       backgroundElements.clear();
     };
+    const releaseCover = () => {
+      coverResolvers.forEach((resolve) => resolve());
+      coverResolvers.clear();
+    };
 
     const hide = () => {
       if (waitingForSession) return;
@@ -124,6 +132,7 @@ export const useBlushLoader = () => {
       overlay.inert = true;
       overlay.setAttribute(`aria-hidden`, `true`);
       contentObserver.disconnect();
+      releaseCover();
       releaseBackground();
       window.clearTimeout(fallbackTimer);
       document.body.classList.remove(`bb-page-loading`);
@@ -179,8 +188,9 @@ export const useBlushLoader = () => {
           return;
         }
       } else {
+        startedAt ??= now;
         const elapsed = now - startedAt;
-        const minimumDuration = reducedMotion ? 120 : transitionLoad ? entranceDuration : 640;
+        const minimumDuration = reducedMotion ? 120 : transitionLoad ? 0 : 640;
         if (transitionLoad && !coverReady) {
           if (!reducedMotion) paintLiquidEdge(Math.min(1, elapsed / entranceDuration));
           if (elapsed >= entranceDuration) {
@@ -191,12 +201,17 @@ export const useBlushLoader = () => {
             // Let the fully covered frame paint before handing navigation to Next.
             if (entrancePainted) {
               coverReady = true;
+              coveredAt = now;
+              releaseCover();
               navigateWhenCovered();
             }
             entrancePainted = true;
           }
         }
-        const canComplete = !waitingForSession && (transitionLoad ? !pendingNavigation && !waitingForRoute && pageContentReady : resourcesReady) && elapsed >= minimumDuration;
+        const readyToReveal = transitionLoad
+          ? coverReady && coveredAt !== null && now - coveredAt >= (sessionLoad ? settleDuration : 0) && !pendingNavigation && !waitingForRoute && pageContentReady
+          : resourcesReady;
+        const canComplete = !waitingForSession && readyToReveal && elapsed >= minimumDuration;
         if (canComplete && completionStartedAt === null) completionStartedAt = now;
         if (completionStartedAt !== null) {
           const completion = Math.min(1, (now - completionStartedAt) / completionDuration);
@@ -226,15 +241,17 @@ export const useBlushLoader = () => {
       loading = true;
       lastRounded = -1;
       lastStatus = loaderStatuses[0].label;
+      sessionLoad = false;
       transitionLoad = transition;
       heroRevealPaused = false;
       entrancePainted = false;
       coverReady = false;
+      coveredAt = null;
       pendingNavigation = navigate ?? null;
       waitingForRoute = transition && !routeReady;
       completionStartedAt = null;
       exitStartedAt = null;
-      startedAt = performance.now();
+      startedAt = null;
       overlay.hidden = false;
       overlay.inert = false;
       overlay.removeAttribute(`aria-hidden`);
@@ -271,6 +288,7 @@ export const useBlushLoader = () => {
       let active = true;
       let detached = false;
       const controller: SessionTransition = {
+        covered: new Promise<void>((resolve) => coverResolvers.add(resolve)),
         cancel: () => {
           if (!active) return;
           active = false;
@@ -309,11 +327,8 @@ export const useBlushLoader = () => {
       waitingForSession = true;
       pendingHistory = null;
       begin(request.pathname, true, request.pathname === committedPathname);
-      coverReady = true;
-      entrancePainted = true;
-      heroRevealPaused = true;
-      paintLiquidEdge(1);
-      document.body.classList.remove(`bb-page-ready`);
+      sessionLoad = true;
+      if (coverReady) releaseCover();
     };
     const replayPendingHistory = () => {
       const destination = pendingHistory;
@@ -372,6 +387,7 @@ export const useBlushLoader = () => {
       waitingForSession = false;
       routeCommittedRef.current = null;
       contentObserver.disconnect();
+      releaseCover();
       releaseBackground();
       window.cancelAnimationFrame(frame);
       window.clearTimeout(hideTimer);

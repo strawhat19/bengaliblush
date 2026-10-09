@@ -1,8 +1,8 @@
 'use client';
 
 import type { Product } from '@/shared/types/storefront';
-import { productCatalog } from '@/shared/shop/shop-content';
-import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { useCatalog } from '@/shared/shop/catalog-context';
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
 import { getStoredCartSnapshot, writeStoredCart } from '@/shared/storage/storefront-storage';
 
 export type CartLine = {
@@ -15,6 +15,10 @@ type ShopContextValue = {
   subtotal: number;
   cart: Product[];
   lines: CartLine[];
+  catalogLoading: boolean;
+  catalogError: string;
+  unavailableProductIds: string[];
+  clearCart: () => void;
   openBag: () => void;
   removeProduct: (id: string) => void;
   decrementProduct: (id: string) => void;
@@ -24,8 +28,8 @@ type ShopContextValue = {
 
 const ShopContext = createContext<ShopContextValue | null>(null);
 
-export const getCartLines = (cart: Product[]): CartLine[] => Array.from(cart.reduce((lines, item) => {
-  const product = productCatalog.find(({ id }) => id === item.id) ?? item;
+export const getCartLines = (cart: Product[], catalog: Product[] = []): CartLine[] => Array.from(cart.reduce((lines, item) => {
+  const product = catalog.find((product) => product.id === item.id || product.slug === item.id) ?? item;
   const line = lines.get(product.id);
   if (line) line.quantity += 1;
   else lines.set(product.id, { product, quantity: 1 });
@@ -47,20 +51,31 @@ export const ShopProvider = ({ cart, onAdd, onOpenBag, children }: {
   onOpenBag: () => void;
   onAdd: (product: Product, quantity?: number) => void;
 }) => {
+  const { products } = useCatalog();
+  useEffect(() => {
+    if (products.loading || products.error) return;
+    const storedCart = getStoredCartSnapshot();
+    const refreshedCart = storedCart.map((item) => products.records.find((product) => product.id === item.id || product.slug === item.id) ?? item);
+    if (refreshedCart.some((item, index) => item !== storedCart[index])) writeStoredCart(refreshedCart);
+  }, [products]);
   const value = useMemo<ShopContextValue>(() => {
-    const lines = getCartLines(cart);
+    const lines = getCartLines(cart, products.records);
     return {
       cart,
       lines,
       count: cart.length,
       addProduct: onAdd,
       openBag: onOpenBag,
+      catalogError: products.error,
+      catalogLoading: products.loading,
+      clearCart: () => writeStoredCart([]),
+      unavailableProductIds: lines.filter(({ product }) => !products.records.some((item) => item.id === product.id)).map(({ product }) => product.id),
       removeProduct: removeCartProduct,
       decrementProduct: decrementCartProduct,
       incrementProduct: (product) => onAdd(product),
       subtotal: lines.reduce((total, { product, quantity }) => total + product.price * quantity, 0),
     };
-  }, [cart, onAdd, onOpenBag]);
+  }, [cart, onAdd, onOpenBag, products]);
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 };

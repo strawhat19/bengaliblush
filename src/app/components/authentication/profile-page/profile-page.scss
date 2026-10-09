@@ -60,6 +60,7 @@
 .bb-profile-metadata { display: flex; align-items: center; gap: 9px; }
 .bb-profile-metadata > svg { flex: none; }
 .bb-profile-role.is-owner .bb-profile-role-icon { color: #d4a017; }
+.bb-profile-role.is-admin .bb-profile-role-icon { color: #2563eb; }
 .bb-profile-role.is-subscriber .bb-profile-role-icon { color: #16a34a; }
 .bb-profile-plan-icon { color: var(--bb-highlight, hsl(var(--primary))); }
 .bb-profile-joined-icon { color: var(--bb-highlight, hsl(var(--primary))); }

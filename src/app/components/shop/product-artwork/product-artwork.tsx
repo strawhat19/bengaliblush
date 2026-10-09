@@ -11,13 +11,14 @@ function ProductBottle({ id, shade }: { id: string; shade: string }) {
 export default function ProductArtwork({ product, context = `card` }: { product: Product; context?: `card` | `category` | `cart` }) {
   const instanceId = useId();
   const artworkId = `bb-product-artwork-${product.id}-${context}-${instanceId}`;
-  if (product.visual === `apparel` && product.image && context !== `category`) return (
+  if (product.image && context !== `category`) return (
     <Image
       id={artworkId}
       className="bb-product-photo"
       src={product.image}
       alt={product.imageAlt ?? product.name}
       fill
+      unoptimized={/^https?:\/\//.test(product.image)}
       sizes={context === `cart` ? `62px` : `(max-width: 800px) 100vw, (max-width: 1050px) 40vw, 36vw`}
     />
   );

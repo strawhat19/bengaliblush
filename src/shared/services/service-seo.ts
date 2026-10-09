@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { services } from './service-content';
 import { getServiceHref } from './service-utils';
 import type { ServiceDetails } from './service-types';
 import { siteRoutes } from '@/shared/navigation/routes';
@@ -9,7 +8,7 @@ const servicesDescription = `Explore free consultations, signature lashes, lash 
 const absoluteUrl = (href: string) => new URL(href, siteUrl).toString();
 
 export const getServicesMetadata = (service?: ServiceDetails): Metadata => {
-  const image = service ?? services.find((item) => item.id === `signature-set`);
+  const image = service;
   const href = service ? getServiceHref(service.slug) : siteRoutes.services.href;
   const title = service ? `${service.name} in Atlanta | ${siteConfig.name}` : `Beauty Services in Atlanta | ${siteConfig.name}`;
   const description = service?.description ?? servicesDescription;
@@ -24,18 +23,18 @@ export const getServicesMetadata = (service?: ServiceDetails): Metadata => {
       description,
       type: `website`,
       siteName: siteConfig.name,
-      images: image ? [{ url: image.image, alt: image.imageAlt }] : [],
+      images: image?.image ? [{ url: image.image, alt: image.imageAlt }] : [],
     },
     twitter: {
       title,
       description,
       card: `summary_large_image`,
-      images: image ? [image.image] : [],
+      images: image?.image ? [image.image] : [],
     },
   };
 };
 
-export const getServicesSchema = (service?: ServiceDetails) => {
+export const getServicesSchema = (service?: ServiceDetails, services: ServiceDetails[] = []) => {
   const price = service?.price === `Free` ? `0` : service?.price.replace(/[^0-9.]/g, ``);
   const href = service ? getServiceHref(service.slug) : siteRoutes.services.href;
   const breadcrumbs = [
@@ -47,7 +46,7 @@ export const getServicesSchema = (service?: ServiceDetails) => {
     '@type': `Service`,
     name: service.name,
     url: absoluteUrl(href),
-    image: absoluteUrl(service.image),
+    ...(service.image ? { image: absoluteUrl(service.image) } : {}),
     serviceType: service.name,
     description: service.description,
     areaServed: { '@type': `City`, name: `Atlanta` },

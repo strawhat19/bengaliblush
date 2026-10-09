@@ -1,6 +1,6 @@
 import { Roles } from '../../types/types';
 
-export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `MapPin` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `ShieldCheck` | `ShoppingBag` | `WandSparkles` | `LayoutDashboard`;
+export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `MapPin` | `Package` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard`;
 
 export type SiteRoute = {
   href: string;
@@ -131,9 +131,93 @@ export const siteRoutes = {
     href: `/dashboard`,
     label: `Dashboard`,
     icon: `LayoutDashboard`,
-    minimumRole: Roles.Owner,
+    minimumRole: Roles.Admin,
     title: `Dashboard | Bengali Blush`,
-    description: `Manage studio accounts and requests`,
+    aliases: [`/admin`],
+    description: `Your studio database at a glance`,
+  },
+  adminUsers: {
+    icon: `Users`,
+    label: `Users`,
+    href: `/admin/users`,
+    minimumRole: Roles.Admin,
+    title: `Users | Bengali Blush`,
+    aliases: [`/dashboard/users`],
+    description: `Review studio accounts and access`,
+  },
+  adminRequests: {
+    label: `Requests`,
+    icon: `MessageCircle`,
+    minimumRole: Roles.Admin,
+    href: `/admin/requests`,
+    title: `Requests | Bengali Blush`,
+    aliases: [`/dashboard/contacts`, `/dashboard/requests`],
+    description: `Review contact messages saved by visitors`,
+  },
+  adminAppointments: {
+    icon: `CalendarDays`,
+    label: `Appointments`,
+    minimumRole: Roles.Admin,
+    href: `/admin/appointments`,
+    title: `Appointments | Bengali Blush`,
+    aliases: [`/dashboard/appointments`],
+    description: `Review appointment requests saved by visitors`,
+  },
+  adminProducts: {
+    icon: `Package`,
+    label: `Products`,
+    href: `/admin/products`,
+    minimumRole: Roles.Admin,
+    title: `Products | Bengali Blush`,
+    description: `Manage the studio product catalog`,
+  },
+  adminShop: {
+    label: `Shop`,
+    icon: `ShoppingBag`,
+    href: `/admin/shop`,
+    minimumRole: Roles.Admin,
+    title: `Shop Management | Bengali Blush`,
+    description: `Review the shop catalog and unpaid orders`,
+  },
+  adminServices: {
+    label: `Services`,
+    icon: `WandSparkles`,
+    href: `/admin/services`,
+    minimumRole: Roles.Admin,
+    title: `Services | Bengali Blush`,
+    description: `Manage studio services and pricing`,
+  },
+  adminOrders: {
+    label: `Orders`,
+    icon: `ReceiptText`,
+    href: `/admin/orders`,
+    minimumRole: Roles.Admin,
+    title: `Orders | Bengali Blush`,
+    description: `Review unpaid shop order requests`,
+  },
+  adminPaymentMethods: {
+    icon: `CreditCard`,
+    label: `Payments`,
+    minimumRole: Roles.Admin,
+    href: `/admin/payment-methods`,
+    title: `Payments | Bengali Blush`,
+    description: `Manage payment method configuration`,
+  },
+  adminReviews: {
+    icon: `Quote`,
+    label: `Reviews`,
+    href: `/admin/reviews`,
+    minimumRole: Roles.Admin,
+    title: `Reviews | Bengali Blush`,
+    description: `Manage published studio reviews`,
+  },
+  adminNotifications: {
+    icon: `Bell`,
+    label: `Notifications`,
+    minimumRole: Roles.Admin,
+    href: `/admin/notifications`,
+    title: `Notifications | Bengali Blush`,
+    description: `Manage draft and published studio notices`,
   },
 } satisfies Record<string, SiteRoute>;
 

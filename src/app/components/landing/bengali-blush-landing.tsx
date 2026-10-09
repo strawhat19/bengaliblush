@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation';
 import { siteContact } from '@/shared/config/site';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { getProductHref } from '@/shared/shop/shop-utils';
-import { productCategories } from '@/shared/shop/shop-content';
+import { CatalogProvider, useCatalog } from '@/shared/shop/catalog-context';
 import ScrollToTop from '@/app/components/effects/scroll-to-top';
 import type { Product, Service } from '@/shared/types/storefront';
 import { BookingContext } from '@/shared/services/booking-context';
 import Link from '@/app/components/navigation/page-link/page-link';
 import LandingMotion from '@/app/components/effects/landing-motion';
-import { sampleTestimonials } from '@/shared/reviews/review-content';
+import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 import Header, { BrandMark } from '@/app/components/navigation/header';
 import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
@@ -207,7 +207,9 @@ function ProductCardCartControl({ product, quantity, isActive, onAdd, onDecremen
 }
 
 function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: Product) => void; onDecrement: (id: string) => void }) {
-  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
+  const { products, categories: productCategories } = useCatalog();
+  const [selectedCategoryIndex, setActiveCategoryIndex] = useState(0);
+  const activeCategoryIndex = Math.min(selectedCategoryIndex, Math.max(0, productCategories.length - 1));
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{ pointerId: number; startX: number; startY: number; deltaX: number; axis: `x` | `y` | null } | null>(null);
@@ -276,7 +278,7 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
             </Link>
           </div>
         </div>
-        <div className="bb-product-slider-viewport" data-reveal>
+        {products.loading || products.error || !productCategories.length ? <CatalogStatus id={`bb-landing-shop-status`} loading={products.loading} error={products.error} empty={`The collection is being prepared. Please check back soon.`} /> : <div className="bb-product-slider-viewport" data-reveal>
           <div
             className={`bb-product-slider-track${isDragging ? ` is-dragging` : ``}`}
             style={{ transform: `translate3d(calc(-${activeCategoryIndex * 100}% + ${dragOffset}px), 0, 0)` }}
@@ -305,7 +307,7 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
                 {category.products.map((product) => (
                   <article className="bb-product-card" id={`product-${product.id}`} key={product.id} data-testid={`card-product-${product.id}`}>
                     <Link
-                      href={getProductHref(product.id)}
+                      href={getProductHref(product)}
                       id={`product-detail-link-${product.id}`}
                       className={`bb-product-visual${product.image ? ` has-photo` : ``}`}
                       aria-label={`Explore ${product.name}`}
@@ -317,7 +319,7 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
                       </span>
                     </Link>
                     <div className="bb-product-info">
-                      <h3><Link href={getProductHref(product.id)} id={`product-name-link-${product.id}`} className={`bb-product-name-link`}>{product.name}</Link></h3>
+                      <h3><Link href={getProductHref(product)} id={`product-name-link-${product.id}`} className={`bb-product-name-link`}>{product.name}</Link></h3>
                       <p>{product.description}</p>
                       <div className="bb-product-bottom"><span className="bb-product-price">${product.price.toFixed(2)}</span><ProductCardCartControl product={product} quantity={quantities[product.id] ?? 0} isActive={categoryIndex === activeCategoryIndex} onAdd={onAdd} onDecrement={onDecrement} /></div>
                     </div>
@@ -350,7 +352,7 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
               <button type="button" onClick={() => showCategory(1)} disabled={activeCategoryIndex === productCategories.length - 1} aria-label="Next shop category" data-testid="button-shop-next"><ChevronRight size={18} /></button>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
     </section>
   );
@@ -359,7 +361,10 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
 const testimonialAutoplayDuration = 6500;
 
 function Reviews() {
-  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
+  const { reviews } = useCatalog();
+  const testimonials = reviews.records;
+  const [selectedTestimonialIndex, setActiveTestimonialIndex] = useState(0);
+  const activeTestimonialIndex = Math.min(selectedTestimonialIndex, Math.max(0, testimonials.length - 1));
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isPointerActive, setIsPointerActive] = useState(false);
@@ -371,7 +376,7 @@ function Reviews() {
   const [progressCycle, setProgressCycle] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const dragRef = useRef<{ pointerId: number; startX: number; startY: number; deltaX: number; axis: `x` | `y` | null } | null>(null);
-  const shouldAutoplay = isInView && isPageVisible && !prefersReducedMotion && !isPointerActive && !isHovering && !isKeyboardActive;
+  const shouldAutoplay = testimonials.length > 1 && isInView && isPageVisible && !prefersReducedMotion && !isPointerActive && !isHovering && !isKeyboardActive;
   const trackStyle = { transform: `translate3d(calc(-${activeTestimonialIndex * 100}% + ${dragOffset}px), 0, 0)` };
   const showTestimonial = (index: number) => {
     setActiveTestimonialIndex(index);
@@ -402,10 +407,10 @@ function Reviews() {
   useEffect(() => {
     if (!shouldAutoplay) return;
     const timer = window.setTimeout(() => {
-      setActiveTestimonialIndex((current) => (current + 1) % sampleTestimonials.length);
+      setActiveTestimonialIndex((current) => (current + 1) % testimonials.length);
     }, testimonialAutoplayDuration);
     return () => window.clearTimeout(timer);
-  }, [activeTestimonialIndex, progressCycle, shouldAutoplay]);
+  }, [activeTestimonialIndex, progressCycle, shouldAutoplay, testimonials.length]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!event.isPrimary || dragRef.current || (event.pointerType === `mouse` && event.button !== 0)) return;
@@ -435,8 +440,8 @@ function Reviews() {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     if (drag.axis === `x`) {
       const threshold = Math.min(90, Math.max(45, event.currentTarget.clientWidth * .14));
-      if (Math.abs(drag.deltaX) >= threshold) {
-        setActiveTestimonialIndex((current) => (current + (drag.deltaX < 0 ? 1 : -1) + sampleTestimonials.length) % sampleTestimonials.length);
+      if (testimonials.length && Math.abs(drag.deltaX) >= threshold) {
+        setActiveTestimonialIndex((current) => (current + (drag.deltaX < 0 ? 1 : -1) + testimonials.length) % testimonials.length);
       }
     }
     setDragOffset(0);
@@ -469,14 +474,14 @@ function Reviews() {
       onFocusCapture={(event) => { if (event.target instanceof HTMLElement && event.target.matches(`:focus-visible`)) setIsKeyboardActive(true); }}
       onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsKeyboardActive(false); }}
     >
-      <div className="bb-container bb-story-grid">
+      {reviews.loading || reviews.error || !testimonials.length ? <div id={`bb-landing-reviews-empty`} className={`bb-container`}><SectionMarker icon={Quote} index={`05`} title={`Reviews`} inverse /><h2 id={`bb-landing-reviews-empty-title`}>A feeling worth sharing.</h2><CatalogStatus id={`bb-landing-reviews-status`} loading={reviews.loading} error={reviews.error} empty={`Published reviews will appear here.`} /><Link id={`bb-landing-reviews-empty-link`} className={`bb-landing-page-link`} href={siteRoutes.reviews.href}>Explore Reviews <ArrowUpRight size={15} aria-hidden={`true`} /></Link></div> : <div className="bb-container bb-story-grid">
         <div className="bb-story-image" id="review-portraits" data-reveal {...dragHandlers}>
           <div className={`bb-story-image-track${isDragging ? ` is-dragging` : ``}`} style={trackStyle}>
-            {sampleTestimonials.map((testimonial, index) => (
+            {testimonials.map((testimonial, index) => (
               <div
                 className={`bb-story-image-slide`}
                 id={`review-portrait-${index + 1}`}
-                key={testimonial.name}
+                key={testimonial.id}
                 aria-hidden={index !== activeTestimonialIndex}
               >
                 <div
@@ -488,7 +493,7 @@ function Reviews() {
                     className={`bb-story-image-portrait`}
                     aria-label={testimonial.imageAlt}
                     id={`review-portrait-image-${index + 1}`}
-                    style={{ backgroundImage: `url(${testimonial.image})` }}
+                    style={testimonial.image ? { backgroundImage: `url(${testimonial.image})` } : undefined}
                   />
                   <OrnamentalArch id={`review-portrait-arch-${index + 1}`} />
                 </div>
@@ -504,12 +509,10 @@ function Reviews() {
           </Link>
           <div className="bb-review-heading-viewport">
             <div className={`bb-review-heading-track${isDragging ? ` is-dragging` : ``}`} style={trackStyle}>
-              {sampleTestimonials.map((testimonial, index) => (
-                <div className="bb-review-heading-slide" id={`review-heading-${index + 1}`} key={testimonial.name} aria-hidden={index !== activeTestimonialIndex}>
-                  <h2 aria-label={`${testimonial.heading.first} ${testimonial.heading.accent} ${testimonial.heading.last}.`}>
-                    <RevealLine>{testimonial.heading.first}</RevealLine><br />
-                    <RevealLine index={1}><em>{testimonial.heading.accent}</em></RevealLine><br />
-                    <RevealLine index={2}>{testimonial.heading.last}</RevealLine>
+              {testimonials.map((testimonial, index) => (
+                <div className="bb-review-heading-slide" id={`review-heading-${index + 1}`} key={testimonial.id} aria-hidden={index !== activeTestimonialIndex}>
+                  <h2>
+                    {testimonial.heading.first || testimonial.heading.accent || testimonial.heading.last ? <><RevealLine>{testimonial.heading.first}</RevealLine><br /><RevealLine index={1}><em>{testimonial.heading.accent}</em></RevealLine><br /><RevealLine index={2}>{testimonial.heading.last}</RevealLine></> : <RevealLine>A feeling worth sharing.</RevealLine>}
                   </h2>
                   <div className="bb-review-rating" id={`review-rating-${index + 1}`} aria-label={`${testimonial.rating.toFixed(1)} out of 5 stars`}>
                     <Star
@@ -521,7 +524,7 @@ function Reviews() {
                       aria-hidden="true"
                     />
                     <div className="bb-review-rating-details" id={`review-rating-details-${index + 1}`}>
-                      <span className="bb-review-rating-label">Sample rating</span>
+                      <span className="bb-review-rating-label">Client rating</span>
                       <span className="bb-review-rating-stars" aria-hidden="true">
                         {Array.from({ length: 5 }, (_, starIndex) => (
                           <Star
@@ -544,8 +547,8 @@ function Reviews() {
           <div className="bb-story-testimonials" role="region" aria-roledescription="carousel" aria-label="Lash client testimonials">
             <div className="bb-testimonial-viewport">
               <div className={`bb-testimonial-track${isDragging ? ` is-dragging` : ``}`} style={trackStyle}>
-                {sampleTestimonials.map((testimonial, index) => (
-                  <blockquote className="bb-quote bb-testimonial-slide" id={`review-quote-${index + 1}`} key={testimonial.name} aria-hidden={index !== activeTestimonialIndex}>
+                {testimonials.map((testimonial, index) => (
+                  <blockquote className="bb-quote bb-testimonial-slide" id={`review-quote-${index + 1}`} key={testimonial.id} aria-hidden={index !== activeTestimonialIndex}>
                     <Quote className="bb-quote-mark" size={30} strokeWidth={1.4} aria-hidden="true" />
                     <span>{testimonial.quote}</span>
                     <Quote className="bb-quote-mark bb-quote-mark-end" size={30} strokeWidth={1.4} aria-hidden="true" />
@@ -557,13 +560,13 @@ function Reviews() {
           </div>
         </div>
         <div className="bb-testimonial-pagination" id="review-pagination" role="group" aria-label="Choose a testimonial">
-          {sampleTestimonials.map((testimonial, index) => (
+          {testimonials.map((testimonial, index) => (
             <button
               type="button"
               className={`bb-testimonial-dot${index === activeTestimonialIndex ? ` is-active` : ``}`}
               id={`review-dot-${index + 1}`}
-              key={testimonial.name}
-              aria-label={`Show testimonial ${index + 1} of ${sampleTestimonials.length}`}
+              key={testimonial.id}
+              aria-label={`Show testimonial ${index + 1} of ${testimonials.length}`}
               aria-pressed={index === activeTestimonialIndex}
               onClick={() => showTestimonial(index)}
             >
@@ -575,7 +578,7 @@ function Reviews() {
             </button>
           ))}
         </div>
-      </div>
+      </div>}
     </section>
   );
 }
@@ -588,13 +591,13 @@ function BookingSection({ onSuccess, confirmation }: { onSuccess: (name: string,
           <SectionMarker icon={CalendarDays} index="06" title="Book A Visit" />
           <span className="bb-eyebrow">Your turn to shine</span>
           <h2 aria-label="Let’s make a plan."><RevealLine>Let’s make</RevealLine><br /><RevealLine index={1}>a plan.</RevealLine></h2>
-          <p>Share a few details and I’ll be in touch within one studio day to confirm your spot.</p>
-          <div className="bb-booking-note"><CalendarDays size={16} /> Most replies within 24 hours</div>
+          <p>Share a few details and the studio will review your preferred service, date, and time. No account needed.</p>
+          <div className="bb-booking-note"><CalendarDays size={16} /> Availability is confirmed by the studio</div>
         </div>
         {confirmation ? <div className="bb-form-success" data-reveal data-testid="status-booking-confirmation">
           <Check size={20} style={{ color: 'hsl(var(--primary))', marginBottom: 17 }} />
           <strong>We’re making room for you, {confirmation.name}.</strong>
-           <p>Your request for <b>{confirmation.service}</b> has been saved for the studio to review. Keep an eye on your inbox — Sadia will confirm availability and the details.</p>
+          <p>Your request for <b>{confirmation.service}</b> has been saved for the studio to review. Your appointment will be confirmed after availability and the details are agreed.</p>
           <button type="button" className="bb-button bb-button-outline bb-button-outline-dark" style={{ marginTop: 22 }} onClick={() => onSuccess('', '')} data-testid="button-book-another">Book another look <ArrowUpRight size={15} /></button>
         </div> : <div data-reveal><BookingForm onSuccess={onSuccess} /></div>}
       </div>
@@ -687,8 +690,9 @@ function Footer({ onBook }: { onBook: () => void }) {
 }
 
 function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, onCheckout }: { cart: Product[]; isOpen: boolean; onClose: () => void; onRemove: (id: string) => void; onIncrement: (product: Product) => void; onDecrement: (id: string) => void; onCheckout: () => void }) {
+  const { products } = useCatalog();
   const drawerRef = useRef<HTMLElement>(null);
-  const cartLines = getCartLines(cart);
+  const cartLines = getCartLines(cart, products.records);
   const subtotal = cartLines.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0);
   useEffect(() => {
     if (isOpen) drawerRef.current?.focus({ preventScroll: true });
@@ -714,9 +718,9 @@ function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, 
               <div className="bb-cart-lines" id="bb-cart-lines">
                 {cartLines.map(({ product, quantity }) => (
                   <div className="bb-cart-line" id={`bb-cart-line-${product.id}`} key={product.id}>
-                    <Link href={getProductHref(product.id)} onClick={onClose} className="bb-cart-thumb" id={`bb-cart-thumb-${product.id}`} aria-label={`Explore ${product.name}`}><ProductArtwork product={product} context="cart" /></Link>
+                    <Link href={getProductHref(product)} onClick={onClose} className="bb-cart-thumb" id={`bb-cart-thumb-${product.id}`} aria-label={`Explore ${product.name}`}><ProductArtwork product={product} context="cart" /></Link>
                     <div className="bb-cart-details" id={`bb-cart-details-${product.id}`}>
-                      <h3 className="bb-cart-product-name" id={`bb-cart-product-name-${product.id}`}><Link href={getProductHref(product.id)} onClick={onClose} id={`bb-cart-product-link-${product.id}`} className={`bb-product-name-link`}>{product.name}</Link></h3>
+                      <h3 className="bb-cart-product-name" id={`bb-cart-product-name-${product.id}`}><Link href={getProductHref(product)} onClick={onClose} id={`bb-cart-product-link-${product.id}`} className={`bb-product-name-link`}>{product.name}</Link></h3>
                       <p className="bb-cart-unit-price" id={`bb-cart-unit-price-${product.id}`}>${product.price.toFixed(2)} each</p>
                       <div className="bb-cart-quantity" id={`bb-cart-quantity-${product.id}`}>
                         <button type="button" className="bb-cart-quantity-button" onClick={() => onDecrement(product.id)} aria-label={`Decrease quantity of ${product.name}`} data-testid={`button-decrease-${product.id}`}><Minus size={13} /></button>
@@ -762,7 +766,7 @@ function BookingModal({ service, isOpen, onClose, onSuccess }: { service?: Servi
   );
 }
 
-export default function BengaliBlushLanding({ children, onboarding = false }: { children?: ReactNode; onboarding?: boolean }) {
+function BengaliBlushContent({ children, onboarding = false }: { children?: ReactNode; onboarding?: boolean }) {
   const router = useRouter();
   const cart = useSyncExternalStore(subscribeStoredCart, getStoredCartSnapshot, getStoredCartServerSnapshot);
   const storageNotice = useSyncExternalStore(subscribeStoredCart, getStoredCartNotice, getStoredCartServerNotice);
@@ -854,11 +858,15 @@ export default function BengaliBlushLanding({ children, onboarding = false }: { 
     const amount = Math.min(99, Math.max(1, Math.floor(quantity)));
     if (!Number.isFinite(amount)) return;
     const currentCart = getStoredCartSnapshot();
-    writeStoredCart([...currentCart, ...Array.from({ length: amount }, () => product)]);
+    const currentQuantity = currentCart.filter((item) => item.id === product.id || item.id === product.slug).length;
+    if (currentQuantity >= 99) { setToast(`Maximum Quantity Is 99`); return; }
+    if (!currentQuantity && getCartLines(currentCart).length >= 5) { setToast(`Choose Up To 5 Different Products Per Request`); return; }
+    const resolvedCart = currentCart.map((item) => item.id === product.slug ? product : item);
+    writeStoredCart([...resolvedCart, ...Array.from({ length: Math.min(amount, 99 - currentQuantity) }, () => product)]);
     if (!currentCart.some((item) => item.id === product.id)) setToast(`Added ${product.name} to Cart`);
   };
   const removeProduct = removeCartProduct;
-  const incrementProduct = (product: Product) => writeStoredCart([...getStoredCartSnapshot(), product]);
+  const incrementProduct = (product: Product) => addProduct(product);
   const decrementProduct = decrementCartProduct;
   const handleCheckout = () => {
     closeBag();
@@ -900,4 +908,8 @@ export default function BengaliBlushLanding({ children, onboarding = false }: { 
       </ShopProvider>
     </BookingContext.Provider>
   );
+}
+
+export default function BengaliBlushLanding(props: { children?: ReactNode; onboarding?: boolean }) {
+  return <CatalogProvider><BengaliBlushContent {...props} /></CatalogProvider>;
 }

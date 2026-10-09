@@ -1,6 +1,6 @@
 import { useAuth } from '@/shared/authContext/useAuth';
 import type { Service } from '@/shared/types/storefront';
-import { services } from '@/shared/services/service-content';
+import { useCatalog } from '@/shared/shop/catalog-context';
 import { createAppointmentSubmission } from '@/api/submissions';
 import { useRef, useState, useEffect, type FormEvent } from 'react';
 
@@ -22,7 +22,8 @@ type BookingIdentityDraft = {
 };
 
 export const useBookingForm = (onSuccess: BookingSuccessHandler, selectedService?: Service) => {
-  const { user, loading } = useAuth();
+  const { services } = useCatalog();
+  const { user } = useAuth();
   const accountId = user?.id ?? null;
   const pendingRef = useRef(false);
   const [date, setDate] = useState(``);
@@ -40,8 +41,8 @@ export const useBookingForm = (onSuccess: BookingSuccessHandler, selectedService
     setIdentityDraft(activeIdentity);
   }
 
-  const name = activeIdentity.name ?? (loading ? `` : user?.name ?? ``);
-  const email = activeIdentity.email ?? (loading ? `` : user?.email ?? ``);
+  const name = activeIdentity.name ?? user?.name ?? ``;
+  const email = activeIdentity.email ?? user?.email ?? ``;
   const setName = (name: string) => setIdentityDraft((current) => ({ ...current, name, accountId }));
   const setEmail = (email: string) => setIdentityDraft((current) => ({ ...current, email, accountId }));
 
@@ -51,9 +52,8 @@ export const useBookingForm = (onSuccess: BookingSuccessHandler, selectedService
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (loading || pendingRef.current) return;
-    if (!user) { setError(`Sign In To Request An Appointment`); return; }
-    const chosen = services.find((item) => item.id === service)?.name;
+    if (pendingRef.current) return;
+    const chosen = services.records.find((item) => item.id === service)?.name;
     if (!chosen) { setError(`Choose A Service`); return; }
     const values = { date, time, service: chosen, name: name.trim(), notes: notes.trim(), email: email.trim() };
 
@@ -79,6 +79,6 @@ export const useBookingForm = (onSuccess: BookingSuccessHandler, selectedService
   return {
     name, date, time, email, notes, error, service, submitting,
     submit, setName, setDate, setTime, setEmail, setNotes, setError, setService,
-    dateInputRef, canSubmit: !!user && !loading && !submitting,
+    services, dateInputRef, canSubmit: !submitting && !services.loading && !services.error && Boolean(services.records.length),
   };
 };

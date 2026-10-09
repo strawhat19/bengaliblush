@@ -1,0 +1,20 @@
+.bb-commerce-editor { margin: 24px 0; border: 1px solid hsl(var(--primary) / .18); border-radius: 12px; padding: 24px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-commerce-editor-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.bb-commerce-editor-title { margin: 0; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 26px; font-weight: 500; }
+.bb-commerce-editor-close { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid hsl(var(--primary) / .16); border-radius: 50%; background: transparent; color: hsl(var(--primary)); }
+.bb-commerce-editor-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0; border: 0; padding: 0; }
+.bb-commerce-editor-field { display: grid; align-content: start; gap: 8px; min-width: 0; }
+.bb-commerce-editor-field.is-wide { grid-column: 1 / -1; }
+.bb-commerce-editor-field-label { color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 11px; }
+.bb-commerce-editor-input { width: 100%; min-width: 0; min-height: 42px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 8px; padding: 10px 12px; outline: 0; background: transparent; color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 12px; transition: border-color .2s ease, box-shadow .2s ease; }
+textarea.bb-commerce-editor-input { resize: vertical; }
+.bb-commerce-editor-input:focus { border-color: hsl(var(--primary)); box-shadow: 0 0 0 3px hsl(var(--primary) / .08); }
+.bb-commerce-editor-input:disabled { opacity: .6; }
+.bb-commerce-editor-note { margin: 18px 0 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; line-height: 1.7; }
+.bb-commerce-editor-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 24px; }
+.bb-commerce-editor-actions .bb-button { min-height: 40px; padding: 12px 18px; font-size: 10px; }
+.bb-commerce-editor-cancel { display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 8px 0; background: transparent; color: var(--bb-highlight, hsl(var(--primary))); font-size: 11px; }
+.bb-commerce-editor-actions button:disabled, .bb-commerce-editor-close:disabled { cursor: default; opacity: .5; transform: none; }
+.bb-commerce-editor-cancel:focus-visible, .bb-commerce-editor-close:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+@media (max-width: 600px) { .bb-commerce-editor-fields { grid-template-columns: minmax(0, 1fr); } .bb-commerce-editor { padding: 18px; } .bb-commerce-editor-input { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { .bb-commerce-editor-input { transition: none; } }

@@ -10,8 +10,8 @@ import { useNotificationsMenu, type NotificationsMenuProps } from '@/app/compone
 import './notifications-menu.scss';
 
 export default function NotificationsMenu(props: NotificationsMenuProps) {
-  const { open, close, toggle, panelRef, buttonRef, closeButtonRef } = useNotificationsMenu(props);
   const { error, notice, reload, loading, markRead, markAllRead, unreadCount, notifications } = useNotifications();
+  const { open, close, toggle, panelRef, buttonRef, closeButtonRef } = useNotificationsMenu({ ...props, onOpen: () => { void reload(); props.onOpen?.(); } });
   const updatesLabel = `${unreadCount} ${unreadCount === 1 ? `update` : `updates`}`;
 
   return (

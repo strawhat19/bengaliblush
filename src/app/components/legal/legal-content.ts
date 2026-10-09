@@ -25,8 +25,8 @@ export const legalContent = {
         id: `contact`,
         title: `When you get in touch`,
         paragraphs: [
-          `When you sign in and send a contact message, your email address or phone number, message, account reference, and submission date are stored in Firebase Firestore. Bengali Blush uses this information to review and respond to your enquiry.`,
-          `Appointment requests store your name, email address, chosen service, preferred date and time, notes, account reference, and submission date in Firestore. Your request is available to you and authorised studio owners. A saved request does not reserve or confirm an appointment.`,
+          `You can send a contact message without signing in. Your email address or phone number, message, and submission date are stored in Firebase Firestore. An active signed-in account may also be linked to the request. Bengali Blush uses this information to review and respond to your enquiry.`,
+          `Appointment requests can be submitted without an account and store your name, email address, chosen service, preferred date and time, notes, and submission date in Firestore. An active signed-in account may also be linked to the request. Requests can be reviewed by authorised studio admins and the owner. A saved request does not reserve or confirm an appointment.`,
         ],
       },
       {
@@ -41,7 +41,14 @@ export const legalContent = {
         title: `What stays in your browser`,
         paragraphs: [
           `Your shopping bag is saved in your browser’s local storage so your selected items remain available when you return. Firebase Authentication also keeps sign-in state in your browser so you can remain signed in between visits.`,
-          `The current checkout does not process payments or complete orders. Contact and appointment submissions are saved only after the form confirms a successful submission.`,
+          `Checkout saves an unpaid order request in Firestore after you submit it. Your contact details, delivery address, requested items, and quoted product subtotal are private to the studio and an active linked account. No card details are collected and no payment is processed. Contact and appointment submissions are also saved only after a successful submission.`,
+        ],
+      },
+      {
+        id: `reviews`,
+        title: `Published reviews`,
+        paragraphs: [
+          `Reviews managed by the studio are stored in Firestore. Published reviews show the reviewer’s display name, rating, message, service description, and any supplied image on the website. Draft and archived reviews are available only to authorised studio admins and the owner.`,
         ],
       },
       {
@@ -55,7 +62,7 @@ export const legalContent = {
         id: `your-choices`,
         title: `Your choices`,
         paragraphs: [
-          `You can browse without signing in or using the booking or contact forms. Sign out to end your session on this device. Clearing this website’s browser data removes locally saved shopping bag and sign-in state; it does not delete your account or submissions stored in Firestore.`,
+          `You can browse, request an order, and use the booking or contact forms without signing in. Sign out to end your session on this device. Clearing this website’s browser data removes locally saved shopping bag and sign-in state; it does not delete your account or requests stored in Firestore.`,
           `To ask about your account or request changes or deletion of information shared with the studio, use the contact details below.`,
         ],
       },
@@ -85,7 +92,7 @@ export const legalContent = {
         id: `appointments`,
         title: `Arranging an appointment`,
         paragraphs: [
-          `Sign in to submit an appointment request. A successfully submitted request is saved for Bengali Blush to review. It does not reserve a time or confirm an appointment; the studio must confirm availability and the details with you.`,
+          `Anyone can submit an appointment request without signing in. A successfully submitted request is saved for Bengali Blush to review. It does not reserve a time or confirm an appointment; the studio must confirm availability and the details with you.`,
           `Confirm the service, availability, price, and any preparation or cancellation arrangements with the studio before your appointment. Listed service durations are a guide for planning your visit.`,
         ],
       },
@@ -93,14 +100,14 @@ export const legalContent = {
         id: `shopping`,
         title: `Shopping bag and checkout`,
         paragraphs: [
-          `You can add products to a shopping bag saved in your browser. The current checkout does not accept payment or complete an order. Contact Bengali Blush to discuss an item and confirm its availability, final price, delivery, and any return arrangements before purchasing.`,
+          `You can add products to a shopping bag saved in your browser and submit an unpaid order request. A saved request does not take payment or confirm a purchase. Confirm availability, the final price, delivery, and any return arrangements with Bengali Blush before purchasing.`,
         ],
       },
       {
         id: `contact`,
         title: `Sending an enquiry`,
         paragraphs: [
-          `Sign in to send a contact message. A successfully submitted message is stored for the studio to review and reply using the contact details you provide. You can also contact the studio directly using the email address or phone number shown on the website.`,
+          `Anyone can send a contact message without signing in. A successfully submitted message is stored for the studio to review and reply using the contact details you provide. You can also contact the studio directly using the email address or phone number shown on the website.`,
         ],
       },
       {

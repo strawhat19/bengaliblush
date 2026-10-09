@@ -27,11 +27,11 @@ export default function OrderSummary({ id, children, showProducts = true }: Orde
         <ul id={`${id}-products`} className={`bb-order-summary-products`}>
           {lines.map(({ product, quantity }) => (
             <li key={product.id} id={`${id}-product-${product.id}`} className={`bb-order-summary-product`}>
-              <Link id={`${id}-artwork-link-${product.id}`} className={`bb-order-summary-artwork`} href={getProductHref(product.id)} aria-label={`View ${product.name}`}>
+              <Link id={`${id}-artwork-link-${product.id}`} className={`bb-order-summary-artwork`} href={getProductHref(product)} aria-label={`View ${product.name}`}>
                 <ProductArtwork product={product} context={`cart`} />
               </Link>
               <div id={`${id}-product-copy-${product.id}`} className={`bb-order-summary-product-copy`}>
-                <Link id={`${id}-product-link-${product.id}`} className={`bb-order-summary-product-link`} href={getProductHref(product.id)}>{product.name}</Link>
+                <Link id={`${id}-product-link-${product.id}`} className={`bb-order-summary-product-link`} href={getProductHref(product)}>{product.name}</Link>
                 <span id={`${id}-quantity-${product.id}`} className={`bb-order-summary-quantity`}>Quantity {quantity}</span>
               </div>
               <span id={`${id}-price-${product.id}`} className={`bb-order-summary-product-price`}>{formatPrice(product.price * quantity)}</span>
@@ -53,7 +53,7 @@ export default function OrderSummary({ id, children, showProducts = true }: Orde
           <dd id={`${id}-tax-value`} className={`bb-order-summary-pending`}>To be confirmed</dd>
         </div>
       </dl>
-      <p id={`${id}-total-note`} className={`bb-order-summary-total-note`}>Your final total, shipping options, and tax will be confirmed when ordering opens.</p>
+      <p id={`${id}-total-note`} className={`bb-order-summary-total-note`}>The studio will confirm availability, final pricing, shipping, and tax. This request does not collect a payment.</p>
       {children && <div id={`${id}-actions`} className={`bb-order-summary-actions`}>{children}</div>}
       <div id={`${id}-signature`} className={`bb-order-summary-signature`} aria-hidden={`true`}>A little Bengali Blush</div>
     </aside>

@@ -39,7 +39,7 @@ const readRecord = (snapshot: DocumentSnapshot<DocumentData>) => {
 
 export const readUser = (snapshot: DocumentSnapshot<DocumentData>): User => {
   const data = readRecord(snapshot);
-  if (![Roles.Owner, Roles.Subscriber].includes(data?.role) || ![`google`, `password`].includes(data?.provider) || data?.profile_visibility !== `private`) {
+  if (![Roles.Admin, Roles.Owner, Roles.Subscriber].includes(data?.role) || ![`google`, `password`].includes(data?.provider) || data?.profile_visibility !== `private`) {
     throw new Error(`Account Data Needs Attention`);
   }
   if (data?.theme_mode !== undefined && ![`light`, `dark`].includes(data.theme_mode)) throw new Error(`Account Data Needs Attention`);
@@ -64,12 +64,15 @@ export const readUser = (snapshot: DocumentSnapshot<DocumentData>): User => {
 const readSubmission = (snapshot: DocumentSnapshot<DocumentData>): Submission => {
   const data = readRecord(snapshot);
   if (![...submissionStatuses.contact, ...submissionStatuses.appointment].includes(data?.status)) throw new Error(`Saved Data Needs Attention`);
+  const userId = readString(data, `user_id`);
+  const firebaseUid = readString(data, `firebase_uid`);
+  if (Boolean(userId) !== Boolean(firebaseUid)) throw new Error(`Saved Data Needs Attention`);
   return {
     id: snapshot.id,
+    user_id: userId,
     status: data.status,
     number: data.number,
-    user_id: readString(data, `user_id`),
-    firebase_uid: readString(data, `firebase_uid`),
+    firebase_uid: firebaseUid,
     created_at: readTimestamp(data, `created_at`),
     updated_at: readTimestamp(data, `updated_at`),
   };

@@ -1,17 +1,17 @@
 'use client';
 
 import { getProductHref } from '@/shared/shop/shop-utils';
+import { useCatalog } from '@/shared/shop/catalog-context';
 import useShopIndex, { type ShopSort } from './use-shop-index';
-import type { ProductCategory } from '@/shared/types/storefront';
 import Link from '@/app/components/navigation/page-link/page-link';
 import ProductCard from '@/app/components/shop/product-card/product-card';
+import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import { ArrowUpRight, Search, ShoppingBag, SlidersHorizontal, Sparkles, X } from 'lucide-react';
 
-type ShopIndexProps = { categories: ProductCategory[] };
-
-const ShopIndex = ({ categories }: ShopIndexProps) => {
+const ShopIndex = () => {
+  const { categories, products: catalogState } = useCatalog();
   const { sort, query, catalog, category, products, setSort, setQuery, categoryId, resetFilters, setCategoryId } = useShopIndex(categories);
   const featuredProduct = categories.find((item) => item.id === `apparel`)?.products[1] ?? catalog[0];
 
@@ -29,14 +29,14 @@ const ShopIndex = ({ categories }: ShopIndexProps) => {
             <span id={`bb-shop-index-eyebrow`} className={`bb-eyebrow`}>A Little Everyday Luxury</span>
             <h1 id={`bb-shop-index-heading`} className={`bb-shop-index-heading`}>Beautiful things.<br /><em id={`bb-shop-index-heading-accent`} className={`bb-shop-index-heading-accent`}>Your kind of ritual.</em></h1>
             <p id={`bb-shop-index-introduction`} className={`bb-shop-index-introduction`}>Beauty essentials, expressive fashion, and little comforts for home. Find something that feels just like you.</p>
-            <span id={`bb-shop-index-preview-note`} className={`bb-shop-index-preview-note`}><Sparkles size={14} aria-hidden={`true`} /> Explore Our Preview Collection</span>
+            <span id={`bb-shop-index-preview-note`} className={`bb-shop-index-preview-note`}><Sparkles size={14} aria-hidden={`true`} /> Explore The Collection</span>
           </div>
           {featuredProduct ? (
             <div id={`bb-shop-index-featured-frame-${featuredProduct.id}`} className={`bb-shop-index-featured-frame${featuredProduct.image ? ` has-photo` : ``}`}>
               <OrnamentalArch id={`bb-shop-index-featured-ornament-${featuredProduct.id}`} />
               <Link
                 id={`bb-shop-index-featured-${featuredProduct.id}`}
-                href={getProductHref(featuredProduct.id)}
+                href={getProductHref(featuredProduct)}
                 className={`bb-shop-index-featured${featuredProduct.image ? ` has-photo` : ``}`}
                 aria-label={`Explore ${featuredProduct.name}`}
               >
@@ -115,7 +115,7 @@ const ShopIndex = ({ categories }: ShopIndexProps) => {
               </div>
             </div>
           </div>
-          {products.length ? (
+          {catalogState.loading || catalogState.error || !catalog.length ? <CatalogStatus id={`bb-shop-index-catalog-status`} loading={catalogState.loading} error={catalogState.error} empty={`The collection is being prepared. Please check back soon.`} /> : products.length ? (
             <div id={`bb-shop-index-products`} className={`bb-shop-index-products`}>
               {products.map((product) => <ProductCard key={product.id} product={product} idPrefix={`bb-shop-index-card`} />)}
             </div>

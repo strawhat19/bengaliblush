@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useContext } from 'react';
-import { Clock3, Plus } from 'lucide-react';
+import { Clock3, Plus, WandSparkles } from 'lucide-react';
 import { BookingContext } from '@/shared/services/booking-context';
 import type { ServiceDetails } from '@/shared/services/service-types';
 
@@ -25,14 +25,15 @@ const ServiceRow = ({ service }: ServiceRowProps) => {
     >
       <span id={`${rowId}-number`} className={`bb-service-number`}>{service.number}</span>
       <span id={`${rowId}-visual`} className={`bb-service-visual`}>
-        <Image
+        {service.image ? <Image
           fill
+          unoptimized={/^https?:\/\//.test(service.image)}
           src={service.image}
           alt={service.imageAlt}
           id={`${rowId}-image`}
           className={`bb-service-image`}
           sizes={`(max-width: 600px) 64px, (max-width: 800px) 76px, (max-width: 1000px) 88px, 100px`}
-        />
+        /> : <WandSparkles className={`bb-service-image-placeholder`} size={28} aria-hidden={`true`} />}
       </span>
       <span id={`${rowId}-copy`} className={`bb-service-copy`}>
         <span id={`${rowId}-title`} className={`bb-service-title`}>{service.name}</span>

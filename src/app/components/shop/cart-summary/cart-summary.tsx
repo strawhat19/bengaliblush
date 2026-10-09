@@ -11,8 +11,9 @@ import { formatPrice, getProductHref } from '@/shared/shop/shop-utils';
 import { Minus, Plus, Trash2, ArrowLeft, ArrowUpRight, ChevronRight, ShoppingBag } from 'lucide-react';
 
 export default function CartSummary() {
-  const isReady = useShopReady();
-  const { count, lines, removeProduct, incrementProduct, decrementProduct } = useShop();
+  const cartReady = useShopReady();
+  const { count, lines, catalogError, catalogLoading, unavailableProductIds, removeProduct, incrementProduct, decrementProduct } = useShop();
+  const isReady = cartReady && !catalogLoading;
 
   return (
     <section id={`top`} className={`bb-section bb-cart-summary-page`} aria-labelledby={`bb-cart-summary-title`}>
@@ -23,6 +24,8 @@ export default function CartSummary() {
           <h1 id={`bb-cart-summary-title`} className={`bb-cart-summary-title`}>A little more<br /><em>lovely.</em></h1>
           <p id={`bb-cart-summary-description`} className={`bb-cart-summary-description`}>A few things you love, all in one place. Make your selection just right before the finishing touches.</p>
         </div>
+        {catalogError && <p id={`bb-cart-summary-catalog-error`} className={`bb-cart-summary-error`} role={`alert`}>{catalogError}</p>}
+        {isReady && !catalogError && Boolean(unavailableProductIds.length) && <p id={`bb-cart-summary-unavailable`} className={`bb-cart-summary-error`} role={`alert`}>Some products in your bag are no longer available. Remove them before saving a request.</p>}
         {!isReady ? (
           <div id={`bb-cart-summary-loading`} className={`bb-cart-summary-loading`} role={`status`}>
             <ShoppingBag size={25} strokeWidth={1.3} aria-hidden={`true`} />
@@ -38,12 +41,12 @@ export default function CartSummary() {
               <ul id={`bb-cart-summary-lines`} className={`bb-cart-summary-lines`}>
                 {lines.map(({ product, quantity }) => (
                   <li key={product.id} id={`bb-cart-summary-line-${product.id}`} className={`bb-cart-summary-line`}>
-                    <Link id={`bb-cart-summary-artwork-${product.id}`} className={`bb-cart-summary-artwork`} href={getProductHref(product.id)} aria-label={`View ${product.name}`}>
+                    <Link id={`bb-cart-summary-artwork-${product.id}`} className={`bb-cart-summary-artwork`} href={getProductHref(product)} aria-label={`View ${product.name}`}>
                       <ProductArtwork product={product} context={`cart`} />
                     </Link>
                     <div id={`bb-cart-summary-product-details-${product.id}`} className={`bb-cart-summary-product-details`}>
                       <span id={`bb-cart-summary-product-label-${product.id}`} className={`bb-cart-summary-product-label`}>{product.label}</span>
-                      <Link id={`bb-cart-summary-product-link-${product.id}`} className={`bb-cart-summary-product-link`} href={getProductHref(product.id)}>
+                      <Link id={`bb-cart-summary-product-link-${product.id}`} className={`bb-cart-summary-product-link`} href={getProductHref(product)}>
                         <h3 id={`bb-cart-summary-product-name-${product.id}`} className={`bb-cart-summary-product-name`}>{product.name}</h3>
                       </Link>
                       <p id={`bb-cart-summary-unit-price-${product.id}`} className={`bb-cart-summary-unit-price`}>{formatPrice(product.price)} each</p>
@@ -81,12 +84,12 @@ export default function CartSummary() {
               <Link id={`bb-cart-summary-continue-shopping`} className={`bb-cart-summary-continue-shopping`} href={siteRoutes.shop.href}><ArrowLeft size={14} aria-hidden={`true`} />A little more browsing</Link>
               <div id={`bb-cart-summary-preview-note`} className={`bb-cart-summary-preview-note`}>
                 <ShoppingBag size={18} aria-hidden={`true`} />
-                <p id={`bb-cart-summary-preview-copy`} className={`bb-cart-summary-preview-copy`}>The shop is getting ready to bloom. You can curate your bag and preview checkout while we prepare for our first orders.</p>
+                <p id={`bb-cart-summary-preview-copy`} className={`bb-cart-summary-preview-copy`}>Curate your bag and save an order request for the studio to review. Availability and final pricing will be confirmed separately.</p>
               </div>
             </div>
             <OrderSummary id={`bb-cart-page-order-summary`} showProducts={false}>
               <Link id={`bb-cart-summary-checkout`} className={`bb-button bb-cart-summary-checkout`} href={siteRoutes.checkout.href}>Continue to checkout <ChevronRight size={16} aria-hidden={`true`} /></Link>
-              <p id={`bb-cart-summary-checkout-note`} className={`bb-cart-summary-checkout-note`}>Checkout preview. Orders and payments are not available yet.</p>
+              <p id={`bb-cart-summary-checkout-note`} className={`bb-cart-summary-checkout-note`}>No payment is collected when you save a request.</p>
             </OrderSummary>
           </div>
         ) : (

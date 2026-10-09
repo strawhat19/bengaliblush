@@ -7,28 +7,29 @@ import OrderSummary from '../order-summary/order-summary';
 import CheckoutSteps from '../checkout-steps/checkout-steps';
 import type { CheckoutAddress } from '@/shared/types/checkout';
 import Link from '@/app/components/navigation/page-link/page-link';
-import { Mail, Pencil, MapPin, LogIn, ArrowLeft, Sparkles, ChevronRight, ShoppingBag, ArrowUpRight } from 'lucide-react';
+import { Mail, Check, Pencil, MapPin, LogIn, ArrowLeft, Sparkles, CreditCard, ChevronRight, ShoppingBag, ArrowUpRight } from 'lucide-react';
 
 const shippingFields: {
   label: string;
   full?: boolean;
   required?: boolean;
   autoComplete: string;
+  maxLength?: number;
   name: keyof CheckoutAddress;
 }[] = [
-  { name: `firstName`, label: `First Name`, required: true, autoComplete: `shipping given-name` },
-  { name: `lastName`, label: `Last Name`, required: true, autoComplete: `shipping family-name` },
-  { name: `addressLine1`, label: `Street Address`, full: true, required: true, autoComplete: `shipping address-line1` },
-  { name: `addressLine2`, label: `Apartment, Suite, Etc. (Optional)`, full: true, autoComplete: `shipping address-line2` },
+  { name: `firstName`, label: `First Name`, maxLength: 59, required: true, autoComplete: `shipping given-name` },
+  { name: `lastName`, label: `Last Name`, maxLength: 60, required: true, autoComplete: `shipping family-name` },
+  { name: `addressLine1`, label: `Street Address`, maxLength: 220, full: true, required: true, autoComplete: `shipping address-line1` },
+  { name: `addressLine2`, label: `Apartment, Suite, Etc. (Optional)`, maxLength: 78, full: true, autoComplete: `shipping address-line2` },
   { name: `city`, label: `City`, required: true, autoComplete: `shipping address-level2` },
   { name: `region`, label: `State / Province / Region`, required: true, autoComplete: `shipping address-level1` },
-  { name: `postalCode`, label: `ZIP / Postal Code`, required: true, autoComplete: `shipping postal-code` },
+  { name: `postalCode`, label: `ZIP / Postal Code`, maxLength: 40, required: true, autoComplete: `shipping postal-code` },
   { name: `country`, label: `Country`, required: true, autoComplete: `shipping country-name` },
 ];
 
 export default function CheckoutPage() {
   const { lines } = useShop();
-  const { draft, isReady, isReview, editDetails, handleInput, handleSubmit } = useCheckoutPage();
+  const { draft, notes, error, isReady, isReview, savedOrder, submitting, editDetails, setNotes, placeOrder, handleInput, handleSubmit, canPlaceOrder, paymentMethods, catalogError, paymentMethodId, setPaymentMethodId, unavailableProductIds, quantityLimitExceeded } = useCheckoutPage();
 
   return (
     <section id={`top`} className={`bb-section bb-checkout-page`} aria-labelledby={`bb-checkout-title`}>
@@ -39,7 +40,14 @@ export default function CheckoutPage() {
           <h1 id={`bb-checkout-title`} className={`bb-checkout-title`}>A few<br /><em>finishing touches.</em></h1>
           <p id={`bb-checkout-description`} className={`bb-checkout-description`}>A thoughtful little selection deserves a thoughtful last step.</p>
         </div>
-        {!isReady ? (
+        {savedOrder ? (
+          <div id={`bb-checkout-saved-${savedOrder.id}`} className={`bb-checkout-empty`} role={`status`}>
+            <Check size={34} aria-hidden={`true`} />
+            <h2 id={`bb-checkout-saved-title`} className={`bb-checkout-empty-title`}>Order Request #{savedOrder.number} Saved</h2>
+            <p id={`bb-checkout-saved-copy`} className={`bb-checkout-empty-copy`}>The studio will review your selection and confirm availability, delivery, and final pricing. No payment has been taken, and this is not a paid or confirmed order.</p>
+            <Link id={`bb-checkout-saved-shop`} className={`bb-button bb-checkout-review-button`} href={siteRoutes.shop.href}>Explore the shop <ArrowUpRight size={15} aria-hidden={`true`} /></Link>
+          </div>
+        ) : !isReady ? (
           <div id={`bb-checkout-loading`} className={`bb-checkout-loading`} role={`status`}>
             <ShoppingBag size={25} strokeWidth={1.3} aria-hidden={`true`} />
             <p id={`bb-checkout-loading-copy`} className={`bb-checkout-loading-copy`}>Preparing your selection…</p>
@@ -49,10 +57,14 @@ export default function CheckoutPage() {
             <div id={`bb-checkout-preview`} className={`bb-checkout-preview`}>
               <Sparkles size={18} aria-hidden={`true`} />
               <div id={`bb-checkout-preview-copy`} className={`bb-checkout-preview-copy`}>
-                <strong id={`bb-checkout-preview-title`} className={`bb-checkout-preview-title`}>A preview of what’s to come</strong>
-                <p id={`bb-checkout-preview-note`} className={`bb-checkout-preview-note`}>Checkout preview. Orders and payments are not available yet. Your details stay on this page during this preview. Nothing is submitted.</p>
+                <strong id={`bb-checkout-preview-title`} className={`bb-checkout-preview-title`}>Your order request</strong>
+                <p id={`bb-checkout-preview-note`} className={`bb-checkout-preview-note`}>Review your selection and save a request for the studio. Availability, delivery, and final pricing will be confirmed separately. No payment is collected.</p>
               </div>
             </div>
+            {(catalogError || paymentMethods.error) && <p id={`bb-checkout-catalog-error`} className={`bb-submission-error`} role={`alert`}>{catalogError || paymentMethods.error}</p>}
+            {Boolean(unavailableProductIds.length) && <p id={`bb-checkout-unavailable`} className={`bb-submission-error`} role={`alert`}>Some products in your bag are no longer available. Remove them before continuing.</p>}
+            {lines.length > 5 && <p id={`bb-checkout-line-limit`} className={`bb-submission-error`} role={`alert`}>Choose up to 5 different products per request.</p>}
+            {quantityLimitExceeded && <p id={`bb-checkout-quantity-limit`} className={`bb-submission-error`} role={`alert`}>Reduce each product quantity to 99 or fewer before continuing.</p>}
             <div id={`bb-checkout-layout`} className={`bb-checkout-layout`}>
               <div id={`bb-checkout-main`} className={`bb-checkout-main`}>
                 {isReview && draft ? (
@@ -76,12 +88,25 @@ export default function CheckoutPage() {
                         <span id={`bb-checkout-review-country`} className={`bb-checkout-review-address-line`}>{draft.shipping.country}</span>
                       </address>
                     </div>
-                    <button type={`button`} id={`bb-checkout-edit-details`} className={`bb-checkout-edit-details`} onClick={editDetails}><Pencil size={13} aria-hidden={`true`} />Edit your details</button>
+                    <button disabled={submitting} type={`button`} id={`bb-checkout-edit-details`} className={`bb-checkout-edit-details`} onClick={editDetails}><Pencil size={13} aria-hidden={`true`} />Edit your details</button>
                     <div id={`bb-checkout-payment-preview`} className={`bb-checkout-payment-preview`}>
-                      <span id={`bb-checkout-payment-eyebrow`} className={`bb-eyebrow`}>One Last Touch, Coming Soon</span>
-                      <h3 id={`bb-checkout-payment-title`} className={`bb-checkout-payment-title`}>We’re getting ready for you.</h3>
-                      <p id={`bb-checkout-payment-copy`} className={`bb-checkout-payment-copy`}>Delivery options and payment will be available when the shop opens for orders. For now, enjoy curating your edit.</p>
-                      <button disabled type={`button`} id={`bb-checkout-place-order`} className={`bb-button bb-checkout-place-order`} aria-describedby={`bb-checkout-preview-note`}>Ordering Opens Soon <ShoppingBag size={15} aria-hidden={`true`} /></button>
+                      <span id={`bb-checkout-payment-eyebrow`} className={`bb-eyebrow`}>One Last Touch</span>
+                      <h3 id={`bb-checkout-payment-title`} className={`bb-checkout-payment-title`}>Ready for the studio to review.</h3>
+                      <p id={`bb-checkout-payment-copy`} className={`bb-checkout-payment-copy`}>This saves an unpaid order request. Payment arrangements will be confirmed separately.</p>
+                      {Boolean(paymentMethods.records.length) && <div id={`bb-checkout-payment-field`} className={`bb-checkout-field`}>
+                        <label id={`bb-checkout-payment-label`} className={`bb-checkout-label`} htmlFor={`bb-checkout-payment-method`}><CreditCard size={14} aria-hidden={`true`} /> Preferred Payment Method (Optional)</label>
+                        <select id={`bb-checkout-payment-method`} className={`bb-checkout-input`} value={paymentMethodId} disabled={submitting} onChange={(event) => setPaymentMethodId(event.target.value)}>
+                          <option value={``}>Confirm With The Studio</option>
+                          {paymentMethods.records.map((method) => <option key={method.id} id={`bb-checkout-payment-option-${method.id}`} value={method.id}>{method.name}</option>)}
+                        </select>
+                        {paymentMethodId && <p id={`bb-checkout-payment-description`} className={`bb-checkout-form-note`}>{paymentMethods.records.find((method) => method.id === paymentMethodId)?.description}</p>}
+                      </div>}
+                      <div id={`bb-checkout-notes-field`} className={`bb-checkout-field`}>
+                        <label id={`bb-checkout-notes-label`} className={`bb-checkout-label`} htmlFor={`bb-checkout-notes`}>Order Notes (Optional)</label>
+                        <textarea id={`bb-checkout-notes`} className={`bb-checkout-input`} maxLength={2000} value={notes} disabled={submitting} onChange={(event) => setNotes(event.target.value)} />
+                      </div>
+                      <button disabled={!canPlaceOrder} type={`button`} onClick={placeOrder} id={`bb-checkout-place-order`} className={`bb-button bb-checkout-place-order`} aria-describedby={`bb-checkout-preview-note`}>{submitting ? `Saving Request…` : `Save Order Request`} <ShoppingBag size={15} aria-hidden={`true`} /></button>
+                      {error && <p id={`bb-checkout-save-error`} className={`bb-submission-error`} role={`alert`}>{error}</p>}
                     </div>
                   </div>
                 ) : (
@@ -122,13 +147,13 @@ export default function CheckoutPage() {
                     <fieldset id={`bb-checkout-shipping`} className={`bb-checkout-fieldset`}>
                       <legend id={`bb-checkout-shipping-title`} className={`bb-checkout-section-title`}><MapPin size={19} aria-hidden={`true`} />Your shipping address</legend>
                       <div id={`bb-checkout-shipping-grid`} className={`bb-checkout-field-grid`}>
-                        {shippingFields.map(({ name, label, full, required, autoComplete }) => (
+                        {shippingFields.map(({ name, label, full, required, autoComplete, maxLength }) => (
                           <div key={name} id={`bb-checkout-${name}-field`} className={`bb-checkout-field${full ? ` bb-checkout-field-full` : ``}`}>
                             <label id={`bb-checkout-${name}-label`} className={`bb-checkout-label`} htmlFor={`bb-checkout-${name}`}>{label}</label>
                             <input
                               name={name}
                               type={`text`}
-                              maxLength={160}
+                              maxLength={maxLength ?? 120}
                               required={required}
                               onInput={handleInput}
                               id={`bb-checkout-${name}`}
@@ -141,7 +166,7 @@ export default function CheckoutPage() {
                       </div>
                     </fieldset>
                     <div id={`bb-checkout-form-actions`} className={`bb-checkout-form-actions`}>
-                      <button type={`submit`} id={`bb-checkout-review-button`} className={`bb-button bb-checkout-review-button`} aria-describedby={`bb-checkout-preview-note`}>Review your details <ChevronRight size={16} aria-hidden={`true`} /></button>
+                      <button disabled={!canPlaceOrder} type={`submit`} id={`bb-checkout-review-button`} className={`bb-button bb-checkout-review-button`} aria-describedby={`bb-checkout-preview-note`}>Review your details <ChevronRight size={16} aria-hidden={`true`} /></button>
                       <p id={`bb-checkout-form-note`} className={`bb-checkout-form-note`}>For a look at the next step. This does not place an order.</p>
                     </div>
                   </form>
@@ -161,7 +186,7 @@ export default function CheckoutPage() {
           <div id={`bb-checkout-empty`} className={`bb-checkout-empty`}>
             <ShoppingBag size={34} strokeWidth={1.2} aria-hidden={`true`} />
             <h2 id={`bb-checkout-empty-title`} className={`bb-checkout-empty-title`}>First, a little something lovely.</h2>
-            <p id={`bb-checkout-empty-copy`} className={`bb-checkout-empty-copy`}>Choose a favorite from the Misty Market to begin your checkout preview.</p>
+            <p id={`bb-checkout-empty-copy`} className={`bb-checkout-empty-copy`}>Choose a favorite from the Misty Market to begin your order request.</p>
             <Link id={`bb-checkout-empty-shop`} className={`bb-button bb-checkout-review-button`} href={siteRoutes.shop.href}>Explore the shop <ArrowUpRight size={15} aria-hidden={`true`} /></Link>
           </div>
         )}

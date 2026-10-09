@@ -2,15 +2,17 @@
 
 import './profile-page.scss';
 import Image from 'next/image';
+import { roleLabels } from '@/types/types';
 import { useProfilePage } from './use-profile-page';
 import { useAuth } from '@/shared/authContext/useAuth';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { useTheme } from '@/shared/themeContext/useTheme';
 import AccountAccess from '../account-access/account-access';
 import Link from '@/app/components/navigation/page-link/page-link';
+import AccountNavigation from '../account-navigation/account-navigation';
 import AccountPasswordPanel from '../account-password-panel/account-password-panel';
 import AccountActionConfirmation from '../account-action-confirmation/account-action-confirmation';
-import { Sun, Save, Leaf, Moon, Mail, Crown, Globe, LogOut, Trash2, KeyRound, UserRound, RotateCcw, CirclePause, LockKeyhole, CalendarDays, ArrowUpRight, LayoutDashboard } from 'lucide-react';
+import { Sun, Save, Leaf, Moon, Mail, Crown, Globe, LogOut, Trash2, KeyRound, UserRound, RotateCcw, CirclePause, LockKeyhole, CalendarDays, ShieldCheck, ArrowUpRight, LayoutDashboard } from 'lucide-react';
 
 const privacyAppearance = {
   private: { label: `Private`, Icon: LockKeyhole, className: `is-private` },
@@ -20,22 +22,18 @@ const privacyAppearance = {
 const ProfileDetails = () => {
   const { mode, notice, setTheme } = useTheme();
   const {
-    user, name, busy, dirty, cancel, pending, isOwner, feedback, canReset, saveName, handleName, joinedDate, actionOpen, signingOut, signOutError,
+    user, name, busy, dirty, cancel, pending, isAdmin, isOwner, feedback, canReset, saveName, handleName, joinedDate, actionOpen, signingOut, signOutError,
     accountAction, handleSignOut, passwordAction, passwordNotice, passwordSettings, accountActionError, beginAccountAction, beginPasswordAction,
     cancelAccountAction, cancelPasswordAction, confirmAccountAction, confirmPasswordAction, passwordSettingsError, reloadPasswordSettings, passwordSettingsLoading,
   } = useProfilePage();
   if (!user) return null;
   const { Icon: PrivacyIcon, label: privacyLabel, className: privacyClassName } = privacyAppearance[user.profile_visibility];
-  const RoleIcon = isOwner ? Crown : UserRound;
+  const RoleIcon = isOwner ? Crown : isAdmin ? ShieldCheck : UserRound;
 
   return (
     <section id={`bb-profile-page`} className={`bb-section bb-profile-page`} aria-labelledby={`bb-profile-title`}>
       <div id={`bb-profile-layout`} className={`bb-container bb-profile-layout`}>
-        <nav id={`bb-profile-navigation`} className={`bb-profile-navigation`} aria-labelledby={`bb-profile-navigation-title`}>
-          <h2 id={`bb-profile-navigation-title`} className={`bb-profile-navigation-title`}>ACCOUNT</h2>
-          <Link href={siteRoutes.profile.href} id={`bb-profile-navigation-profile`} className={`bb-profile-navigation-link`} aria-current={`page`}><UserRound size={17} aria-hidden={`true`} />Profile</Link>
-          {isOwner && <Link href={siteRoutes.dashboard.href} id={`bb-profile-navigation-dashboard`} className={`bb-profile-navigation-link`}><LayoutDashboard size={17} aria-hidden={`true`} />Dashboard</Link>}
-        </nav>
+        <AccountNavigation />
         <div id={`bb-profile-content`} className={`bb-profile-content`}>
           <div id={`bb-profile-details`} className={`bb-profile-details`}>
             <span id={`bb-profile-eyebrow`} className={`bb-eyebrow`}>Your Account</span>
@@ -139,7 +137,7 @@ const ProfileDetails = () => {
                 </dd>
               </div>
             </dl>
-            {isOwner && <Link href={siteRoutes.dashboard.href} id={`bb-profile-open-dashboard`} className={`bb-button`}><LayoutDashboard size={17} aria-hidden={`true`} />Open Dashboard</Link>}
+            {isAdmin && <Link href={siteRoutes.dashboard.href} id={`bb-profile-open-dashboard`} className={`bb-button`}><LayoutDashboard size={17} aria-hidden={`true`} />Open Dashboard</Link>}
             {passwordAction && passwordSettings && (
               <div id={`bb-profile-password-panel`} className={`bb-profile-action-confirmation`}>
                 <AccountPasswordPanel
@@ -171,18 +169,20 @@ const ProfileDetails = () => {
             <dl id={`bb-profile-sidebar-record`} className={`bb-profile-record bb-profile-sidebar-record`}>
               <div id={`bb-profile-row-role`} className={`bb-profile-record-row`}>
                 <dt id={`bb-profile-label-role`} className={`bb-profile-record-label`}>Role</dt>
-                <dd id={`bb-profile-value-role`} className={`bb-profile-record-value bb-profile-metadata bb-profile-role${isOwner ? ` is-owner` : ` is-subscriber`}`}>
+                <dd id={`bb-profile-value-role`} className={`bb-profile-record-value bb-profile-metadata bb-profile-role is-${user.role}`}>
                   <RoleIcon size={18} id={`bb-profile-role-icon`} className={`bb-profile-role-icon`} aria-hidden={`true`} />
-                  <span id={`bb-profile-role-label`} className={`bb-profile-metadata-label`}>{isOwner ? `Owner` : `Subscriber`}</span>
+                  <span id={`bb-profile-role-label`} className={`bb-profile-metadata-label`}>{roleLabels[user.role]}</span>
                 </dd>
               </div>
-              <div id={`bb-profile-row-plan`} className={`bb-profile-record-row`}>
-                <dt id={`bb-profile-label-plan`} className={`bb-profile-record-label`}>Plan</dt>
-                <dd id={`bb-profile-value-plan`} className={`bb-profile-record-value bb-profile-metadata bb-profile-plan`}>
-                  <Leaf size={18} id={`bb-profile-plan-icon`} className={`bb-profile-plan-icon`} aria-hidden={`true`} />
-                  <span id={`bb-profile-plan-label`} className={`bb-profile-metadata-label`}>Free</span>
-                </dd>
-              </div>
+              {!isAdmin && (
+                <div id={`bb-profile-row-plan`} className={`bb-profile-record-row`}>
+                  <dt id={`bb-profile-label-plan`} className={`bb-profile-record-label`}>Plan</dt>
+                  <dd id={`bb-profile-value-plan`} className={`bb-profile-record-value bb-profile-metadata bb-profile-plan`}>
+                    <Leaf size={18} id={`bb-profile-plan-icon`} className={`bb-profile-plan-icon`} aria-hidden={`true`} />
+                    <span id={`bb-profile-plan-label`} className={`bb-profile-metadata-label`}>Free</span>
+                  </dd>
+                </div>
+              )}
               <div id={`bb-profile-row-privacy`} className={`bb-profile-record-row`}>
                 <dt id={`bb-profile-label-privacy`} className={`bb-profile-record-label`}>Profile</dt>
                 <dd id={`bb-profile-value-privacy`} className={`bb-profile-record-value bb-profile-metadata bb-profile-privacy ${privacyClassName}`}>

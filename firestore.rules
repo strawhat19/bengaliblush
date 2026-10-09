@@ -27,6 +27,10 @@ service cloud.firestore {
       return activeAccount()
         && get(/databases/$(database)/documents/users/$(get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id)).data.role == 'owner';
     }
+    function isAdmin() {
+      return activeAccount()
+        && get(/databases/$(database)/documents/users/$(get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id)).data.role in ['admin', 'owner'];
+    }
     function recentlyAuthenticated() {
       return signedIn() && request.auth.token.auth_time is int
         && request.time.toMillis() - request.auth.token.auth_time * 1000 <= 600000;
@@ -47,7 +51,23 @@ service cloud.firestore {
     }
     function matchingCounter(collectionName, id, number) {
       let counter = getAfter(/databases/$(database)/documents/counters/$(collectionName)).data;
-      return counter.record_id == id && counter.number == number;
+      return counter.record_id == id && counter.number == number
+        && counter.number == (exists(/databases/$(database)/documents/counters/$(collectionName))
+          ? get(/databases/$(database)/documents/counters/$(collectionName)).data.number + 1 : 1);
+    }
+    function submissionActor(data) {
+      return (data.user_id == '' && data.firebase_uid == '')
+        || (activeAccount() && data.firebase_uid == request.auth.uid
+          && data.user_id == get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id);
+    }
+    function validCounterRecord(collectionName, id, number) {
+      let data = getAfter(/databases/$(database)/documents/$(collectionName)/$(id)).data;
+      return data.id == id && data.number == number
+        && ((collectionName == 'users' && signedIn() && activeAccountAfter() && data.firebase_uid == request.auth.uid)
+          || (collectionName in ['contactSubmissions', 'appointmentSubmissions', 'orders'] && submissionActor(data)
+            && data.created_at == request.time && data.updated_at == request.time)
+          || (collectionName in ['products', 'services', 'reviews', 'paymentMethods', 'notifications'] && isAdmin()
+            && data.created_at == request.time && data.updated_at == request.time));
     }
     function validUser(data, id) {
       return data.keys().hasAll(['id', 'name', 'email', 'number', 'role', 'photo_url', 'created_at', 'updated_at', 'firebase_uid', 'provider', 'profile_visibility'])
@@ -55,14 +75,15 @@ service cloud.firestore {
         && validIdentity(data, id, 'User')
         && validText(data.name, 1, 120) && validText(data.email, 3, 254)
         && validText(data.photo_url, 0, 2048) && validText(data.firebase_uid, 1, 128)
-        && data.role in ['subscriber', 'owner'] && data.provider in ['google', 'password'] && data.profile_visibility == 'private'
+        && data.role in ['subscriber', 'admin', 'owner'] && data.provider in ['google', 'password'] && data.profile_visibility == 'private'
         && (!data.keys().hasAny(['theme_mode']) || data.theme_mode in ['light', 'dark'])
         && (!data.keys().hasAny(['account_status']) || data.account_status in ['active', 'deactivated', 'deleting'])
         && data.created_at is timestamp && data.updated_at is timestamp;
     }
     function validSubmission(data, id, type) {
       return validIdentity(data, id, type)
-        && validText(data.user_id, 1, 200) && validText(data.firebase_uid, 1, 128)
+        && validText(data.user_id, 0, 200) && validText(data.firebase_uid, 0, 128)
+        && ((data.user_id == '' && data.firebase_uid == '') || (data.user_id.size() > 0 && data.firebase_uid.size() > 0))
         && data.created_at is timestamp && data.updated_at is timestamp;
     }
     function validContact(data, id) {
@@ -80,9 +101,8 @@ service cloud.firestore {
         && data.date is string && data.date.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}')
         && data.status in ['requested', 'confirmed', 'declined', 'completed'];
     }
-    function ownSubmission(data, collectionName, id) {
-      return activeAccount() && data.firebase_uid == request.auth.uid
-        && data.user_id == get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id
+    function newSubmission(data, collectionName, id) {
+      return submissionActor(data)
         && data.created_at == request.time && data.updated_at == request.time
         && matchingCounter(collectionName, id, data.number);
     }
@@ -105,8 +125,133 @@ service cloud.firestore {
         && data.user_id == get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id;
     }
     function ownerSubmissionWrite(data) {
-      return isOwner() && (!exists(/databases/$(database)/documents/accountAccess/$(data.firebase_uid))
+      return isOwner() && (data.firebase_uid == '' || !exists(/databases/$(database)/documents/accountAccess/$(data.firebase_uid))
         || !get(/databases/$(database)/documents/accountAccess/$(data.firebase_uid)).data.keys().hasAny(['account_status']));
+    }
+    function adminSubmissionWrite(data) {
+      return isAdmin() && (data.firebase_uid == '' || !exists(/databases/$(database)/documents/accountAccess/$(data.firebase_uid))
+        || !get(/databases/$(database)/documents/accountAccess/$(data.firebase_uid)).data.keys().hasAny(['account_status']));
+    }
+    function validCommerceRecord(data, id, type) {
+      return validIdentity(data, id, type) && data.created_at is timestamp && data.updated_at is timestamp;
+    }
+    function immutableCommerceFields(data) {
+      return data.id == resource.data.id && data.number == resource.data.number
+        && data.created_at == resource.data.created_at && data.updated_at == request.time;
+    }
+    function newCommerceRecord(data, collectionName, id) {
+      return isAdmin() && data.created_at == request.time && data.updated_at == request.time
+        && matchingCounter(collectionName, id, data.number);
+    }
+    function validSlug(value) {
+      return validText(value, 1, 100) && value.matches('[a-z0-9]+(-[a-z0-9]+)*');
+    }
+    function validImage(value) {
+      return validText(value, 0, 2048) && value.matches('[^\\s]*') && !value.matches('.*\\\\.*')
+        && (value == '' || value == '/' || value.matches('/[^/].*') || value.matches('https?://[^/\\s]+.*'));
+    }
+    function matchingSlug(collectionName, data) {
+      let reservation = getAfter(/databases/$(database)/documents/catalogSlugs/$(collectionName + '_' + data.slug)).data;
+      return reservation.record_id == data.id && reservation.slug == data.slug && reservation.collection_name == collectionName;
+    }
+    function validProduct(data, id) {
+      return data.keys().hasAll(['id', 'number', 'created_at', 'updated_at', 'slug', 'name', 'description', 'price', 'price_minor', 'label', 'shade', 'image', 'imageAlt', 'category_id', 'category_name', 'status'])
+        && data.keys().hasOnly(['id', 'number', 'created_at', 'updated_at', 'slug', 'name', 'description', 'price', 'price_minor', 'label', 'shade', 'image', 'imageAlt', 'visual', 'category_id', 'category_name', 'status'])
+        && validCommerceRecord(data, id, 'Product') && validSlug(data.slug) && validSlug(data.category_id)
+        && validText(data.name, 1, 120) && validText(data.description, 1, 5000) && validText(data.category_name, 1, 120)
+        && validText(data.label, 0, 120) && validText(data.shade, 1, 60)
+        && validImage(data.image) && validText(data.imageAlt, 0, 300)
+        && data.price_minor is int && data.price_minor >= 0 && data.price_minor <= 100000000
+        && data.price is number && data.price == data.price_minor / 100.0
+        && (!data.keys().hasAny(['visual']) || data.visual in ['serum', 'apparel', 'candle', 'tool'])
+        && data.status in ['active', 'archived'];
+    }
+    function validService(data, id) {
+      return exactKeys(data, ['id', 'number', 'created_at', 'updated_at', 'slug', 'legacy_id', 'name', 'description', 'price', 'duration', 'image', 'imageAlt', 'overview', 'highlights', 'preparation', 'relatedBlogSlugs', 'faqs', 'status'])
+        && validCommerceRecord(data, id, 'Service') && validSlug(data.slug) && validSlug(data.legacy_id)
+        && validText(data.name, 1, 120) && validText(data.description, 1, 5000)
+        && validText(data.price, 1, 80) && validText(data.duration, 1, 120)
+        && validImage(data.image) && validText(data.imageAlt, 0, 300)
+        && data.overview is list && data.overview.size() <= 30 && data.highlights is list && data.highlights.size() <= 30
+        && data.preparation is list && data.preparation.size() <= 30 && data.relatedBlogSlugs is list && data.relatedBlogSlugs.size() <= 30
+        && data.faqs is list && data.faqs.size() <= 20 && data.status in ['active', 'archived'];
+    }
+    function validReview(data, id) {
+      return exactKeys(data, ['id', 'number', 'created_at', 'updated_at', 'name', 'rating', 'image', 'imageAlt', 'quote', 'service', 'heading', 'status'])
+        && validCommerceRecord(data, id, 'Review') && validText(data.name, 1, 120) && validText(data.quote, 1, 5000)
+        && validText(data['service'], 1, 160) && validImage(data.image) && validText(data.imageAlt, 0, 300)
+        && data.rating is int && data.rating >= 1 && data.rating <= 5
+        && data.heading is map && exactKeys(data.heading, ['first', 'accent', 'last'])
+        && validText(data.heading.first, 0, 120) && validText(data.heading.accent, 0, 120) && validText(data.heading.last, 0, 120)
+        && data.status in ['published', 'draft', 'archived'];
+    }
+    function validPaymentMethod(data, id) {
+      return exactKeys(data, ['id', 'number', 'created_at', 'updated_at', 'name', 'description', 'type', 'status'])
+        && validCommerceRecord(data, id, 'PaymentMethod') && validText(data.name, 1, 120) && validText(data.description, 0, 1000)
+        && data.type in ['manual', 'card'] && data.status in ['active', 'disabled']
+        && (data.type != 'card' || data.status == 'disabled');
+    }
+    function validNotificationLink(link) {
+      return link is map && exactKeys(link, ['href', 'label']) && validText(link.label, 1, 120)
+        && validText(link.href, 1, 2048) && link.href.matches('[^\\s]*') && !link.href.matches('.*\\\\.*')
+        && (link.href == '/' || link.href.matches('/[^/].*') || link.href.matches('https?://[^/\\s@]+(/.*)?'));
+    }
+    function validNotification(data, id) {
+      return data.keys().hasAll(['id', 'number', 'body', 'slug', 'title', 'kind', 'status', 'created_at', 'updated_at'])
+        && data.keys().hasOnly(['id', 'number', 'body', 'slug', 'title', 'kind', 'status', 'created_at', 'updated_at', 'suffix', 'link'])
+        && validCommerceRecord(data, id, 'Notification') && validSlug(data.slug)
+        && validText(data.title, 1, 160) && validText(data.body, 1, 5000)
+        && data.kind in ['development', 'announcement'] && data.status in ['draft', 'published']
+        && (!data.keys().hasAny(['suffix']) || validText(data.suffix, 0, 300))
+        && (!data.keys().hasAny(['link']) || validNotificationLink(data.link));
+    }
+    function validOrderItem(item) {
+      return item is map && exactKeys(item, ['product_id', 'name', 'quantity', 'unit_price'])
+        && validText(item.product_id, 1, 200) && !item.product_id.matches('.*[/].*') && validText(item.name, 1, 120)
+        && item.quantity is int && item.quantity >= 1 && item.quantity <= 99
+        && item.unit_price is int && item.unit_price >= 0 && item.unit_price <= 100000000;
+    }
+    function orderItemAt(items, index) {
+      return index >= items.size() || validOrderItem(items[index]);
+    }
+    function distinctOrderItems(items, first, second) {
+      return second >= items.size() || items[first].product_id != items[second].product_id;
+    }
+    function orderLineTotal(items, index) {
+      return index < items.size() ? items[index].quantity * items[index].unit_price : 0;
+    }
+    function validOrderItems(items) {
+      return items is list && items.size() >= 1 && items.size() <= 5
+        && orderItemAt(items, 0) && orderItemAt(items, 1) && orderItemAt(items, 2) && orderItemAt(items, 3) && orderItemAt(items, 4)
+        && distinctOrderItems(items, 0, 1) && distinctOrderItems(items, 0, 2) && distinctOrderItems(items, 0, 3) && distinctOrderItems(items, 0, 4)
+        && distinctOrderItems(items, 1, 2) && distinctOrderItems(items, 1, 3) && distinctOrderItems(items, 1, 4)
+        && distinctOrderItems(items, 2, 3) && distinctOrderItems(items, 2, 4) && distinctOrderItems(items, 3, 4);
+    }
+    function trustedOrderItem(item) {
+      let product = get(/databases/$(database)/documents/products/$(item.product_id)).data;
+      return product.status == 'active' && item.name == product.name && item.unit_price == product.price_minor;
+    }
+    function trustedOrderItemAt(items, index) {
+      return index >= items.size() || trustedOrderItem(items[index]);
+    }
+    function trustedOrderItems(items) {
+      return trustedOrderItemAt(items, 0) && trustedOrderItemAt(items, 1) && trustedOrderItemAt(items, 2)
+        && trustedOrderItemAt(items, 3) && trustedOrderItemAt(items, 4);
+    }
+    function availablePaymentMethod(id) {
+      return id == '' || (get(/databases/$(database)/documents/paymentMethods/$(id)).data.status == 'active'
+        && get(/databases/$(database)/documents/paymentMethods/$(id)).data.type == 'manual');
+    }
+    function validOrder(data, id) {
+      return exactKeys(data, ['id', 'number', 'created_at', 'updated_at', 'user_id', 'firebase_uid', 'name', 'email', 'phone', 'notes', 'city', 'region', 'address', 'country', 'postal_code', 'items', 'subtotal', 'currency', 'status', 'payment_status', 'payment_method_id'])
+        && validSubmission(data, id, 'Order') && validText(data.name, 1, 120) && validText(data.email, 3, 254)
+        && data.email.matches('[^\\s@]+@[^\\s@]+\\.[^\\s@]+') && validText(data.phone, 0, 40) && validText(data.notes, 0, 5000)
+        && validText(data.city, 1, 120) && validText(data.region, 0, 120) && validText(data.address, 1, 300)
+        && validText(data.country, 1, 120) && validText(data.postal_code, 1, 40)
+        && validText(data.payment_method_id, 0, 200) && !data.payment_method_id.matches('.*[/].*')
+        && validOrderItems(data.items) && data.subtotal is int
+        && data.subtotal == orderLineTotal(data.items, 0) + orderLineTotal(data.items, 1) + orderLineTotal(data.items, 2) + orderLineTotal(data.items, 3) + orderLineTotal(data.items, 4)
+        && data.currency == 'usd' && data.status in ['requested', 'confirmed', 'fulfilled', 'cancelled'] && data.payment_status == 'unpaid';
     }
     // Infrastructure indices use deterministic keys; business records use numbered app-owned IDs.
     match /accountAccess/{firebaseUid} {
@@ -129,23 +274,24 @@ service cloud.firestore {
       allow delete: if isOwner() && !resource.data.keys().hasAny(['account_status']);
     }
     match /counters/{collectionName} {
-      allow get: if signedIn() && collectionName in ['users', 'contactSubmissions', 'appointmentSubmissions']
-        && (!exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid)) || activeAccount());
+      allow get: if collectionName in ['contactSubmissions', 'appointmentSubmissions', 'orders']
+        || (collectionName in ['products', 'services', 'reviews', 'paymentMethods', 'notifications'] && isAdmin())
+        || (signedIn() && collectionName == 'users'
+          && (!exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid)) || activeAccount()));
       allow list: if isOwner();
-      allow create, update: if signedIn() && activeAccountAfter() && collectionName in ['users', 'contactSubmissions', 'appointmentSubmissions']
+      allow create, update: if collectionName in ['users', 'contactSubmissions', 'appointmentSubmissions', 'orders', 'products', 'services', 'reviews', 'paymentMethods', 'notifications']
         && exactKeys(request.resource.data, ['number', 'record_id'])
         && request.resource.data.number is int
         && request.resource.data.number == (exists(/databases/$(database)/documents/counters/$(collectionName)) ? resource.data.number + 1 : 1)
         && validText(request.resource.data.record_id, 1, 200)
         && !exists(/databases/$(database)/documents/$(collectionName)/$(request.resource.data.record_id))
-        && getAfter(/databases/$(database)/documents/$(collectionName)/$(request.resource.data.record_id)).data.firebase_uid == request.auth.uid
-        && getAfter(/databases/$(database)/documents/$(collectionName)/$(request.resource.data.record_id)).data.number == request.resource.data.number;
+        && validCounterRecord(collectionName, request.resource.data.record_id, request.resource.data.number);
       allow delete: if false;
     }
     match /users/{id} {
       allow get: if signedIn() && ((ownProfile(id)
-        && (!exists(/databases/$(database)/documents/users/$(id)) || resource.data.firebase_uid == request.auth.uid)) || isOwner());
-      allow list: if isOwner();
+        && (!exists(/databases/$(database)/documents/users/$(id)) || resource.data.firebase_uid == request.auth.uid)) || isAdmin());
+      allow list: if isAdmin();
       allow create: if signedIn() && validUser(request.resource.data, id) && hasStatus(request.resource.data, 'active')
         && request.resource.data.firebase_uid == request.auth.uid && request.resource.data.email == request.auth.token.email
         && ((request.resource.data.provider == 'google' && request.auth.token.firebase.sign_in_provider == 'google.com' && request.auth.token.email_verified == true)
@@ -167,18 +313,83 @@ service cloud.firestore {
         || (ownProfile(id) && resource.data.firebase_uid == request.auth.uid && hasStatus(resource.data, 'deleting') && deletingAccount() && recentlyAuthenticated());
     }
     match /contactSubmissions/{id} {
-      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isOwner());
+      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
       allow create: if validContact(request.resource.data, id) && request.resource.data.status == 'new'
-        && ownSubmission(request.resource.data, 'contactSubmissions', id);
-      allow update: if ownerSubmissionWrite(resource.data) && validContact(request.resource.data, id) && immutableSubmissionFields(request.resource.data);
+        && newSubmission(request.resource.data, 'contactSubmissions', id);
+      allow update: if adminSubmissionWrite(resource.data) && validContact(request.resource.data, id) && immutableSubmissionFields(request.resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updated_at']);
       allow delete: if ownerSubmissionWrite(resource.data) || ownSubmissionDelete(resource.data);
     }
     match /appointmentSubmissions/{id} {
-      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isOwner());
+      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
       allow create: if validAppointment(request.resource.data, id) && request.resource.data.status == 'requested'
-        && ownSubmission(request.resource.data, 'appointmentSubmissions', id);
-      allow update: if ownerSubmissionWrite(resource.data) && validAppointment(request.resource.data, id) && immutableSubmissionFields(request.resource.data);
+        && newSubmission(request.resource.data, 'appointmentSubmissions', id);
+      allow update: if adminSubmissionWrite(resource.data) && validAppointment(request.resource.data, id) && immutableSubmissionFields(request.resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updated_at']);
       allow delete: if ownerSubmissionWrite(resource.data) || ownSubmissionDelete(resource.data);
+    }
+    match /catalogSlugs/{slugId} {
+      allow get, list: if isAdmin();
+      allow create, update: if isAdmin()
+        && exactKeys(request.resource.data, ['collection_name', 'record_id', 'slug'])
+        && request.resource.data.collection_name in ['products', 'services', 'notifications'] && validSlug(request.resource.data.slug)
+        && validText(request.resource.data.record_id, 1, 200)
+        && slugId == request.resource.data.collection_name + '_' + request.resource.data.slug
+        && getAfter(/databases/$(database)/documents/$(request.resource.data.collection_name)/$(request.resource.data.record_id)).data.slug == request.resource.data.slug
+        && (!exists(/databases/$(database)/documents/catalogSlugs/$(slugId)) || request.resource.data.record_id == resource.data.record_id);
+      allow delete: if isAdmin()
+        && ((resource.data.collection_name == 'notifications'
+            && !existsAfter(/databases/$(database)/documents/notifications/$(resource.data.record_id)))
+          || getAfter(/databases/$(database)/documents/$(resource.data.collection_name)/$(resource.data.record_id)).data.slug != resource.data.slug);
+    }
+    match /products/{id} {
+      allow get, list: if isAdmin() || resource.data.status == 'active';
+      allow create: if validProduct(request.resource.data, id) && matchingSlug('products', request.resource.data)
+        && newCommerceRecord(request.resource.data, 'products', id);
+      allow update: if isAdmin() && validProduct(request.resource.data, id) && immutableCommerceFields(request.resource.data)
+        && matchingSlug('products', request.resource.data);
+      allow delete: if false;
+    }
+    match /services/{id} {
+      allow get, list: if isAdmin() || resource.data.status == 'active';
+      allow create: if validService(request.resource.data, id) && matchingSlug('services', request.resource.data)
+        && newCommerceRecord(request.resource.data, 'services', id);
+      allow update: if isAdmin() && validService(request.resource.data, id) && immutableCommerceFields(request.resource.data)
+        && matchingSlug('services', request.resource.data);
+      allow delete: if false;
+    }
+    match /reviews/{id} {
+      allow get, list: if isAdmin() || resource.data.status == 'published';
+      allow create: if validReview(request.resource.data, id) && newCommerceRecord(request.resource.data, 'reviews', id);
+      allow update: if isAdmin() && validReview(request.resource.data, id) && immutableCommerceFields(request.resource.data);
+      allow delete: if false;
+    }
+    match /paymentMethods/{id} {
+      allow get, list: if isAdmin() || resource.data.status == 'active';
+      allow create: if validPaymentMethod(request.resource.data, id) && newCommerceRecord(request.resource.data, 'paymentMethods', id);
+      allow update: if isAdmin() && validPaymentMethod(request.resource.data, id) && immutableCommerceFields(request.resource.data);
+      allow delete: if false;
+    }
+    match /orders/{id} {
+      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
+      allow create: if validOrder(request.resource.data, id) && request.resource.data.status == 'requested'
+        && trustedOrderItems(request.resource.data.items) && availablePaymentMethod(request.resource.data.payment_method_id)
+        && newSubmission(request.resource.data, 'orders', id);
+      allow update: if adminSubmissionWrite(resource.data) && validOrder(request.resource.data, id)
+        && immutableSubmissionFields(request.resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updated_at']);
+      allow delete: if ownSubmissionDelete(resource.data);
+    }
+    match /notifications/{id} {
+      allow get, list: if isAdmin() || resource.data.status == 'published';
+      allow create: if validNotification(request.resource.data, id) && matchingSlug('notifications', request.resource.data)
+        && newCommerceRecord(request.resource.data, 'notifications', id);
+      allow update: if isAdmin() && validNotification(request.resource.data, id) && immutableCommerceFields(request.resource.data)
+        && matchingSlug('notifications', request.resource.data)
+        && (resource.data.slug == request.resource.data.slug
+          || !existsAfter(/databases/$(database)/documents/catalogSlugs/$('notifications_' + resource.data.slug)));
+      allow delete: if isAdmin()
+        && !existsAfter(/databases/$(database)/documents/catalogSlugs/$('notifications_' + resource.data.slug));
     }
   }
 }

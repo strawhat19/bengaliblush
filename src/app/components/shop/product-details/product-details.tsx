@@ -2,7 +2,7 @@
 
 import useProductDetails from './use-product-details';
 import type { Product } from '@/shared/types/storefront';
-import { productCatalog } from '@/shared/shop/shop-content';
+import { useCatalog } from '@/shared/shop/catalog-context';
 import { productCategoryStories } from './product-details-content';
 import Link from '@/app/components/navigation/page-link/page-link';
 import ProductCard from '@/app/components/shop/product-card/product-card';
@@ -14,10 +14,11 @@ import { ArrowLeft, ArrowUpRight, Check, ChevronDown, ChevronRight, Heart, Minus
 type ProductDetailsProps = { product: Product };
 
 const ProductDetails = ({ product }: ProductDetailsProps) => {
+  const { categories, products } = useCatalog();
   const { quantity, addToBag, bagQuantity, addedQuantity, changeQuantity } = useProductDetails(product);
-  const category = getProductCategory(product);
+  const category = getProductCategory(product, categories);
   const story = productCategoryStories[category?.id ?? `health`];
-  const relatedProducts = (category?.products ?? productCatalog).filter((item) => item.id !== product.id).slice(0, 4);
+  const relatedProducts = (category?.products ?? products.records).filter((item) => item.id !== product.id).slice(0, 4);
   const pageId = `bb-product-details-${product.id}`;
 
   return (
@@ -52,7 +53,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               <p id={`${pageId}-description`} className={`bb-product-details-description`}>{product.description}</p>
               <div id={`${pageId}-price-row`} className={`bb-product-details-price-row`}>
                 <span id={`${pageId}-price`} className={`bb-product-details-price`}>{formatPrice(product.price)}</span>
-                <span id={`${pageId}-collection-label`} className={`bb-product-details-collection-label`}><Sparkles size={13} aria-hidden={`true`} /> Preview Collection</span>
+                <span id={`${pageId}-collection-label`} className={`bb-product-details-collection-label`}><Sparkles size={13} aria-hidden={`true`} /> The Collection</span>
               </div>
               <div id={`${pageId}-purchase`} className={`bb-product-details-purchase`}>
                 <div id={`${pageId}-quantity-row`} className={`bb-product-details-quantity-row`}>

@@ -1,17 +1,17 @@
+'use client';
+
 import Image from 'next/image';
 import { siteRoutes } from '@/shared/navigation/routes';
+import { useCatalog } from '@/shared/shop/catalog-context';
 import Link from '@/app/components/navigation/page-link/page-link';
 import { ArrowUpRight, Heart, Quote, WandSparkles } from 'lucide-react';
-import type { Review } from '@/shared/reviews/review-content';
 import ReviewCard from '@/app/components/reviews/review-card/review-card';
+import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 
-type ReviewsPageProps = {
-  reviews: Review[];
-};
-
-const ReviewsPage = ({ reviews }: ReviewsPageProps) => {
-  const portrait = reviews[0];
+const ReviewsPage = () => {
+  const { reviews } = useCatalog();
+  const portrait = reviews.records.find((review) => review.image);
 
   return (
     <div id={`bb-reviews-page`} className={`bb-reviews-page`}>
@@ -33,7 +33,7 @@ const ReviewsPage = ({ reviews }: ReviewsPageProps) => {
               Explore Services <WandSparkles size={16} aria-hidden={`true`} />
             </Link>
             <p id={`bb-reviews-preview-note`} className={`bb-reviews-preview-note`}>
-              These illustrative testimonials, names, and portraits are sample content for the website preview.
+              Published reviews shared with the studio.
             </p>
           </div>
           {portrait ? (
@@ -44,6 +44,7 @@ const ReviewsPage = ({ reviews }: ReviewsPageProps) => {
                   <Image
                     fill
                     priority
+                    unoptimized={/^https?:\/\//.test(portrait.image)}
                     src={portrait.image}
                     alt={portrait.imageAlt}
                     id={`bb-reviews-portrait-image`}
@@ -68,14 +69,12 @@ const ReviewsPage = ({ reviews }: ReviewsPageProps) => {
               <span id={`bb-reviews-stories-eyebrow`} className={`bb-eyebrow`}>The Little Details Stay With You</span>
               <h2 id={`bb-reviews-stories-heading`} className={`bb-reviews-stories-heading`}>A feeling worth <em>sharing.</em></h2>
             </div>
-            <span id={`bb-reviews-stories-label`} className={`bb-reviews-stories-label`}>Sample Beauty Stories</span>
+            <span id={`bb-reviews-stories-label`} className={`bb-reviews-stories-label`}>Client Beauty Stories</span>
           </div>
-          {reviews.length ? (
+          {reviews.loading || reviews.error || !reviews.records.length ? <CatalogStatus id={`bb-reviews-status`} loading={reviews.loading} error={reviews.error} empty={`Published reviews will appear here.`} /> : (
             <div id={`bb-reviews-grid`} className={`bb-reviews-grid`}>
-              {reviews.map((review) => <ReviewCard key={review.id} review={review} />)}
+              {reviews.records.map((review) => <ReviewCard key={review.id} review={review} />)}
             </div>
-          ) : (
-            <p id={`bb-reviews-empty`} className={`bb-reviews-empty`}>Beauty stories will appear here soon.</p>
           )}
         </div>
       </section>

@@ -1,6 +1,6 @@
-import { Roles } from '@/types/types';
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
+import { hasAdminAccess } from '@/types/types';
 import type { User } from '@/shared/models/users/User';
 import { readUser, readContactSubmission, readAppointmentSubmission } from './records';
 import { doc, query, getDocs, updateDoc, orderBy, collection, serverTimestamp } from 'firebase/firestore';
@@ -12,14 +12,14 @@ export type OwnerOverview = {
   appointments: AppointmentSubmission[];
 };
 
-const requireOwner = async () => {
+const requireAdmin = async () => {
   const account = await getCurrentAccount();
-  if (account.role !== Roles.Owner) throw new Error(`Owner Access Is Required`);
+  if (!hasAdminAccess(account.role)) throw new Error(`Admin Access Is Required`);
   return getFirebaseClient().database;
 };
 
 export const getOwnerOverview = async (): Promise<OwnerOverview> => {
-  const database = await requireOwner();
+  const database = await requireAdmin();
   const [users, contacts, appointments] = await Promise.all([
     getDocs(query(collection(database, `users`), orderBy(`number`, `desc`))),
     getDocs(query(collection(database, `contactSubmissions`), orderBy(`number`, `desc`))),
@@ -34,7 +34,7 @@ export const getOwnerOverview = async (): Promise<OwnerOverview> => {
 
 export const updateSubmissionStatus = async (kind: SubmissionKind, id: string, status: SubmissionStatus) => {
   if (!submissionStatuses[kind]?.includes(status) || !id || id.includes(`/`)) throw new Error(`Choose A Valid Status`);
-  const database = await requireOwner();
+  const database = await requireAdmin();
   const collectionName = kind === `contact` ? `contactSubmissions` : `appointmentSubmissions`;
   await updateDoc(doc(database, collectionName, id), { status, updated_at: serverTimestamp() });
 };

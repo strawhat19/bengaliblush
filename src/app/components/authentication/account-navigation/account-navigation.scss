@@ -1,0 +1,25 @@
+.bb-account-navigation { display: grid; min-width: 0; align-content: start; gap: 26px; }
+.bb-account-navigation-group { display: grid; min-width: 0; gap: 8px; }
+.bb-account-navigation-title { grid-column: 1 / -1; margin: 0 0 6px; color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 10px; font-weight: 500; letter-spacing: .14em; }
+.bb-account-navigation-item { display: grid; min-width: 0; align-self: start; }
+.bb-account-navigation-heading { display: flex; min-width: 0; }
+.bb-account-navigation-link { display: flex; min-width: 0; align-items: center; gap: 10px; border: 1px solid hsl(var(--primary) / .12); border-radius: 8px; padding: 14px; color: hsl(var(--primary)); font-size: 12px; transition: background-color .2s ease, border-color .2s ease; }
+.bb-account-navigation-heading > .bb-account-navigation-link { flex: 1; }
+.bb-account-navigation-link > svg { flex: none; }
+.bb-account-navigation-link:hover, .bb-account-navigation-link[aria-current='page'] { border-color: hsl(var(--primary) / .24); background: hsl(var(--primary) / .06); }
+.bb-account-navigation-heading.has-submenu { border: 1px solid hsl(var(--primary) / .12); border-radius: 8px; transition: background-color .2s ease, border-color .2s ease; }
+.bb-account-navigation-heading.has-submenu:hover, .bb-account-navigation-heading.has-submenu.is-current { border-color: hsl(var(--primary) / .24); background: hsl(var(--primary) / .06); }
+.bb-account-navigation-heading.has-submenu > .bb-account-navigation-link { border: 0; border-radius: 7px 0 0 7px; padding-right: 6px; background: transparent; }
+.bb-account-navigation-toggle { display: grid; width: 34px; flex: none; place-items: center; margin: 4px; border: 0; border-radius: 6px; padding: 0; background: transparent; color: hsl(var(--primary)); cursor: pointer; transition: background-color .2s ease; }
+.bb-account-navigation-toggle:hover { background: hsl(var(--primary) / .08); }
+.bb-account-navigation-toggle > svg { transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
+.bb-account-navigation-toggle[aria-expanded='true'] > svg { transform: rotate(180deg); }
+.bb-account-navigation-submenu { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .32s cubic-bezier(.22, 1, .36, 1), opacity .24s ease; }
+.bb-account-navigation-submenu.is-open { grid-template-rows: 1fr; opacity: 1; }
+.bb-account-navigation-submenu-inner { min-height: 0; overflow: hidden; }
+.bb-account-navigation-submenu-links { display: grid; gap: 6px; margin: 8px 0 0 10px; border-left: 1px solid hsl(var(--primary) / .15); padding: 4px 4px 4px 10px; }
+.bb-account-navigation-child-link { padding: 11px 10px; font-size: 11px; }
+.bb-account-navigation-toggle:focus-visible, .bb-account-navigation-link:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+@media (min-width: 651px) { .bb-account-navigation { top: 112px; position: sticky; align-self: start; max-height: calc(100dvh - 136px); overflow-y: auto; scrollbar-width: thin; padding: 4px; margin: -4px; } }
+@media (max-width: 650px) { .bb-account-navigation-group { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .bb-account-navigation-link, .bb-account-navigation-heading.has-submenu, .bb-account-navigation-toggle, .bb-account-navigation-toggle > svg, .bb-account-navigation-submenu { transition: none; } }

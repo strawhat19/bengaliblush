@@ -28,7 +28,7 @@ export default function AuthForm({ mode }: { mode: AuthMode }) {
           {signup ? <>The water’s <em>fine.</em></> : <>Welcome back, <em>beautiful.</em></>}
         </h1>
         <p id={`${idPrefix}-description`} className={`bb-auth-form-description`}>
-          {signup ? `Create your account with email or Google, then come right back to the studio.` : `Sign in to save your account and send your next appointment or contact request.`}
+          {signup ? `Create your account with email or Google, then come right back to the studio.` : `Sign in to manage your Bengali Blush account and preferences.`}
         </p>
       </div>
       <form onSubmit={handleSubmit} id={`${idPrefix}-form`} className={`bb-auth-fields`} aria-labelledby={`${idPrefix}-heading`}>

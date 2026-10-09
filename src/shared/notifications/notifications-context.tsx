@@ -1,8 +1,8 @@
 'use client';
 
-import type { Notification, NotificationSnapshot } from '@/shared/notifications/notification-types';
-import { createContext, useContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { getNotifications, markNotificationRead, markAllNotificationsRead } from '@/shared/notifications/notification-service';
+import type { Notification } from './notification-types';
+import { createContext, useContext, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { getNotifications, markNotificationRead, markAllNotificationsRead, type NotificationReadSnapshot } from './notification-service';
 
 type NotificationsContextValue = {
   loading: boolean;
@@ -18,47 +18,57 @@ type NotificationsContextValue = {
 const NotificationsContext = createContext<NotificationsContextValue | null>(null);
 
 export const NotificationsProvider = ({ children }: { children: ReactNode }) => {
+  const requestRef = useRef(0);
+  const mountedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const applySnapshot = useCallback((snapshot: NotificationSnapshot) => {
-    setError(null);
-    setNotice(snapshot.notice);
-    setNotifications(snapshot.notifications);
-  }, []);
-
   const reload = useCallback(async () => {
+    const requestId = ++requestRef.current;
     setLoading(true);
     setError(null);
     try {
-      applySnapshot(await getNotifications());
-    } catch {
-      setError(`Notifications could not be loaded`);
+      const snapshot = await getNotifications();
+      if (!mountedRef.current || requestId !== requestRef.current) return;
+      setNotice(snapshot.notice);
+      setNotifications((current) => snapshot.notifications.map((notification) => ({
+        ...notification,
+        isRead: notification.isRead || Boolean(current.find((item) => item.id === notification.id)?.isRead),
+      })));
+    } catch (error) {
+      if (!mountedRef.current || requestId !== requestRef.current) return;
+      setNotifications([]);
+      setError(error instanceof Error ? error.message : `Notifications Could Not Be Loaded`);
     } finally {
-      setLoading(false);
+      if (mountedRef.current && requestId === requestRef.current) setLoading(false);
     }
-  }, [applySnapshot]);
+  }, []);
+
+  const applyReadPreferences = useCallback((snapshot: NotificationReadSnapshot) => {
+    if (!mountedRef.current) return;
+    setNotice(snapshot.notice);
+    setNotifications((current) => current.map((notification) => ({
+      ...notification,
+      isRead: notification.isRead || snapshot.readIds.includes(notification.id),
+    })));
+  }, []);
 
   const markRead = useCallback(async (id: string) => {
-    try {
-      applySnapshot(await markNotificationRead(id));
-    } catch {
-      setError(`This notification could not be marked as read`);
-    }
-  }, [applySnapshot]);
+    try { applyReadPreferences(await markNotificationRead(id)); }
+    catch { if (mountedRef.current) setNotice(`Read Status Could Not Be Updated For This Visit`); }
+  }, [applyReadPreferences]);
 
   const markAllRead = useCallback(async () => {
-    try {
-      applySnapshot(await markAllNotificationsRead());
-    } catch {
-      setError(`Notifications could not be marked as read`);
-    }
-  }, [applySnapshot]);
+    try { applyReadPreferences(await markAllNotificationsRead(notifications.map(({ id }) => id))); }
+    catch { if (mountedRef.current) setNotice(`Read Status Could Not Be Updated For This Visit`); }
+  }, [notifications, applyReadPreferences]);
 
   useEffect(() => {
+    mountedRef.current = true;
     void reload();
+    return () => { mountedRef.current = false; requestRef.current += 1; };
   }, [reload]);
 
   const value = useMemo<NotificationsContextValue>(() => ({
@@ -69,7 +79,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     markRead,
     markAllRead,
     notifications,
-    unreadCount: notifications.filter(({ isRead }) => !isRead).length,
+    unreadCount: loading || error ? 0 : notifications.filter(({ isRead }) => !isRead).length,
   }), [error, notice, reload, loading, markRead, markAllRead, notifications]);
 
   return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;
@@ -77,6 +87,6 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
 
 export const useNotifications = () => {
   const notifications = useContext(NotificationsContext);
-  if (!notifications) throw new Error(`Notifications need a NotificationsProvider`);
+  if (!notifications) throw new Error(`Notifications Require A NotificationsProvider`);
   return notifications;
 };

@@ -1,6 +1,6 @@
 export type Service = {
   id: string;
-  number: string;
+  number: string | number;
   name: string;
   description: string;
   duration: string;
@@ -9,6 +9,9 @@ export type Service = {
 
 export type Product = {
   id: string;
+  slug?: string;
+  category_id?: string;
+  category_name?: string;
   name: string;
   description: string;
   price: number;

@@ -90,7 +90,7 @@ const ContactInquiry = () => {
                 data-testid={`status-contact-appointment-saved`}
               >
                 <p id={`bb-contact-appointment-saved-message`} className={`bb-contact-saved-message`}>
-                  Your appointment request has been saved. The studio will be in touch to confirm the details.
+                  Your appointment request has been saved for the studio to review and confirm availability.
                 </p>
               </div>
             )}

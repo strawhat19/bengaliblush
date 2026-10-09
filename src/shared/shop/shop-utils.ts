@@ -1,12 +1,11 @@
-import { productCategories } from '@/shared/shop/shop-content';
-import type { Product } from '@/shared/types/storefront';
+import type { Product, ProductCategory } from '@/shared/types/storefront';
 
 export const formatPrice = (amount: number) => new Intl.NumberFormat(`en-US`, {
   style: `currency`,
   currency: `USD`,
 }).format(amount);
 
-export const getProductHref = (slug: string) => `/shop/${encodeURIComponent(slug)}`;
+export const getProductHref = (product: Product | string) => `/shop/${encodeURIComponent(typeof product === `string` ? product : product.slug ?? product.id)}`;
 
-export const getProductCategory = (product: Product) =>
-  productCategories.find((category) => category.products.some(({ id }) => id === product.id));
+export const getProductCategory = (product: Product, categories: ProductCategory[]) =>
+  categories.find((category) => category.products.some(({ id }) => id === product.id));

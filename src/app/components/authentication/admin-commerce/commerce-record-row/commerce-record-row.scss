@@ -1,0 +1,31 @@
+.bb-commerce-record-name, .bb-commerce-record-meta, .bb-commerce-record-description { display: block; overflow-wrap: anywhere; }
+.bb-commerce-record-name { margin-bottom: 6px; font-size: 11px; font-weight: 600; }
+.bb-commerce-record-main { min-width: 210px; max-width: 350px; }
+.bb-commerce-record-meta { margin: 5px 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-commerce-record-description { display: -webkit-box; max-width: 350px; overflow: hidden; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); line-height: 1.6; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+.bb-commerce-record-number { font-family: var(--app-font-mono); font-size: 10px; }
+.bb-commerce-record-detail { min-width: 120px; line-height: 1.6; }
+.bb-commerce-record-date { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; white-space: nowrap; }
+.bb-commerce-record-edit { display: inline-flex; align-items: center; gap: 6px; border: 1px solid hsl(var(--primary) / .16); border-radius: 7px; padding: 8px 10px; background: transparent; color: var(--bb-highlight, hsl(var(--primary))); font-size: 10px; transition: background-color .2s ease; }
+.bb-commerce-record-edit:hover:not(:disabled) { background: hsl(var(--primary) / .05); }
+.bb-commerce-record-edit:disabled { cursor: default; opacity: .5; }
+.bb-commerce-record-edit:focus-visible, .bb-commerce-order-summary:focus-visible, .bb-commerce-order-status-select:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.bb-commerce-order-items { min-width: 165px; }
+.bb-commerce-order-item { display: block; margin-bottom: 7px; font-size: 10px; line-height: 1.6; }
+.bb-commerce-order-details { min-width: 100px; }
+.bb-commerce-order-summary { display: flex; align-items: center; gap: 6px; color: var(--bb-highlight, hsl(var(--primary))); font-size: 10px; white-space: nowrap; cursor: pointer; list-style: none; }
+.bb-commerce-order-summary::-webkit-details-marker { display: none; }
+.bb-commerce-order-summary > svg { flex: none; transition: transform .2s ease; }
+.bb-commerce-order-details[open] > .bb-commerce-order-summary > svg { transform: rotate(180deg); }
+.bb-commerce-order-details-content { width: 230px; margin-top: 16px; animation: bb-commerce-details-in .24s ease both; }
+.bb-commerce-order-details-record { display: grid; gap: 14px; margin: 0; }
+.bb-commerce-order-detail { display: grid; gap: 5px; }
+.bb-commerce-order-detail-label, .bb-commerce-order-status-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-commerce-order-detail-value { margin: 0; font-size: 10px; line-height: 1.6; overflow-wrap: anywhere; white-space: pre-wrap; }
+.bb-commerce-order-item-prices { margin: 16px 0; padding-left: 14px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
+.bb-commerce-order-item-price { margin-bottom: 7px; font-size: 10px; line-height: 1.6; }
+.bb-commerce-order-status-select { min-height: 36px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 7px; padding: 8px 10px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 10px; }
+.bb-commerce-order-status-select:disabled { opacity: .5; cursor: wait; }
+@keyframes bb-commerce-details-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (max-width: 480px) { .bb-commerce-order-status-select { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { .bb-commerce-record-edit, .bb-commerce-order-summary > svg { transition: none; } .bb-commerce-order-details-content { animation: none; } }

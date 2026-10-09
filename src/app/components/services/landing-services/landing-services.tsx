@@ -1,10 +1,15 @@
-import { ArrowUpRight, WandSparkles } from 'lucide-react';
+'use client';
+
 import { siteRoutes } from '@/shared/navigation/routes';
-import { services } from '@/shared/services/service-content';
+import { ArrowUpRight, WandSparkles } from 'lucide-react';
+import { useCatalog } from '@/shared/shop/catalog-context';
 import Link from '@/app/components/navigation/page-link/page-link';
 import ServiceRow from '@/app/components/services/service-row/service-row';
+import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 
-const LandingServices = () => (
+const LandingServices = () => {
+  const { services } = useCatalog();
+  return (
   <section
     id={`services`}
     aria-labelledby={`bb-landing-services-heading`}
@@ -36,12 +41,13 @@ const LandingServices = () => (
         </div>
       </div>
       <div data-reveal id={`bb-landing-services-list`} className={`bb-service-list`}>
-        {services.map((service) => (
+        {services.loading || services.error || !services.records.length ? <CatalogStatus id={`bb-landing-services-status`} loading={services.loading} error={services.error} empty={`The service menu is being prepared. Please check back soon.`} /> : services.records.map((service) => (
           <ServiceRow key={service.id} service={service} />
         ))}
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default LandingServices;

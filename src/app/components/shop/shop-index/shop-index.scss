@@ -8,7 +8,7 @@
   .bb-shop-index-preview-note { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .07em; text-transform: uppercase; }
   .bb-shop-index-featured-frame { position: relative; isolation: isolate; }
   .bb-shop-index-featured-frame.has-photo { --bb-arch-color: hsl(var(--secondary)); }
-  .bb-shop-index-featured { position: relative; display: flex; min-height: 560px; align-items: end; justify-content: center; overflow: hidden; border-radius: 190px 190px 6px 6px; background: hsl(35 49% 86%); }
+  .bb-shop-index-featured { position: relative; isolation: isolate; display: flex; min-height: 560px; align-items: end; justify-content: center; overflow: hidden; border-radius: 190px 190px 6px 6px; background: hsl(35 49% 86%); }
   .bb-shop-index-featured::after { position: absolute; z-index: 1; inset: 42% 0 0; background: linear-gradient(transparent, hsl(var(--foreground) / .83)); content: ''; pointer-events: none; }
   .bb-shop-index-featured .bb-product-photo { object-fit: cover; object-position: 50% top; transform-origin: top center; transition: transform .6s ease; }
   .bb-shop-index-featured .bb-product-art, .bb-shop-index-featured .bb-product-bottle { align-self: center; margin-bottom: 100px; }

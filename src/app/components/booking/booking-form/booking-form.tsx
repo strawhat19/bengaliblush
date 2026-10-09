@@ -1,10 +1,9 @@
 'use client';
 
+import './booking-form.scss';
 import { ArrowUpRight } from 'lucide-react';
 import type { Service } from '@/shared/types/storefront';
-import { services } from '@/shared/services/service-content';
 import { useBookingForm, type BookingSuccessHandler } from './use-booking-form';
-import SubmissionAuthNote from '@/app/components/submissions/submission-auth-note/submission-auth-note';
 
 export type { BookingFormValues } from './use-booking-form';
 
@@ -22,7 +21,7 @@ const BookingForm = ({
   idPrefix = compact ? `modal` : undefined,
 }: BookingFormProps) => {
   const {
-    name, date, time, email, notes, error, service, submitting,
+    name, date, time, email, notes, error, service, services, submitting,
     canSubmit, dateInputRef, submit, setName, setDate, setTime, setEmail, setNotes, setError, setService,
   } = useBookingForm(onSuccess, selectedService);
   const fieldId = (field: string) => `${idPrefix ? `${idPrefix}-` : ``}${field}`;
@@ -37,7 +36,6 @@ const BookingForm = ({
       onChange={() => setError(``)}
       data-testid={compact ? `form-modal-booking` : `form-booking`}
     >
-      <SubmissionAuthNote idPrefix={idPrefix ?? `bb-booking`} action={`request an appointment`} />
       <div className={`bb-field`} id={elementId(`name-field`)}>
         <label className={`bb-booking-label`} id={elementId(`name-label`)} htmlFor={fieldId(`name`)}>Your name</label>
         <input
@@ -64,7 +62,7 @@ const BookingForm = ({
           onChange={(event) => setService(event.target.value)}
         >
           <option value={``} disabled className={`bb-booking-option`} id={elementId(`service-placeholder`)}>Choose a service</option>
-          {services.map((item) => (
+          {services.records.map((item) => (
             <option
               key={item.id}
               value={item.id}
@@ -147,6 +145,9 @@ const BookingForm = ({
         {submitting ? `Saving Request…` : `Request This Appointment`} <ArrowUpRight size={16} aria-hidden className={`bb-booking-submit-icon`} id={elementId(`submit-icon`)} />
       </button>
       {error && <p role={`alert`} id={elementId(`error`)} className={`bb-submission-error bb-field-full`}>{error}</p>}
+      {services.loading && <p role={`status`} id={elementId(`service-loading`)} className={`bb-field-full`}>Loading Services…</p>}
+      {services.error && <p role={`alert`} id={elementId(`service-error`)} className={`bb-submission-error bb-field-full`}>{services.error}</p>}
+      {!services.loading && !services.error && !services.records.length && <p role={`status`} id={elementId(`service-empty`)} className={`bb-field-full`}>Appointments will be available when the studio publishes its service menu.</p>}
     </form>
   );
 };

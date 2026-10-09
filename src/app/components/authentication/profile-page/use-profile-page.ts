@@ -27,7 +27,7 @@ export const useProfilePage = () => {
   const [passwordSettings, setPasswordSettings] = useState<AccountPasswordSettings | null>(null);
   const [draftName, setDraftName] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ text: string; failed: boolean } | null>(null);
-  const { user, isOwner, signOut, clearError, updateName, deleteAccount, changePassword, deactivateAccount, resetAccountPassword, accountActionPending } = useAuth();
+  const { user, isAdmin, isOwner, signOut, clearError, updateName, deleteAccount, changePassword, deactivateAccount, resetAccountPassword, accountActionPending } = useAuth();
   const busy = pending || signingOut || openingPassword || accountActionPending;
   const actionOpen = Boolean(accountAction || passwordAction);
   const accountId = user?.id;
@@ -188,5 +188,5 @@ export const useProfilePage = () => {
     requestAnimationFrame(() => { if (active.current) actionButtonRef.current?.focus(); });
   };
 
-  return { user, name, busy, dirty, cancel, pending, isOwner, feedback, canReset, saveName, joinedDate, handleName, actionOpen, signingOut, signOutError, accountAction, handleSignOut, passwordAction, passwordNotice, passwordSettings, accountActionError, beginAccountAction, beginPasswordAction, cancelAccountAction, cancelPasswordAction, confirmAccountAction, confirmPasswordAction, passwordSettingsError, reloadPasswordSettings, passwordSettingsLoading: passwordSettingsLoading || openingPassword };
+  return { user, name, busy, dirty, cancel, pending, isAdmin, isOwner, feedback, canReset, saveName, joinedDate, handleName, actionOpen, signingOut, signOutError, accountAction, handleSignOut, passwordAction, passwordNotice, passwordSettings, accountActionError, beginAccountAction, beginPasswordAction, cancelAccountAction, cancelPasswordAction, confirmAccountAction, confirmPasswordAction, passwordSettingsError, reloadPasswordSettings, passwordSettingsLoading: passwordSettingsLoading || openingPassword };
 };

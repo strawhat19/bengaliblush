@@ -1,7 +1,7 @@
 'use client';
 
-import { Roles } from '@/types/types';
 import { useRouter } from 'next/navigation';
+import { Roles, hasAdminAccess } from '@/types/types';
 import type { User } from '@/shared/models/users/User';
 import type { ThemeMode } from '@/styles/theme/theme';
 import { siteRoutes } from '@/shared/navigation/routes';
@@ -14,6 +14,7 @@ import { subscribeAuth, signOutAccount, getAuthErrorMessage, type EmailSignInInp
 type AuthContextValue = {
   error: string;
   loading: boolean;
+  isAdmin: boolean;
   isOwner: boolean;
   user: User | null;
   inactiveUser: User | null;
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const actionLock = useRef(false);
   const pendingSignInCover = useRef<(() => void) | null>(null);
+  const pendingSessionTransition = useRef<SessionTransition | null>(null);
   const [error, setError] = useState(``);
   const [account, setAccount] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,10 +52,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const user = account && (!account.account_status || account.account_status === `active`) ? account : null;
   const accountId = user?.id;
   const clearError = useCallback(() => setError(``), []);
+  const holdSessionTransition = useCallback((transition: SessionTransition | null) => {
+    pendingSessionTransition.current = transition;
+    void transition?.covered.then(() => {
+      if (pendingSessionTransition.current === transition) pendingSessionTransition.current = null;
+    });
+    return transition;
+  }, []);
   const publishAccount = useCallback((nextAccount: User | null, nextDeletionAccountId = ``) => {
-    sessionState.current = { account: nextAccount, deletionAccountId: nextDeletionAccountId, revision: sessionState.current.revision + 1 };
-    setAccount(nextAccount);
-    setDeletionAccountId(nextDeletionAccountId);
+    const nextSession = { account: nextAccount, deletionAccountId: nextDeletionAccountId, revision: sessionState.current.revision + 1 };
+    sessionState.current = nextSession;
+    const publish = () => {
+      if (sessionState.current !== nextSession) return;
+      setAccount(nextAccount);
+      setDeletionAccountId(nextDeletionAccountId);
+    };
+    const transition = pendingSessionTransition.current;
+    if (transition) void transition.covered.then(publish);
+    else publish();
   }, []);
   const finishSessionTransition = useCallback((transition: SessionTransition | null) => {
     const navigate = () => router.replace(siteRoutes.home.href);
@@ -89,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const coverSession = () => {
       if (sessionCover.covered) return;
       sessionCover.covered = true;
-      sessionCover.transition = startSessionTransition(siteRoutes.home.href);
+      sessionCover.transition = holdSessionTransition(startSessionTransition(siteRoutes.home.href));
     };
     pendingSignInCover.current = coverSession;
     const revision = sessionState.current.revision;
@@ -119,7 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (pendingSignInCover.current === coverSession) pendingSignInCover.current = null;
       actionLock.current = false;
     }
-  }, [publishAccount, finishSessionTransition]);
+  }, [publishAccount, holdSessionTransition, finishSessionTransition]);
 
   const signInWithGoogle = useCallback(() => authenticate(authenticateWithGoogle, true), [authenticate]);
   const signInWithEmail = useCallback((input: EmailSignInInput) => authenticate(() => authenticateWithEmail(input)), [authenticate]);
@@ -143,7 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const manageAccount = useCallback(async (operation: () => Promise<void>, redirectHome = false) => {
     if (actionLock.current) throw new Error(`An Account Action Is In Progress`);
     actionLock.current = true;
-    const transition = redirectHome ? startSessionTransition(siteRoutes.home.href) : null;
+    const transition = redirectHome ? holdSessionTransition(startSessionTransition(siteRoutes.home.href)) : null;
     setError(``);
     setAccountActionPending(true);
     try {
@@ -158,7 +174,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       actionLock.current = false;
       setAccountActionPending(false);
     }
-  }, [finishSessionTransition]);
+  }, [holdSessionTransition, finishSessionTransition]);
   const deactivateAccount = useCallback((input: AccountActionInput) => manageAccount(async () => {
     const revision = sessionState.current.revision;
     await suspendAccount(input);
@@ -190,7 +206,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = useCallback(async () => {
     if (actionLock.current) throw new Error(`An Account Action Is In Progress`);
     actionLock.current = true;
-    const transition = startSessionTransition(siteRoutes.home.href);
+    const transition = holdSessionTransition(startSessionTransition(siteRoutes.home.href));
     const revision = sessionState.current.revision;
     setError(``);
     try {
@@ -204,10 +220,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       actionLock.current = false;
     }
-  }, [publishAccount, finishSessionTransition]);
+  }, [publishAccount, holdSessionTransition, finishSessionTransition]);
 
   return (
-    <AuthContext.Provider value={{ user, error, loading, signOut, clearError, updateName, updateTheme, inactiveUser, changePassword, deleteAccount, resetPassword, reactivateAccount, deactivateAccount, deletionAccountId, resetAccountPassword, accountActionPending, signInWithEmail, signUpWithEmail, signInWithGoogle, isOwner: user?.role === Roles.Owner }}>
+    <AuthContext.Provider value={{ user, error, loading, signOut, clearError, updateName, updateTheme, inactiveUser, changePassword, deleteAccount, resetPassword, reactivateAccount, deactivateAccount, deletionAccountId, resetAccountPassword, accountActionPending, signInWithEmail, signUpWithEmail, signInWithGoogle, isAdmin: hasAdminAccess(user?.role), isOwner: user?.role === Roles.Owner }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,6 +1,8 @@
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
+import type { User } from '@/shared/models/users/User';
 import { createRecordId, getNextNumber } from './records';
+import { AccountDeletionPending } from './account-actions';
 import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
 import type { ContactSubmissionInput, AppointmentSubmissionInput } from '@/shared/models/submissions/Submission';
 
@@ -11,19 +13,29 @@ const normalizeText = (value: string, label: string, maximum: number, optional =
 };
 
 const saveSubmission = async (collectionName: string, type: string, name: string, values: Record<string, string>) => {
-  const account = await getCurrentAccount();
-  const { database } = getFirebaseClient();
+  const { auth, database } = getFirebaseClient();
+  await auth.authStateReady();
+  const firebaseUid = auth.currentUser?.uid;
+  let account: User | null = null;
+  if (firebaseUid) {
+    try {
+      account = await getCurrentAccount();
+    } catch (error) {
+      if (!(error instanceof AccountDeletionPending) && !(error instanceof Error && error.message === `Reactivate Your Account To Continue`)) throw error;
+    }
+  }
   await runTransaction(database, async (transaction) => {
+    if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
     const counterRef = doc(database, `counters`, collectionName);
     const number = getNextNumber(await transaction.get(counterRef));
-    const id = createRecordId(type, number, name || account.name);
+    const id = createRecordId(type, number, name || account?.name || `Guest`);
     const recordRef = doc(database, collectionName, id);
     transaction.set(recordRef, {
       id,
       number,
       ...values,
-      user_id: account.id,
-      firebase_uid: account.firebase_uid,
+      user_id: account?.id ?? ``,
+      firebase_uid: account?.firebase_uid ?? ``,
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
     });

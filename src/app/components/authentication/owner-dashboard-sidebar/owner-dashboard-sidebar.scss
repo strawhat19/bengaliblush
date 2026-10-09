@@ -1,0 +1,9 @@
+.bb-owner-dashboard-sidebar { display: grid; min-width: 0; gap: 24px; }
+.bb-owner-sidebar-title { margin: 0; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 23px; font-weight: 500; }
+.bb-owner-app-info { min-width: 0; }
+.bb-owner-app-info-title { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+.bb-owner-app-info-record { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; gap: 16px; margin: 0; }
+.bb-owner-app-info-field { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; gap: 6px; }
+.bb-owner-app-info-field + .bb-owner-app-info-field { border-top: 1px solid hsl(var(--primary) / .1); padding-top: 16px; }
+.bb-owner-app-info-label { min-width: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; overflow-wrap: anywhere; }
+.bb-owner-app-info-value { min-width: 0; margin: 0; color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }

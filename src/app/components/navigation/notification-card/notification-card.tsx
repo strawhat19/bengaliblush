@@ -2,7 +2,7 @@
 
 import { Heart, ArrowUpRight, Construction } from 'lucide-react';
 import Link from '@/app/components/navigation/page-link/page-link';
-import { getNotificationHref } from '@/shared/notifications/notification-utils';
+import { getNotificationHref, getNotificationCopy } from '@/shared/notifications/notification-utils';
 import type { Notification } from '@/shared/notifications/notification-types';
 import './notification-card.scss';
 
@@ -48,9 +48,7 @@ export default function NotificationCard({
           )}
         </h3>
         <p id={`${cardId}-body`} className={`bb-notification-body`}>
-          {notification.body}
-          {notification.link?.label}
-          {notification.suffix}
+          {getNotificationCopy(notification)}
         </p>
       </div>
       <ArrowUpRight size={15} className={`bb-notification-arrow`} aria-hidden={`true`} />

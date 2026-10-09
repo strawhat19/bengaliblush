@@ -1,0 +1,17 @@
+.bb-admin-shop-counts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 24px 0; }
+.bb-admin-shop-count { display: grid; align-content: start; gap: 12px; border: 1px solid hsl(var(--primary) / .15); border-radius: 12px; padding: 20px; color: var(--bb-highlight, hsl(var(--primary))); background: var(--bb-panel-surface, hsl(var(--card))); transition: border-color .2s ease, background-color .2s ease; }
+.bb-admin-shop-count strong { font-family: var(--app-font-serif); font-size: 34px; font-weight: 500; }
+.bb-admin-shop-count span { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; line-height: 1.6; }
+.bb-admin-shop-count:hover { border-color: hsl(var(--primary) / .4); background: hsl(var(--primary) / .04); }
+.bb-admin-shop-panel { margin-top: 20px; border: 1px solid hsl(var(--primary) / .15); border-radius: 12px; padding: 22px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-admin-shop-panel-title { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 24px; font-weight: 500; }
+.bb-admin-shop-panel p { color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 12px; line-height: 1.8; }
+.bb-admin-shop-panel .bb-admin-shop-muted { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; }
+.bb-admin-shop-link { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; color: var(--bb-highlight, hsl(var(--primary))); font-size: 11px; }
+.bb-admin-shop-count:focus-visible, .bb-admin-shop-link:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.bb-admin-shop-category-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.bb-admin-shop-category { display: flex; justify-content: space-between; gap: 12px; color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 12px; }
+.bb-admin-shop-category strong { font-size: 11px; font-weight: 500; }
+@media (min-width: 651px) { .bb-page:has(> #bb-admin-shop) { overflow: clip; } }
+@media (max-width: 1100px) { .bb-admin-shop-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .bb-admin-shop-count { transition: none; } }

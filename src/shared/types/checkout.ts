@@ -21,7 +21,6 @@ export type CheckoutItem = {
   unitPrice: number;
 };
 
-// Keep drafts in memory; a future checkout service must confirm prices and inventory before creating an order.
 export type CheckoutDraft = {
   currency: `USD`;
   items: CheckoutItem[];

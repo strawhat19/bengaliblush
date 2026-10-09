@@ -47,13 +47,17 @@
   .bb-checkout-payment-preview { margin-top: 28px; border: 1px solid hsl(var(--primary) / .18); padding: 28px; background: hsl(var(--card) / .5); }
   .bb-checkout-payment-title { margin: 17px 0 15px; font-family: var(--app-font-serif); font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -.04em; }
   .bb-checkout-payment-copy { margin: 0 0 23px; color: hsl(var(--muted-foreground)); font-size: 12px; line-height: 1.8; }
-  .bb-checkout-place-order { width: 100%; border-color: hsl(var(--primary) / .18); background: hsl(var(--muted) / .6); color: hsl(var(--muted-foreground)); cursor: not-allowed; }
-  .bb-checkout-place-order:hover { transform: none; }
+  .bb-checkout-place-order { width: 100%; margin-top: 20px; background: hsl(var(--primary)); color: hsl(var(--card)); }
+  .bb-checkout-place-order:disabled, .bb-checkout-review-button:disabled { opacity: .6; cursor: default; transform: none; }
+  .bb-checkout-payment-preview .bb-checkout-field { margin-top: 18px; }
+  .bb-checkout-payment-preview textarea { min-height: 90px; resize: vertical; }
+  .bb-checkout-payment-preview .bb-checkout-label { display: flex; align-items: center; gap: 7px; }
+  .bb-submission-error { color: hsl(var(--destructive)); font-size: 13px; line-height: 1.7; }
   .bb-checkout-empty { display: grid; justify-items: center; gap: 22px; border: 1px solid hsl(var(--primary) / .16); padding: 55px 25px; background: hsl(var(--card) / .5); text-align: center; }
   .bb-checkout-empty > svg { color: hsl(var(--primary)); }
   .bb-checkout-empty-title { margin: 0; font-family: var(--app-font-serif); font-size: clamp(28px, 4vw, 40px); font-weight: 500; letter-spacing: -.04em; }
   .bb-checkout-empty-copy { max-width: 350px; margin: 0; color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.8; }
-  :is(.bb-checkout-signin, .bb-checkout-back-to-bag, .bb-checkout-policy-link, .bb-checkout-edit-details, .bb-checkout-review-button):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 5px; }
+  :is(.bb-checkout-signin, .bb-checkout-back-to-bag, .bb-checkout-policy-link, .bb-checkout-edit-details, .bb-checkout-review-button, .bb-checkout-place-order):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 5px; }
 
   @media (max-width: 1000px) {
     .bb-checkout-layout { grid-template-columns: minmax(0, 1fr) 315px; gap: 5%; }
@@ -79,7 +83,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bb-checkout-input, .bb-checkout-review-button { transition: none; }
-    .bb-checkout-review-button:hover { transform: none; }
+    .bb-checkout-input, .bb-checkout-review-button, .bb-checkout-place-order { transition: none; }
+    .bb-checkout-review-button:hover, .bb-checkout-place-order:hover { transform: none; }
   }
 }

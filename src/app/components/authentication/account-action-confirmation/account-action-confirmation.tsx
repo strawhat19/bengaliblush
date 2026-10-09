@@ -11,7 +11,7 @@ const actionDetails = {
     Icon: Trash2,
     title: `Delete Account`,
     pendingLabel: `Deleting Account`,
-    description: `Permanently remove your sign-in, profile, and saved contact and appointment requests. This cannot be undone.`,
+    description: `Permanently remove your sign-in, profile, and linked contact, appointment, and order requests. This cannot be undone.`,
   },
   deactivate: {
     Icon: Ban,

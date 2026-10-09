@@ -1,14 +1,31 @@
-import StatusCell from '../status-cell/status-cell';
+import { roleLabels } from '@/types/types';
 import type { User } from '@/shared/models/users/User';
+import { getStatusLabel } from '../status-cell/status-cell';
+import { formatRecordDate } from '../owner-dashboard/dashboard-data';
 
-const OwnerUserRow = ({ user }: { user: User }) => (
-  <tr id={`bb-owner-user-${user.id}`} className={`bb-owner-user-row`}>
-    <td id={`bb-owner-user-number-${user.id}`} className={`bb-owner-user-number`}>{user.number}</td>
-    <td id={`bb-owner-user-name-${user.id}`} className={`bb-owner-user-name`}>{user.name}</td>
-    <td id={`bb-owner-user-email-${user.id}`} className={`bb-owner-user-email`}>{user.email}</td>
-    <td id={`bb-owner-user-role-${user.id}`} className={`bb-owner-user-role`}><StatusCell id={`bb-owner-user-${user.id}`} status={user.role} /></td>
-    <td id={`bb-owner-user-created-${user.id}`} className={`bb-owner-user-created`}>{new Date(user.created_at).toLocaleDateString()}</td>
-  </tr>
-);
+const OwnerUserRow = ({ user }: { user: User }) => {
+  const status = user.account_status ?? `active`;
+  const statusColor = status === `active` ? `green` : status === `deleting` ? `red` : `gray`;
+  return (
+    <tr id={`bb-owner-user-${user.id}`} className={`bb-owner-user-row`}>
+      <td id={`bb-owner-user-number-${user.id}`} className={`bb-owner-user-number`}>{user.number}</td>
+      <td id={`bb-owner-user-account-${user.id}`} className={`bb-owner-user-account`}>
+        <strong id={`bb-owner-user-name-${user.id}`} className={`bb-owner-user-name`}>{user.name}</strong>
+        <span id={`bb-owner-user-email-${user.id}`} className={`bb-owner-user-email`}>{user.email}</span>
+      </td>
+      <td id={`bb-owner-user-role-${user.id}`} className={`bb-owner-user-role`}>{roleLabels[user.role]}</td>
+      <td id={`bb-owner-user-provider-${user.id}`} className={`bb-owner-user-provider`}>{getStatusLabel(user.provider)}</td>
+      <td id={`bb-owner-user-status-cell-${user.id}`} className={`bb-owner-user-status`}>
+        <div id={`bb-owner-user-actions-${user.id}`} className={`actionsCell`}>
+          <span id={`bb-owner-user-status-${user.id}`} className={`rowStatus is-${statusColor}`}>
+            <span id={`bb-owner-user-status-dot-wrap-${user.id}`} className={`statusDotWrap`} aria-hidden={`true`}><span id={`bb-owner-user-status-dot-${user.id}`} className={`statusDot`} /></span>
+            <span id={`bb-owner-user-status-text-${user.id}`} className={`statusText`}>{getStatusLabel(status)}</span>
+          </span>
+        </div>
+      </td>
+      <td id={`bb-owner-user-created-${user.id}`} className={`bb-owner-user-created`}><time dateTime={user.created_at} id={`bb-owner-user-joined-${user.id}`} className={`bb-owner-user-joined`}>{formatRecordDate(user.created_at)}</time></td>
+    </tr>
+  );
+};
 
 export default OwnerUserRow;

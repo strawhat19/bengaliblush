@@ -1,14 +1,18 @@
+'use client';
+
 import Image from 'next/image';
 import { siteRoutes } from '@/shared/navigation/routes';
-import { services } from '@/shared/services/service-content';
-import { ArrowUpRight, MapPin, WandSparkles } from 'lucide-react';
+import { useCatalog } from '@/shared/shop/catalog-context';
 import { getServiceHref } from '@/shared/services/service-utils';
+import { ArrowUpRight, MapPin, WandSparkles } from 'lucide-react';
 import Link from '@/app/components/navigation/page-link/page-link';
 import ServiceCard from '@/app/components/services/service-card/service-card';
+import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 
 const ServicesIndex = () => {
-  const featuredService = services.find((service) => service.id === `signature-set`);
+  const { services } = useCatalog();
+  const featuredService = services.records.find((service) => service.legacy_id === `signature-set`) ?? services.records?.[0];
 
   return (
     <div id={`bb-services-page`} className={`bb-services-index`}>
@@ -42,15 +46,16 @@ const ServicesIndex = () => {
             >
               <OrnamentalArch id={`bb-services-index-featured-ornament-${featuredService.id}`} />
               <div id={`bb-services-index-featured-clip-${featuredService.id}`} className={`bb-services-index-featured-clip`}>
-                <Image
+                {featuredService.image ? <Image
                   fill
                   priority
+                  unoptimized={/^https?:\/\//.test(featuredService.image)}
                   src={featuredService.image}
                   alt={featuredService.imageAlt}
                   className={`bb-services-index-featured-image`}
                   id={`bb-services-index-featured-image-${featuredService.id}`}
                   sizes={`(max-width: 850px) calc(100vw - 36px), 520px`}
-                />
+                /> : <WandSparkles className={`bb-services-index-placeholder`} size={64} aria-hidden={`true`} />}
               </div>
               <div id={`bb-services-index-featured-copy-${featuredService.id}`} className={`bb-services-index-featured-copy`}>
                 <span id={`bb-services-index-featured-label-${featuredService.id}`} className={`bb-services-index-featured-label`}>A Little Lash Inspiration</span>
@@ -73,7 +78,7 @@ const ServicesIndex = () => {
             <p id={`bb-services-index-price-note`} className={`bb-services-index-price-note`}>Prices are negotiable.</p>
           </div>
           <div id={`bb-services-index-grid`} className={`bb-services-index-grid`}>
-            {services.map((service) => (
+            {services.loading || services.error || !services.records.length ? <CatalogStatus id={`bb-services-index-status`} loading={services.loading} error={services.error} empty={`The service menu is being prepared. Please check back soon.`} /> : services.records.map((service) => (
               <ServiceCard key={service.id} service={service} idPrefix={`bb-services-index-card`} />
             ))}
           </div>

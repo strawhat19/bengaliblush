@@ -13,7 +13,7 @@ export const useProfileMenu = ({ onOpen, closeSignal, onOpenChange }: ProfileMen
   const [failedPhotoUrl, setFailedPhotoUrl] = useState(``);
   const controlRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const { user, error, loading, isOwner, signOut } = useAuth();
+  const { user, error, loading, isAdmin, isOwner, signOut } = useAuth();
   const photoUrl = user?.photo_url && failedPhotoUrl !== user.photo_url ? user.photo_url : ``;
   const handlePhotoError = () => setFailedPhotoUrl(photoUrl);
   const visible = openSignal === closeSignal && Boolean(user);
@@ -58,7 +58,7 @@ export const useProfileMenu = ({ onOpen, closeSignal, onOpenChange }: ProfileMen
     }
   };
 
-  return { user, busy, error, close, toggle, loading, isOwner, photoUrl, buttonRef, controlRef, handleSignOut, handlePhotoError, open: visible };
+  return { user, busy, error, close, toggle, loading, isAdmin, isOwner, photoUrl, buttonRef, controlRef, handleSignOut, handlePhotoError, open: visible };
 };
 
 export type { ProfileMenuProps };

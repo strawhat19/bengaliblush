@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import { ArrowUpRight, Clock3 } from 'lucide-react';
 import { getServiceHref } from '@/shared/services/service-utils';
+import { ArrowUpRight, Clock3, WandSparkles } from 'lucide-react';
 import Link from '@/app/components/navigation/page-link/page-link';
 import type { ServiceDetails } from '@/shared/services/service-types';
 import ServiceBookingButton from '@/app/components/services/service-booking-button/service-booking-button';
@@ -25,14 +25,15 @@ const ServiceCard = ({ service, idPrefix = `bb-service-card` }: ServiceCardProps
         href={getServiceHref(service.slug)}
       >
         <div id={`${cardId}-visual`} className={`bb-service-card-visual`}>
-          <Image
+          {service.image ? <Image
             fill
+            unoptimized={/^https?:\/\//.test(service.image)}
             src={service.image}
             alt={service.imageAlt}
             id={`${cardId}-image`}
             className={`bb-service-card-image`}
             sizes={`(max-width: 600px) calc(100vw - 36px), (max-width: 1000px) 45vw, 380px`}
-          />
+          /> : <WandSparkles className={`bb-service-card-placeholder`} size={50} aria-hidden={`true`} />}
           <span id={`${cardId}-number`} className={`bb-service-card-number`}>{service.number}</span>
         </div>
         <div id={`${cardId}-body`} className={`bb-service-card-body`}>
