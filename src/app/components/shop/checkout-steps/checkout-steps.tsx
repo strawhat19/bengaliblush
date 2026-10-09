@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import { Check, ChevronRight } from 'lucide-react';
 import { siteRoutes } from '@/shared/navigation/routes';
+import Link from '@/app/components/navigation/page-link/page-link';
 
 type CheckoutStepsProps = {
   id: string;

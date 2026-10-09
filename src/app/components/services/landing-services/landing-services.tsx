@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import { ArrowUpRight, WandSparkles } from 'lucide-react';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { services } from '@/shared/services/service-content';
+import Link from '@/app/components/navigation/page-link/page-link';
 import ServiceRow from '@/app/components/services/service-row/service-row';
 
 const LandingServices = () => (

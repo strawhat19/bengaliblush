@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { siteRoutes } from '@/shared/navigation/routes';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { ArrowUpRight, Heart, Quote, WandSparkles } from 'lucide-react';
 import type { Review } from '@/shared/reviews/review-content';
 import ReviewCard from '@/app/components/reviews/review-card/review-card';

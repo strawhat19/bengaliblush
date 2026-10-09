@@ -1,13 +1,14 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { services } from '@/shared/services/service-content';
 import { ArrowUpRight, MapPin, WandSparkles } from 'lucide-react';
 import { getServiceHref } from '@/shared/services/service-utils';
+import Link from '@/app/components/navigation/page-link/page-link';
 import ServiceCard from '@/app/components/services/service-card/service-card';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 
 const ServicesIndex = () => {
-  const featuredService = services[0];
+  const featuredService = services.find((service) => service.id === `signature-set`);
 
   return (
     <div id={`bb-services-page`} className={`bb-services-index`}>
@@ -39,15 +40,18 @@ const ServicesIndex = () => {
               id={`bb-services-index-featured-${featuredService.id}`}
               href={getServiceHref(featuredService.slug)}
             >
-              <Image
-                fill
-                priority
-                src={featuredService.image}
-                alt={featuredService.imageAlt}
-                className={`bb-services-index-featured-image`}
-                id={`bb-services-index-featured-image-${featuredService.id}`}
-                sizes={`(max-width: 850px) calc(100vw - 36px), 520px`}
-              />
+              <OrnamentalArch id={`bb-services-index-featured-ornament-${featuredService.id}`} />
+              <div id={`bb-services-index-featured-clip-${featuredService.id}`} className={`bb-services-index-featured-clip`}>
+                <Image
+                  fill
+                  priority
+                  src={featuredService.image}
+                  alt={featuredService.imageAlt}
+                  className={`bb-services-index-featured-image`}
+                  id={`bb-services-index-featured-image-${featuredService.id}`}
+                  sizes={`(max-width: 850px) calc(100vw - 36px), 520px`}
+                />
+              </div>
               <div id={`bb-services-index-featured-copy-${featuredService.id}`} className={`bb-services-index-featured-copy`}>
                 <span id={`bb-services-index-featured-label-${featuredService.id}`} className={`bb-services-index-featured-label`}>A Little Lash Inspiration</span>
                 <span id={`bb-services-index-featured-title-${featuredService.id}`} className={`bb-services-index-featured-title`}>{featuredService.name}</span>

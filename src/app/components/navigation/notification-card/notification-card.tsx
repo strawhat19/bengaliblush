@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { Heart, ArrowUpRight, Construction } from 'lucide-react';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { getNotificationHref } from '@/shared/notifications/notification-utils';
 import type { Notification } from '@/shared/notifications/notification-types';
 import './notification-card.scss';

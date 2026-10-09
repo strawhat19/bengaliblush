@@ -34,7 +34,7 @@ export default function LandingMotion() {
       });
     };
 
-    if (document.querySelector(`.bb-loader`)) window.addEventListener(landingRevealReadyEvent, startReveals, { once: true });
+    if (document.querySelector(`.bb-loader:not([hidden])`)) window.addEventListener(landingRevealReadyEvent, startReveals, { once: true });
     else startReveals();
 
     return () => {

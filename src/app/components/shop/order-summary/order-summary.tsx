@@ -1,11 +1,11 @@
 'use client';
 
-import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { Sparkles, ShoppingBag } from 'lucide-react';
 import { useShop } from '@/shared/shop/shop-context';
-import type { ReactNode } from 'react';
-import { formatPrice, getProductHref } from '@/shared/shop/shop-utils';
 import ProductArtwork from '../product-artwork/product-artwork';
+import Link from '@/app/components/navigation/page-link/page-link';
+import { formatPrice, getProductHref } from '@/shared/shop/shop-utils';
 
 type OrderSummaryProps = {
   id: string;

@@ -1,12 +1,12 @@
 'use client';
 
-import Link from 'next/link';
 import { useShop } from '@/shared/shop/shop-context';
 import { useCheckoutPage } from './use-checkout-page';
+import { siteRoutes } from '@/shared/navigation/routes';
 import OrderSummary from '../order-summary/order-summary';
 import CheckoutSteps from '../checkout-steps/checkout-steps';
-import { siteRoutes } from '@/shared/navigation/routes';
 import type { CheckoutAddress } from '@/shared/types/checkout';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { Mail, Pencil, MapPin, LogIn, ArrowLeft, Sparkles, ChevronRight, ShoppingBag, ArrowUpRight } from 'lucide-react';
 
 const shippingFields: {

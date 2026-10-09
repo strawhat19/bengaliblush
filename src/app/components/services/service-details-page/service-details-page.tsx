@@ -1,12 +1,13 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { getBlogArticle } from '@/shared/blog/blog-utils';
-import { services } from '@/shared/services/service-content';
 import type { BlogArticle } from '@/shared/blog/blog-types';
-import type { ServiceDetails } from '@/shared/services/service-types';
+import { services } from '@/shared/services/service-content';
 import BlogCard from '@/app/components/blog/blog-card/blog-card';
+import Link from '@/app/components/navigation/page-link/page-link';
+import type { ServiceDetails } from '@/shared/services/service-types';
 import ServiceCard from '@/app/components/services/service-card/service-card';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import { ArrowUpRight, Check, ChevronRight, Clock3, Home, Plus, WandSparkles } from 'lucide-react';
 import ServiceBookingButton from '@/app/components/services/service-booking-button/service-booking-button';
 
@@ -63,7 +64,7 @@ const ServiceDetailsPage = ({ service }: ServiceDetailsPageProps) => {
                     <dd id={`${pageId}-price`} className={`bb-service-details-meta-value`}>{service.price}</dd>
                   </div>
                 </dl>
-                <p id={`${pageId}-price-note`} className={`bb-service-details-price-note`}>Prices are negotiable.</p>
+                <p id={`${pageId}-price-note`} className={`bb-service-details-price-note`}>{service.price === `Free` ? `This consultation is free.` : `Prices are negotiable.`}</p>
                 <div id={`${pageId}-booking`} className={`bb-service-details-booking`}>
                   <ServiceBookingButton service={service} idPrefix={`${pageId}-book`} />
                   <Link id={`${pageId}-contact-link`} className={`bb-service-details-contact-link`} href={siteRoutes.contact.href}>
@@ -73,15 +74,18 @@ const ServiceDetailsPage = ({ service }: ServiceDetailsPageProps) => {
               </div>
               <figure id={`${pageId}-figure`} className={`bb-service-details-figure`}>
                 <div id={`${pageId}-visual`} className={`bb-service-details-visual`}>
-                  <Image
-                    fill
-                    priority
-                    src={service.image}
-                    alt={service.imageAlt}
-                    id={`${pageId}-image`}
-                    className={`bb-service-details-image`}
-                    sizes={`(max-width: 850px) calc(100vw - 36px), 540px`}
-                  />
+                  <OrnamentalArch id={`${pageId}-visual-ornament`} />
+                  <div id={`${pageId}-visual-clip`} className={`bb-service-details-visual-clip`}>
+                    <Image
+                      fill
+                      priority
+                      src={service.image}
+                      alt={service.imageAlt}
+                      id={`${pageId}-image`}
+                      className={`bb-service-details-image`}
+                      sizes={`(max-width: 850px) calc(100vw - 36px), 540px`}
+                    />
+                  </div>
                 </div>
                 <figcaption id={`${pageId}-caption`} className={`bb-service-details-caption`}>Illustrative style inspiration for {service.name.toLowerCase()}.</figcaption>
               </figure>

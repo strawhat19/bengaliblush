@@ -6,8 +6,9 @@
   .bb-blog-heading-accent { color: hsl(var(--primary)); }
   .bb-blog-introduction { max-width: 455px; margin: 0; color: hsl(var(--muted-foreground)); font-size: 15px; line-height: 1.85; }
   .bb-blog-hero-note { display: inline-flex; align-items: center; gap: 10px; margin-top: 29px; color: hsl(var(--primary)); font-size: 11px; }
-  .bb-blog-featured { position: relative; display: flex; min-height: 444px; align-items: end; overflow: hidden; border-radius: 180px 180px 4px 4px; background: hsl(var(--muted)); }
-  .bb-blog-featured::after { position: absolute; z-index: 1; inset: 35% 0 0; background: linear-gradient(transparent, hsl(var(--foreground) / .87)); content: ''; pointer-events: none; }
+  .bb-blog-featured { isolation: isolate; position: relative; min-height: 444px; border-radius: 180px 180px 4px 4px; --bb-arch-color: hsl(var(--secondary)); }
+  .bb-blog-featured-visual { position: relative; display: flex; min-height: inherit; align-items: end; overflow: hidden; border-radius: inherit; background: hsl(var(--muted)); }
+  .bb-blog-featured-visual::after { position: absolute; z-index: 1; inset: 35% 0 0; background: linear-gradient(transparent, hsl(var(--foreground) / .87)); content: ''; pointer-events: none; }
   .bb-blog-featured-image { object-fit: cover; transition: transform .6s ease; }
   .bb-blog-featured-copy { position: relative; z-index: 2; padding: 38px; color: hsl(var(--card)); }
   .bb-blog-featured-label { color: hsl(var(--secondary)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .13em; text-transform: uppercase; }

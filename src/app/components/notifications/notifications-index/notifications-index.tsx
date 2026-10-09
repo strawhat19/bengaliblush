@@ -2,6 +2,7 @@
 
 import { Bell, CheckCheck, RotateCcw } from 'lucide-react';
 import { useNotifications } from '@/shared/notifications/notifications-context';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import NotificationCard from '@/app/components/navigation/notification-card/notification-card';
 import './notifications-index.scss';
 
@@ -27,6 +28,7 @@ const NotificationsIndex = () => {
             <p id={`bb-notifications-page-introduction`} className={`bb-notifications-page-introduction`}>The latest notifications and announcements from Bengali Blush, all in one place.</p>
           </div>
           <div id={`bb-notifications-page-emblem`} className={`bb-notifications-page-emblem`} aria-hidden={`true`}>
+            <OrnamentalArch id={`bb-notifications-page-emblem-ornament`} />
             <Bell id={`bb-notifications-page-emblem-icon`} className={`bb-notifications-page-emblem-icon`} size={56} strokeWidth={.8} />
             <span id={`bb-notifications-page-emblem-label`} className={`bb-notifications-page-emblem-label`}>From the studio</span>
             <span id={`bb-notifications-page-emblem-signature`} className={`bb-notifications-page-emblem-signature`}>Bengali Blush</span>

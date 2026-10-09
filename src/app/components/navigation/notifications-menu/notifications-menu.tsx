@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { siteRoutes } from '@/shared/navigation/routes';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { X, Bell, CheckCheck, RotateCcw, ArrowUpRight } from 'lucide-react';
 import { useNotifications } from '@/shared/notifications/notifications-context';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';

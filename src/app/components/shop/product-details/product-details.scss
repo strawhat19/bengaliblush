@@ -7,6 +7,8 @@
   .bb-product-details-breadcrumb-link:hover { color: hsl(var(--primary)); }
   .bb-product-details-overview-grid { display: grid; grid-template-columns: 1.06fr 1fr; align-items: start; gap: 7%; }
   .bb-product-details-gallery { min-width: 0; }
+  .bb-product-details-artwork-frame { position: relative; isolation: isolate; }
+  .bb-product-details-artwork-frame.has-photo { --bb-arch-color: hsl(var(--secondary)); }
   .bb-product-details-artwork { position: relative; display: flex; min-height: 590px; aspect-ratio: .9; align-items: center; justify-content: center; overflow: hidden; border-radius: 220px 220px 5px 5px; background: linear-gradient(145deg, hsl(35 57% 88%), hsl(30 41% 80%)); }
   .bb-product-details-artwork::before, .bb-product-details-artwork::after { position: absolute; inset: 15% 13%; border: 1px solid hsl(var(--primary) / .18); border-radius: 50%; content: ''; pointer-events: none; }
   .bb-product-details-artwork::after { inset: 18% 10%; transform: rotate(24deg); }

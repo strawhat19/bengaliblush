@@ -94,7 +94,7 @@ body { transition: background-color .38s ease, color .38s ease; }
   .bb-button-primary:is(:hover, :focus-visible, :active), .bb-header-actions :is(.bb-bag-button.is-filled, .bb-menu-button, .bb-ghost-button):is(:hover, :focus-visible, :active) { color: var(--bb-brand-cream); }
   .bb-button-outline-dark { border-color: hsl(var(--secondary) / .55); color: var(--bb-highlight); }
   .bb-button-outline-dark:is(:hover, :focus-visible, :active) { color: var(--bb-brand-cream); }
-  :is(.bb-button-outline, .bb-bag-button:not(.is-filled), .bb-submit, .bb-add-button, .bb-mobile-booking, .bb-cart-checkout, .bb-cart-summary-checkout, .bb-scroll-to-top, .bb-intro-about-link, .bb-product-quantity-button, .bb-auth-submit):is(:hover, :focus-visible, :active) { color: var(--bb-brand-ink); }
+  :is(.bb-button-outline, .bb-bag-button:not(.is-filled), .bb-submit, .bb-add-button, .bb-mobile-booking, .bb-cart-checkout, .bb-cart-summary-checkout, .bb-intro-about-link, .bb-product-quantity-button, .bb-auth-submit):is(:hover, :focus-visible, :active) { color: var(--bb-brand-ink); }
   :is(.bb-service-book, .bb-cart-continue, .bb-cart-quantity-button, .bb-close):is(:hover, :focus-visible, :active) { color: var(--bb-brand-cream); }
   .bb-notifications-close:is(:hover, :focus-visible, :active) { color: var(--bb-brand-ink); }
   .bb-cart-storage-notice { color: var(--bb-brand-ink); }

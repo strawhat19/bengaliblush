@@ -1,5 +1,6 @@
 import { siteContact } from '@/shared/config/site';
 import ContactInquiry from './contact-inquiry/contact-inquiry';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import { Mail, Phone, MapPin, Instagram, ArrowUpRight, MessageCircle } from 'lucide-react';
 
 const contactDetails = [
@@ -68,6 +69,7 @@ export default function ContactPage() {
             </a>
           </div>
           <div id={`bb-contact-map-frame`} className={`bb-contact-map-frame`} data-reveal>
+            <OrnamentalArch id={`bb-contact-map-ornament`} />
             <iframe id={`bb-contact-map`} className={`bb-contact-map`} title={`Bengali Blush Area In Atlanta`} src={siteContact.mapEmbedUrl} loading={`lazy`} referrerPolicy={`no-referrer-when-downgrade`} />
           </div>
         </div>

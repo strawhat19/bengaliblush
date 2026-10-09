@@ -8,6 +8,10 @@
 .bb-menu-icon > span { height: 1.5px; }
 .bb-nav-link > svg, .bb-mobile-nav-copy > span > svg { flex: none; }
 .bb-header-actions { flex: none; }
+.bb-header-actions .bb-bag-button:not(.is-filled) {
+  -webkit-backdrop-filter: blur(20px) saturate(125%);
+  backdrop-filter: blur(20px) saturate(125%);
+}
 
 @media (min-width: 801px) and (max-width: 1180px) {
   .bb-header-inner { gap: 16px; }
@@ -27,6 +31,10 @@
 
 @media (max-width: 800px) {
   .bb-header-actions { gap: 9px; }
+  .bb-mobile-panel-content {
+    -webkit-backdrop-filter: blur(20px) saturate(125%);
+    backdrop-filter: blur(20px) saturate(125%);
+  }
   .bb-mobile-panel { transition: visibility 0s linear .68s, opacity 0s linear .68s, transform .68s cubic-bezier(.76, 0, .24, 1); }
   .bb-mobile-panel.is-open { transition: visibility 0s linear, opacity .22s ease, transform .68s cubic-bezier(.76, 0, .24, 1); }
   .bb-mobile-nav-index { font-size: 9px; font-weight: 500; }

@@ -4,7 +4,10 @@
   .bb-notification-details-back { display: inline-flex; gap: 9px; font-size: 10px; align-items: center; letter-spacing: .08em; text-transform: uppercase; color: var(--bb-highlight); font-family: var(--app-font-mono); transition: color .2s ease; }
   .bb-notification-details-back:hover { color: hsl(var(--secondary)); }
   .bb-notification-details-article { position: relative; display: grid; gap: 35px; margin-top: 35px; padding: 62px 65px 48px; grid-template-columns: 68px minmax(0, 1fr); background: var(--bb-surface); border: 1px solid hsl(var(--secondary) / .32); border-top: 3px solid hsl(var(--secondary) / .7); transition: background-color .38s ease, color .38s ease, border-color .3s ease; }
-  .bb-notification-details-ornament { display: grid; width: 68px; height: 85px; place-items: center; border-radius: 40px 40px 3px 3px; color: var(--bb-highlight); background: hsl(var(--secondary) / .08); border: 1px solid hsl(var(--secondary) / .38); }
+  .bb-notification-details-ornament { position: relative; isolation: isolate; display: grid; width: 68px; height: 85px; place-items: center; border-radius: 40px 40px 3px 3px; color: var(--bb-highlight); background: hsl(var(--secondary) / .08); border: 1px solid hsl(var(--secondary) / .38); }
+  .bb-notification-details-ornament > .bb-ornamental-arch { inset: -6px; }
+  .bb-notification-details-ornament > .bb-ornamental-arch .bb-ornamental-arch-rosette { width: 8px; height: 8px; }
+  .bb-notification-details-ornament > .bb-ornamental-arch .bb-ornamental-arch-rosette--crown { width: 10px; height: 10px; }
   .bb-notification-details-copy { min-width: 0; }
   .bb-notification-details-heading { margin: 25px 0 28px; font-size: clamp(37px, 5vw, 63px); font-weight: 500; line-height: 1.09; letter-spacing: -.05em; font-family: var(--app-font-serif); }
   .bb-notification-details-body { margin: 0; font-size: clamp(17px, 2.1vw, 22px); line-height: 1.85; color: hsl(var(--muted-foreground)); font-family: var(--app-font-serif); }

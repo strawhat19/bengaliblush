@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { siteRoutes } from '@/shared/navigation/routes';
 import BlogCard from '@/app/components/blog/blog-card/blog-card';
+import Link from '@/app/components/navigation/page-link/page-link';
 import type { BlogArticle as BlogArticleRecord } from '@/shared/blog/blog-types';
 import { ArrowUpRight, BookOpen, ChevronRight, Clock3, ExternalLink, Home, List, Plus } from 'lucide-react';
 import {

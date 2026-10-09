@@ -226,6 +226,38 @@
   .bb-auth-mode-switch { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin: 0; color: hsl(var(--foreground) / .62); font-size: 11px; line-height: 1.8; }
   .bb-auth-mode-switch-link { font-weight: 500; }
 
+  @media (min-width: 1040px) {
+    .bb-auth-form-topline { display: none; }
+    .bb-auth-progress { gap: 8px; margin-bottom: 16px; }
+    .bb-auth-progress-step { padding-top: 8px; }
+    .bb-auth-progress-marker { width: 20px; height: 20px; flex-basis: 20px; }
+    .bb-auth-form-intro { margin-bottom: 16px; }
+    .bb-auth-section-label { margin-bottom: 6px; }
+    .bb-auth-form-heading { margin-bottom: 8px; font-size: clamp(36px, 3vw, 40px); }
+    .bb-auth-form-description { font-size: 11px; line-height: 1.6; }
+    .bb-auth-fields { gap: 12px; }
+    .bb-auth-field { gap: 6px; }
+    .bb-auth-input { min-height: 44px; padding: 10px 12px; }
+    .bb-auth-password-toggle { top: 3px; right: 4px; height: 38px; }
+    .bb-auth-field-help { font-size: 9px; }
+    .bb-auth-actions { gap: 14px; margin-top: 0; }
+    .bb-auth-submit, .bb-auth-google { min-height: 44px; }
+    .bb-auth-google { padding-block: 10px; }
+    .bb-auth-provider-divider { margin: 14px 0 10px; }
+    .bb-auth-notice { min-height: 0; padding-top: 8px; }
+    .bb-auth-notice:empty { padding-top: 0; }
+    .bb-auth-mode-switch { margin-top: 12px; }
+    .bb-auth-review-row { padding-block: 12px; }
+    .bb-auth-ritual-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bb-auth-ritual-option { min-height: 72px; gap: 8px; padding: 10px; }
+    .bb-auth-ritual-title { font-size: 11px; }
+    .bb-auth-ritual-description { font-size: 9px; }
+
+    #bb-auth-signup-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #bb-auth-signup-password-field,
+    #bb-auth-signup-form > :is(.bb-auth-actions, .bb-auth-rituals, .bb-auth-review, .bb-auth-agreement) { grid-column: 1 / -1; }
+  }
+
   @media (max-width: 600px) {
     .bb-auth-form-topline { margin-bottom: 27px; }
     .bb-auth-progress { gap: 7px; margin-bottom: 29px; }

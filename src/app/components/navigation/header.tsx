@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { navigationRoutes, siteRoutes } from '@/shared/navigation/routes';

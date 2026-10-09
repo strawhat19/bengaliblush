@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import Link from '@/app/components/navigation/page-link/page-link';
 
 export default function NotFound() {
   return (

@@ -1,10 +1,11 @@
 'use client';
 
-import Link from 'next/link';
 import { siteRoutes } from '@/shared/navigation/routes';
+import useNotificationDetails from './use-notification-details';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { Heart, ArrowLeft, RotateCcw, Construction } from 'lucide-react';
 import type { Notification } from '@/shared/notifications/notification-types';
-import useNotificationDetails from './use-notification-details';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import './notification-details.scss';
 
 type NotificationDetailsProps = { notification: Notification };
@@ -32,6 +33,7 @@ const NotificationDetails = ({ notification }: NotificationDetailsProps) => {
           </Link>
           <article id={`bb-notification-details-article-${detailId}`} className={`bb-notification-details-article`}>
             <div id={`bb-notification-details-ornament-${detailId}`} className={`bb-notification-details-ornament`} aria-hidden={`true`}>
+              <OrnamentalArch id={`bb-notification-details-emblem-frame-${detailId}`} />
               <Icon size={34} strokeWidth={1.05} />
             </div>
             <div id={`bb-notification-details-copy-${detailId}`} className={`bb-notification-details-copy`}>

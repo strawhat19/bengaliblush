@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, Clock3 } from 'lucide-react';
 import type { BlogArticle } from '@/shared/blog/blog-types';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { getBlogArticleHref, getBlogCategory, getBlogReadingMinutes } from '@/shared/blog/blog-utils';
 
 type BlogCardProps = {

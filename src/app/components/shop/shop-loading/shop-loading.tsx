@@ -1,5 +1,5 @@
 const ShopLoading = () => (
-  <section id={`top`} className={`bb-shop-loading`} aria-labelledby={`bb-shop-loading-heading`} aria-busy={`true`}>
+  <section id={`top`} data-route-loading className={`bb-shop-loading`} aria-labelledby={`bb-shop-loading-heading`} aria-busy={`true`}>
     <div id={`bb-shop-loading-container`} className={`bb-container`}>
       <span id={`bb-shop-loading-eyebrow`} className={`bb-eyebrow`}>The Misty Market</span>
       <h1 id={`bb-shop-loading-heading`} className={`bb-shop-loading-heading`}>A little luxury awaits.</h1>

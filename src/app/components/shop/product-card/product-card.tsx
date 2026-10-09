@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { useShop } from '@/shared/shop/shop-context';
 import type { Product } from '@/shared/types/storefront';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { ArrowUpRight, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { formatPrice, getProductHref } from '@/shared/shop/shop-utils';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';

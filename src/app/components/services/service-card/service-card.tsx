@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, Clock3 } from 'lucide-react';
 import { getServiceHref } from '@/shared/services/service-utils';
+import Link from '@/app/components/navigation/page-link/page-link';
 import type { ServiceDetails } from '@/shared/services/service-types';
 import ServiceBookingButton from '@/app/components/services/service-booking-button/service-booking-button';
 

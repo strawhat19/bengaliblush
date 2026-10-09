@@ -1,10 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
 import type { AuthMode } from '../auth-types';
 import { useAuthForm } from './use-auth-form';
 import { siteRoutes } from '@/shared/navigation/routes';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { Eye, Brush, Check, Scissors, EyeOff, Sparkles, ArrowLeft, ArrowRight } from 'lucide-react';
 
 const signupSteps = [

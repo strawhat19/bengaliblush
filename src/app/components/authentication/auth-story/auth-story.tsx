@@ -7,7 +7,8 @@ import { authStories, type AuthStoryId } from './auth-stories';
 import { BrandMark } from '@/app/components/navigation/header';
 import HeroPromoWheel from '@/app/components/effects/hero-promo-wheel';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
-import { Eye, Heart, Pause, Play, MapPin, Sparkles, ArrowDown, ArrowLeft, ArrowRight, WandSparkles } from 'lucide-react';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
+import { Eye, Heart, MapPin, Sparkles, ArrowDown, ArrowLeft, ArrowRight, WandSparkles } from 'lucide-react';
 
 const StoryArtwork = ({ id, active }: { id: AuthStoryId; active: boolean }) => {
   if (id === `glow`) {
@@ -15,16 +16,19 @@ const StoryArtwork = ({ id, active }: { id: AuthStoryId; active: boolean }) => {
       <div id={`bb-auth-art-${id}`} className={`bb-auth-story-art bb-auth-story-art-glow`} aria-hidden={`true`}>
         <span id={`bb-auth-art-glow-orbit`} className={`bb-auth-story-art-orbit`} />
         <div id={`bb-auth-art-glow-photo`} className={`bb-auth-story-photo bb-auth-story-glow-photo`}>
-          <Image
-            fill
-            priority
-            alt={``}
-            sizes={`230px`}
-            src={`/hero-beauty.jpg`}
-            className={`bb-auth-story-photo-image`}
-            id={`bb-auth-art-glow-photo-image`}
-          />
-          <span id={`bb-auth-art-glow-photo-caption`} className={`bb-auth-story-photo-caption`}>A little extra glow.</span>
+          <OrnamentalArch id={`bb-auth-art-glow-photo-ornament`} />
+          <div id={`bb-auth-art-glow-photo-clip`} className={`bb-auth-story-photo-clip`}>
+            <Image
+              fill
+              priority
+              alt={``}
+              sizes={`230px`}
+              src={`/hero-beauty.jpg`}
+              className={`bb-auth-story-photo-image`}
+              id={`bb-auth-art-glow-photo-image`}
+            />
+            <span id={`bb-auth-art-glow-photo-caption`} className={`bb-auth-story-photo-caption`}>A little extra glow.</span>
+          </div>
         </div>
         <span id={`bb-auth-art-glow-spark`} className={`bb-auth-story-spark`}><Sparkles size={25} strokeWidth={1.4} /></span>
         <div id={`bb-auth-art-glow-note`} className={`bb-auth-story-art-note`}>
@@ -106,11 +110,7 @@ export default function AuthStory({ mode }: { mode: AuthMode }) {
     <aside
       id={`bb-auth-story`}
       className={`bb-auth-story`}
-      onBlur={carousel.onBlur}
-      onFocus={carousel.onFocus}
       aria-label={`Bengali Blush Studio Story`}
-      onMouseEnter={carousel.onMouseEnter}
-      onMouseLeave={carousel.onMouseLeave}
     >
       <span id={`bb-auth-story-orbit-large`} className={`bb-auth-story-orbit bb-auth-story-orbit-large`} aria-hidden={`true`} />
       <span id={`bb-auth-story-orbit-small`} className={`bb-auth-story-orbit bb-auth-story-orbit-small`} aria-hidden={`true`} />
@@ -175,18 +175,6 @@ export default function AuthStory({ mode }: { mode: AuthMode }) {
               <span id={`bb-auth-story-counter`} className={`bb-auth-story-counter`} aria-hidden={`true`}>0{carousel.index + 1} / 0{authStories.length}</span>
             </div>
             <div id={`bb-auth-story-controls`} className={`bb-auth-story-controls`}>
-              {!carousel.reducedMotion ? (
-                <button
-                  type={`button`}
-                  id={`bb-auth-story-pause`}
-                  className={`bb-auth-story-control`}
-                  onClick={carousel.togglePaused}
-                  aria-controls={`bb-auth-story-carousel`}
-                  aria-label={carousel.paused ? `Play Story Carousel` : `Pause Story Carousel`}
-                >
-                  {carousel.paused ? <Play size={13} aria-hidden={`true`} /> : <Pause size={13} aria-hidden={`true`} />}
-                </button>
-              ) : null}
               <button
                 type={`button`}
                 aria-label={`Previous Slide`}

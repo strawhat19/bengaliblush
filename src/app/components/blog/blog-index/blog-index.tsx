@@ -1,10 +1,11 @@
-import Link from 'next/link';
 import Image from 'next/image';
-import { blogCategories } from '@/shared/blog/blog-content';
 import { siteRoutes } from '@/shared/navigation/routes';
+import { blogCategories } from '@/shared/blog/blog-content';
 import type { BlogCategory } from '@/shared/blog/blog-types';
 import { ArrowUpRight, BookOpen, Sparkles } from 'lucide-react';
 import BlogCard from '@/app/components/blog/blog-card/blog-card';
+import Link from '@/app/components/navigation/page-link/page-link';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import { getBlogArticles, getBlogArticleHref, getBlogCategoryHref } from '@/shared/blog/blog-utils';
 
 type BlogIndexProps = {
@@ -13,7 +14,7 @@ type BlogIndexProps = {
 
 const BlogIndex = ({ category }: BlogIndexProps) => {
   const articles = getBlogArticles(category?.slug);
-  const featuredArticle = articles[0];
+  const featuredArticle = articles?.[0];
   const journalId = category?.slug ?? `all`;
 
   return (
@@ -52,23 +53,26 @@ const BlogIndex = ({ category }: BlogIndexProps) => {
               id={`bb-blog-featured-${featuredArticle.slug}`}
               href={getBlogArticleHref(featuredArticle.slug)}
             >
-              <Image
-                fill
-                priority
-                src={featuredArticle.image}
-                alt={featuredArticle.imageAlt}
-                className={`bb-blog-featured-image`}
-                id={`bb-blog-featured-image-${featuredArticle.slug}`}
-                sizes={`(max-width: 850px) calc(100vw - 36px), 520px`}
-              />
-              <div className={`bb-blog-featured-copy`} id={`bb-blog-featured-copy-${featuredArticle.slug}`}>
-                <span className={`bb-blog-featured-label`} id={`bb-blog-featured-label-${featuredArticle.slug}`}>Featured Read</span>
-                <h2 className={`bb-blog-featured-title`} id={`bb-blog-featured-title-${featuredArticle.slug}`}>{featuredArticle.title}</h2>
-                <span className={`bb-blog-featured-link`} id={`bb-blog-featured-link-${featuredArticle.slug}`}>
-                  Read Article
-                  <ArrowUpRight size={17} aria-hidden={`true`} />
-                </span>
+              <div className={`bb-blog-featured-visual`} id={`bb-blog-featured-visual-${featuredArticle.slug}`}>
+                <Image
+                  fill
+                  priority
+                  src={featuredArticle.image}
+                  alt={featuredArticle.imageAlt}
+                  className={`bb-blog-featured-image`}
+                  id={`bb-blog-featured-image-${featuredArticle.slug}`}
+                  sizes={`(max-width: 850px) calc(100vw - 36px), 520px`}
+                />
+                <div className={`bb-blog-featured-copy`} id={`bb-blog-featured-copy-${featuredArticle.slug}`}>
+                  <span className={`bb-blog-featured-label`} id={`bb-blog-featured-label-${featuredArticle.slug}`}>Featured Read</span>
+                  <h2 className={`bb-blog-featured-title`} id={`bb-blog-featured-title-${featuredArticle.slug}`}>{featuredArticle.title}</h2>
+                  <span className={`bb-blog-featured-link`} id={`bb-blog-featured-link-${featuredArticle.slug}`}>
+                    Read Article
+                    <ArrowUpRight size={17} aria-hidden={`true`} />
+                  </span>
+                </div>
               </div>
+              <OrnamentalArch id={`bb-blog-featured-arch-${featuredArticle.slug}`} />
             </Link>
           ) : null}
         </div>

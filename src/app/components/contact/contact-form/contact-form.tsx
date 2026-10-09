@@ -1,8 +1,8 @@
 'use client';
 
+import { siteContact } from '@/shared/config/site';
 import { Send, ArrowUpRight } from 'lucide-react';
 import { useContactForm } from './use-contact-form';
-import { siteContact } from '@/shared/config/site';
 
 export default function ContactForm() {
   const { handleInput, handleSubmit, draftCreated } = useContactForm();

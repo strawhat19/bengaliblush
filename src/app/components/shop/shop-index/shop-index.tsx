@@ -1,12 +1,13 @@
 'use client';
 
-import Link from 'next/link';
 import { getProductHref } from '@/shared/shop/shop-utils';
-import type { ProductCategory } from '@/shared/types/storefront';
-import { ArrowUpRight, Search, ShoppingBag, SlidersHorizontal, Sparkles, X } from 'lucide-react';
-import ProductCard from '@/app/components/shop/product-card/product-card';
 import useShopIndex, { type ShopSort } from './use-shop-index';
+import type { ProductCategory } from '@/shared/types/storefront';
+import Link from '@/app/components/navigation/page-link/page-link';
+import ProductCard from '@/app/components/shop/product-card/product-card';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
+import { ArrowUpRight, Search, ShoppingBag, SlidersHorizontal, Sparkles, X } from 'lucide-react';
 
 type ShopIndexProps = { categories: ProductCategory[] };
 
@@ -31,19 +32,22 @@ const ShopIndex = ({ categories }: ShopIndexProps) => {
             <span id={`bb-shop-index-preview-note`} className={`bb-shop-index-preview-note`}><Sparkles size={14} aria-hidden={`true`} /> Explore Our Preview Collection</span>
           </div>
           {featuredProduct ? (
-            <Link
-              id={`bb-shop-index-featured-${featuredProduct.id}`}
-              href={getProductHref(featuredProduct.id)}
-              className={`bb-shop-index-featured${featuredProduct.image ? ` has-photo` : ``}`}
-              aria-label={`Explore ${featuredProduct.name}`}
-            >
-              <ProductArtwork product={featuredProduct} />
-              <div id={`bb-shop-index-featured-copy-${featuredProduct.id}`} className={`bb-shop-index-featured-copy`}>
-                <span id={`bb-shop-index-featured-label-${featuredProduct.id}`} className={`bb-shop-index-featured-label`}>A Celebration of Style</span>
-                <span id={`bb-shop-index-featured-name-${featuredProduct.id}`} className={`bb-shop-index-featured-name`}>{featuredProduct.name}</span>
-                <span id={`bb-shop-index-featured-link-${featuredProduct.id}`} className={`bb-shop-index-featured-link`}>Discover the Details <ArrowUpRight size={16} aria-hidden={`true`} /></span>
-              </div>
-            </Link>
+            <div id={`bb-shop-index-featured-frame-${featuredProduct.id}`} className={`bb-shop-index-featured-frame${featuredProduct.image ? ` has-photo` : ``}`}>
+              <OrnamentalArch id={`bb-shop-index-featured-ornament-${featuredProduct.id}`} />
+              <Link
+                id={`bb-shop-index-featured-${featuredProduct.id}`}
+                href={getProductHref(featuredProduct.id)}
+                className={`bb-shop-index-featured${featuredProduct.image ? ` has-photo` : ``}`}
+                aria-label={`Explore ${featuredProduct.name}`}
+              >
+                <ProductArtwork product={featuredProduct} />
+                <div id={`bb-shop-index-featured-copy-${featuredProduct.id}`} className={`bb-shop-index-featured-copy`}>
+                  <span id={`bb-shop-index-featured-label-${featuredProduct.id}`} className={`bb-shop-index-featured-label`}>A Celebration of Style</span>
+                  <span id={`bb-shop-index-featured-name-${featuredProduct.id}`} className={`bb-shop-index-featured-name`}>{featuredProduct.name}</span>
+                  <span id={`bb-shop-index-featured-link-${featuredProduct.id}`} className={`bb-shop-index-featured-link`}>Discover the Details <ArrowUpRight size={16} aria-hidden={`true`} /></span>
+                </div>
+              </Link>
+            </div>
           ) : null}
         </div>
       </section>

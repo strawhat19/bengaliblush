@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import { siteContact } from '@/shared/config/site';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { legalContent, type LegalPageKind } from './legal-content';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { Mail, FileText, ShieldCheck, ArrowUpRight } from 'lucide-react';
 
 const LegalPage = ({ kind }: { kind: LegalPageKind }) => {

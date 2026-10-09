@@ -6,9 +6,11 @@
   .bb-shop-index-heading-accent { color: hsl(var(--primary)); }
   .bb-shop-index-introduction { max-width: 420px; margin: 0; color: hsl(var(--muted-foreground)); font-size: 15px; line-height: 1.85; }
   .bb-shop-index-preview-note { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .07em; text-transform: uppercase; }
-  .bb-shop-index-featured { position: relative; display: flex; min-height: 454px; align-items: end; justify-content: center; overflow: hidden; border-radius: 190px 190px 6px 6px; background: hsl(35 49% 86%); }
+  .bb-shop-index-featured-frame { position: relative; isolation: isolate; }
+  .bb-shop-index-featured-frame.has-photo { --bb-arch-color: hsl(var(--secondary)); }
+  .bb-shop-index-featured { position: relative; display: flex; min-height: 560px; align-items: end; justify-content: center; overflow: hidden; border-radius: 190px 190px 6px 6px; background: hsl(35 49% 86%); }
   .bb-shop-index-featured::after { position: absolute; z-index: 1; inset: 42% 0 0; background: linear-gradient(transparent, hsl(var(--foreground) / .83)); content: ''; pointer-events: none; }
-  .bb-shop-index-featured .bb-product-photo { object-fit: cover; object-position: 50% 33%; transition: transform .6s ease; }
+  .bb-shop-index-featured .bb-product-photo { object-fit: cover; object-position: 50% top; transform-origin: top center; transition: transform .6s ease; }
   .bb-shop-index-featured .bb-product-art, .bb-shop-index-featured .bb-product-bottle { align-self: center; margin-bottom: 100px; }
   .bb-shop-index-featured-copy { position: relative; z-index: 2; display: flex; width: 100%; flex-direction: column; align-items: start; padding: 34px; color: hsl(var(--card)); }
   .bb-shop-index-featured-label { color: hsl(var(--secondary)); font-family: var(--app-font-mono); font-size: 8px; letter-spacing: .13em; text-transform: uppercase; }
@@ -54,8 +56,7 @@
     .bb-shop-index-hero { padding: 140px 0 57px; }
     .bb-shop-index-hero-grid { grid-template-columns: 1fr; gap: 35px; }
     .bb-shop-index-introduction { max-width: 530px; }
-    .bb-shop-index-featured { min-height: 420px; border-radius: 140px 140px 5px 5px; }
-    .bb-shop-index-featured .bb-product-photo { object-position: 50% 35%; }
+    .bb-shop-index-featured { min-height: 520px; border-radius: 140px 140px 5px 5px; }
     .bb-shop-index-products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
     .bb-shop-index-closing-inner { flex-wrap: wrap; gap: 15px; }
     .bb-shop-index-closing-signature { width: 100%; }
@@ -64,7 +65,7 @@
   @media (max-width: 600px) {
     .bb-shop-index-hero { padding-top: 129px; }
     .bb-shop-index-heading { font-size: clamp(41px, 10vw, 58px); }
-    .bb-shop-index-featured { min-height: 385px; }
+    .bb-shop-index-featured { min-height: 460px; }
     .bb-shop-index-featured-copy { padding: 27px; }
     .bb-shop-index-featured-name { font-size: 29px; }
     .bb-shop-index-collection-heading-row { align-items: start; flex-direction: column; gap: 10px; }

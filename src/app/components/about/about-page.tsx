@@ -1,8 +1,11 @@
-import Link from 'next/link';
+import Image from 'next/image';
 import { siteRoutes } from '@/shared/navigation/routes';
-import { ArrowUpRight, Heart, Sparkles, WandSparkles } from 'lucide-react';
+import { getBlogArticles } from '@/shared/blog/blog-utils';
+import Link from '@/app/components/navigation/page-link/page-link';
+import { Heart, BookOpen, Sparkles, ArrowUpRight, WandSparkles } from 'lucide-react';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 
+const featuredArticle = getBlogArticles()?.[0];
 const beautyDetails = [
   {
     id: `your-look`,
@@ -82,6 +85,35 @@ const AboutPage = () => (
         </div>
       </div>
     </section>
+    {featuredArticle ? (
+      <section className={`bb-section bb-about-journal`} id={`bb-about-journal`} aria-labelledby={`bb-about-journal-heading`}>
+        <div className={`bb-container bb-about-journal-grid`} id={`bb-about-journal-grid`}>
+          <div className={`bb-about-journal-visual`} id={`bb-about-journal-visual-${featuredArticle.slug}`} data-reveal>
+            <div className={`bb-about-journal-photo`} id={`bb-about-journal-photo-${featuredArticle.slug}`}>
+              <Image
+                fill
+                src={featuredArticle.image}
+                alt={featuredArticle.imageAlt}
+                className={`bb-about-journal-image`}
+                id={`bb-about-journal-image-${featuredArticle.slug}`}
+                sizes={`(max-width: 800px) calc(100vw - 36px), 530px`}
+              />
+            </div>
+            <OrnamentalArch id={`bb-about-journal-arch-${featuredArticle.slug}`} />
+          </div>
+          <div className={`bb-about-journal-copy`} id={`bb-about-journal-copy`} data-reveal>
+            <span className={`bb-eyebrow`} id={`bb-about-journal-eyebrow`}>From The Bengali Blush Journal</span>
+            <h2 className={`bb-about-section-heading`} id={`bb-about-journal-heading`}>A little beauty,<br /><em>every day.</em></h2>
+            <span className={`bb-about-journal-label`} id={`bb-about-journal-label`}><BookOpen size={14} aria-hidden={`true`} />Featured Read</span>
+            <h3 className={`bb-about-journal-title`} id={`bb-about-journal-title-${featuredArticle.slug}`}>{featuredArticle.title}</h3>
+            <p className={`bb-about-journal-excerpt`} id={`bb-about-journal-excerpt-${featuredArticle.slug}`}>{featuredArticle.excerpt}</p>
+            <Link href={siteRoutes.blog.href} id={`bb-about-blog-link`} className={`bb-button bb-button-primary bb-about-blog-link`}>
+              Explore The Blog <ArrowUpRight size={15} aria-hidden={`true`} />
+            </Link>
+          </div>
+        </div>
+      </section>
+    ) : null}
     <section className={`bb-section bb-about-invitation`} id={`bb-about-invitation`} aria-labelledby={`bb-about-invitation-heading`}>
       <div className={`bb-container bb-about-invitation-inner`} id={`bb-about-invitation-inner`} data-reveal>
         <div className={`bb-about-invitation-copy`} id={`bb-about-invitation-copy`}>

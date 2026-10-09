@@ -22,7 +22,7 @@
 .bb-contact-location { background: hsl(var(--baby-pink)); }
 .bb-contact-location-title { margin: 19px 0 22px; font-family: var(--app-font-serif); font-size: clamp(44px, 5vw, 70px); font-weight: 500; line-height: 1.03; letter-spacing: -.055em; }
 .bb-contact-location-description { max-width: 345px; margin: 0 0 27px; color: hsl(var(--muted-foreground)); font-size: 14px; line-height: 1.75; }
-.bb-contact-map-frame { padding: 14px; border: 1px solid hsl(var(--primary) / .2); border-radius: 46% 46% 12px 12px; background: hsl(var(--secondary)); }
+.bb-contact-map-frame { position: relative; isolation: isolate; padding: 14px; border: 1px solid hsl(var(--primary) / .2); border-radius: 46% 46% 12px 12px; background: hsl(var(--secondary)); }
 .bb-contact-map { display: block; width: 100%; height: 370px; border: 0; border-radius: inherit; }
 .bb-contact-detail:focus-visible, .bb-contact-social-link:focus-visible, .bb-contact-email-fallback:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 5px; }
 

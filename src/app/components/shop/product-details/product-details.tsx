@@ -1,14 +1,15 @@
 'use client';
 
-import Link from 'next/link';
+import useProductDetails from './use-product-details';
 import type { Product } from '@/shared/types/storefront';
 import { productCatalog } from '@/shared/shop/shop-content';
-import useProductDetails from './use-product-details';
 import { productCategoryStories } from './product-details-content';
-import { ArrowLeft, ArrowUpRight, Check, ChevronDown, ChevronRight, Heart, Minus, Plus, ShoppingBag, Sparkles } from 'lucide-react';
+import Link from '@/app/components/navigation/page-link/page-link';
 import ProductCard from '@/app/components/shop/product-card/product-card';
 import { formatPrice, getProductCategory } from '@/shared/shop/shop-utils';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
+import { ArrowLeft, ArrowUpRight, Check, ChevronDown, ChevronRight, Heart, Minus, Plus, ShoppingBag, Sparkles } from 'lucide-react';
 
 type ProductDetailsProps = { product: Product };
 
@@ -32,10 +33,13 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
           </nav>
           <div id={`${pageId}-overview-grid`} className={`bb-product-details-overview-grid`}>
             <div id={`${pageId}-gallery`} className={`bb-product-details-gallery`}>
-              <div id={`${pageId}-artwork`} className={`bb-product-details-artwork${product.image ? ` has-photo` : ``}`}>
-                <span id={`${pageId}-artwork-label`} className={`bb-product-details-artwork-label`}>{product.label}</span>
-                <ProductArtwork product={product} />
-                <span id={`${pageId}-artwork-signature`} className={`bb-product-details-artwork-signature`} aria-hidden={`true`}>Bengali Blush</span>
+              <div id={`${pageId}-artwork-frame`} className={`bb-product-details-artwork-frame${product.image ? ` has-photo` : ``}`}>
+                <OrnamentalArch id={`${pageId}-artwork-ornament`} />
+                <div id={`${pageId}-artwork`} className={`bb-product-details-artwork${product.image ? ` has-photo` : ``}`}>
+                  <span id={`${pageId}-artwork-label`} className={`bb-product-details-artwork-label`}>{product.label}</span>
+                  <ProductArtwork product={product} />
+                  <span id={`${pageId}-artwork-signature`} className={`bb-product-details-artwork-signature`} aria-hidden={`true`}>Bengali Blush</span>
+                </div>
               </div>
               <div id={`${pageId}-gallery-caption`} className={`bb-product-details-gallery-caption`}>
                 <span id={`${pageId}-gallery-caption-label`} className={`bb-product-details-gallery-caption-label`}>The Misty Market</span>

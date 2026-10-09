@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Quote, Star } from 'lucide-react';
 import type { Review } from '@/shared/reviews/review-content';
+import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 
 type ReviewCardProps = {
   review: Review;
@@ -12,18 +13,21 @@ const ReviewCard = ({ review }: ReviewCardProps) => (
     className={`bb-review-card`}
     aria-labelledby={`bb-review-card-heading-${review.id}`}
   >
-    <div id={`bb-review-card-portrait-${review.id}`} className={`bb-review-card-portrait`}>
-      <Image
-        fill
-        src={review.image}
-        alt={review.imageAlt}
-        className={`bb-review-card-image`}
-        id={`bb-review-card-image-${review.id}`}
-        sizes={`(max-width: 600px) calc(100vw - 70px), (max-width: 900px) 45vw, 350px`}
-      />
-      <span id={`bb-review-card-portrait-label-${review.id}`} className={`bb-review-card-portrait-label`}>
-        The Bengali Blush Feeling
-      </span>
+    <div id={`bb-review-card-portrait-frame-${review.id}`} className={`bb-review-card-portrait-frame`}>
+      <div id={`bb-review-card-portrait-${review.id}`} className={`bb-review-card-portrait`}>
+        <Image
+          fill
+          src={review.image}
+          alt={review.imageAlt}
+          className={`bb-review-card-image`}
+          id={`bb-review-card-image-${review.id}`}
+          sizes={`(max-width: 600px) calc(100vw - 70px), (max-width: 900px) 45vw, 350px`}
+        />
+        <span id={`bb-review-card-portrait-label-${review.id}`} className={`bb-review-card-portrait-label`}>
+          The Bengali Blush Feeling
+        </span>
+      </div>
+      <OrnamentalArch id={`bb-review-card-portrait-arch-${review.id}`} />
     </div>
     <div id={`bb-review-card-copy-${review.id}`} className={`bb-review-card-copy`}>
       <div

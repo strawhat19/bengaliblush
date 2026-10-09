@@ -1,9 +1,24 @@
 @use './auth-form/auth-form.scss';
 @use './auth-story/auth-story.scss';
 
+.bb-onboarding-shell {
+  display: flex;
+  overflow: clip;
+  min-height: 100svh;
+  flex-direction: column;
+
+  > .bb-header { position: sticky; flex-shrink: 0; }
+
+  @media (min-width: 1040px) {
+    height: 100svh;
+
+    > .bb-auth-page { flex: 1; min-height: 0; }
+  }
+}
+
 .bb-auth-page {
   display: grid;
-  min-height: 100svh;
+  min-width: 0;
   background: hsl(var(--card));
   grid-template-columns: minmax(0, .46fr) minmax(0, .54fr);
 
@@ -44,8 +59,6 @@
   .bb-auth-footer-link:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
 
   @media (min-width: 1040px) {
-    height: 100svh;
-
     .bb-auth-story {
       height: 100%;
       min-height: 0;
@@ -54,16 +67,26 @@
       overscroll-behavior: contain;
     }
 
+    .bb-auth-story-inner { height: 100%; min-height: 0; }
+    .bb-auth-form-content { align-items: safe center; padding-block: 24px; }
+    .bb-auth-footer { padding-block: 12px; }
+
     .bb-auth-form-panel {
+      min-height: 0;
       overflow-y: auto;
       scrollbar-width: thin;
       overscroll-behavior: contain;
+    }
+
+    @media (max-height: 850px) {
+      .bb-auth-form-content { padding-block: 16px; }
     }
   }
 
   @media (max-width: 1039px) {
     display: block;
 
+    .bb-auth-form-panel { scroll-margin-top: 110px; }
     .bb-auth-form-content { min-height: 70svh; padding: 42px 32px; }
     .bb-auth-footer { padding: 20px 32px 28px; }
   }

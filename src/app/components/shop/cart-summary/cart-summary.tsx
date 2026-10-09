@@ -1,12 +1,12 @@
 'use client';
 
-import Link from 'next/link';
 import { useShop } from '@/shared/shop/shop-context';
+import { siteRoutes } from '@/shared/navigation/routes';
 import OrderSummary from '../order-summary/order-summary';
 import CheckoutSteps from '../checkout-steps/checkout-steps';
-import { siteRoutes } from '@/shared/navigation/routes';
 import { useShopReady } from '../order-summary/use-shop-ready';
 import ProductArtwork from '../product-artwork/product-artwork';
+import Link from '@/app/components/navigation/page-link/page-link';
 import { formatPrice, getProductHref } from '@/shared/shop/shop-utils';
 import { Minus, Plus, Trash2, ArrowLeft, ArrowUpRight, ChevronRight, ShoppingBag } from 'lucide-react';
 

@@ -4,8 +4,7 @@
   .bb-notifications-page-heading { margin: 25px 0 23px; font-size: clamp(56px, 6.5vw, 87px); font-weight: 500; line-height: 1.02; letter-spacing: -.055em; font-family: var(--app-font-serif); }
   .bb-notifications-page-heading-accent { color: var(--bb-highlight); }
   .bb-notifications-page-introduction { margin: 0; max-width: 430px; font-size: 14px; line-height: 1.85; color: hsl(var(--muted-foreground)); }
-  .bb-notifications-page-emblem { position: relative; display: grid; min-height: 300px; gap: 20px; padding: 55px 35px 42px; justify-items: center; align-content: center; border-radius: 170px 170px 5px 5px; color: var(--bb-highlight); background: var(--bb-surface); border: 1px solid hsl(var(--secondary) / .35); transition: background-color .38s ease, color .38s ease, border-color .3s ease; }
-  .bb-notifications-page-emblem::before { position: absolute; inset: 11px; content: ''; pointer-events: none; border-radius: inherit; border: 1px solid hsl(var(--secondary) / .22); }
+  .bb-notifications-page-emblem { position: relative; isolation: isolate; display: grid; min-height: 300px; gap: 20px; padding: 55px 35px 42px; justify-items: center; align-content: center; border-radius: 170px 170px 5px 5px; color: var(--bb-highlight); background: var(--bb-surface); border: 1px solid hsl(var(--secondary) / .35); transition: background-color .38s ease, color .38s ease, border-color .3s ease; }
   .bb-notifications-page-emblem-label { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; font-family: var(--app-font-mono); }
   .bb-notifications-page-emblem-signature { font-size: 39px; line-height: 1.1; font-family: var(--app-font-signature); }
   .bb-notifications-page-updates { padding: 10px 0 110px; }

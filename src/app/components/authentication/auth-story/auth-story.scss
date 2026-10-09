@@ -73,8 +73,10 @@
     box-shadow: 0 17px 35px hsl(var(--primary) / .17);
   }
 
+  .bb-auth-story-photo-clip { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
+  .bb-auth-story-photo > .bb-ornamental-arch { --bb-arch-color: hsl(var(--secondary)); }
   .bb-auth-story-photo-image { object-fit: cover; object-position: center; }
-  .bb-auth-story-glow-photo { top: 6px; left: 43px; width: 205px; height: 243px; border-radius: 44% 44% 13px 13px; transform: rotate(-7deg); }
+  .bb-auth-story-glow-photo { top: 6px; left: 43px; width: 205px; height: 243px; isolation: isolate; overflow: visible; border-radius: 44% 44% 13px 13px; transform: rotate(-7deg); }
   .bb-auth-story-glow-photo .bb-auth-story-photo-image { object-position: 61% center; }
 
   .bb-auth-story-photo-caption {
@@ -186,6 +188,33 @@
   .bb-auth-story-detail { margin: 0; min-height: 34px; padding-top: 15px; color: hsl(var(--muted-foreground)); font-size: 11px; line-height: 1.6; border-top: 1px solid hsl(var(--primary) / .14); }
   .bb-auth-story-form-link { display: none; }
   :is(.bb-logo, .bb-auth-story-control, .bb-auth-story-dot-button, .bb-auth-story-form-link):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
+
+  @media (min-width: 1040px) {
+    .bb-auth-story-inner { gap: 18px; padding-block: 24px; }
+    .bb-auth-story-brand-row { display: none; }
+    .bb-auth-story-carousel { padding-block: 12px; }
+    .bb-auth-story-slide { gap: 20px; }
+    .bb-auth-story-title { margin-block: 10px 12px; font-size: clamp(32px, 2.8vw, 40px); }
+    .bb-auth-story-description { min-height: 58px; font-size: 12px; }
+    .bb-auth-story-footer { gap: 10px; }
+    .bb-auth-story-detail { padding-top: 10px; }
+  }
+
+  @media (min-width: 1040px) and (max-height: 850px) {
+    .bb-auth-story-art {
+      margin-bottom: -48px;
+      transform: scale(.82);
+      transform-origin: top center;
+    }
+  }
+
+  @media (min-width: 1040px) and (max-height: 700px) {
+    .bb-auth-story-inner { gap: 12px; padding-block: 18px; }
+    .bb-auth-story-carousel { padding-block: 6px; }
+    .bb-auth-story-slide { gap: 16px; }
+    .bb-auth-story-art { margin-bottom: -76px; transform: scale(.72); }
+    .bb-auth-story-title { font-size: 32px; }
+  }
 
   @media (max-width: 1039px) {
     min-height: 0;

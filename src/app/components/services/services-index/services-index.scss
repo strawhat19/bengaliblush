@@ -6,8 +6,9 @@
   .bb-services-index-heading-accent { color: hsl(var(--primary)); }
   .bb-services-index-introduction { max-width: 455px; margin: 0; color: hsl(var(--muted-foreground)); font-size: 15px; line-height: 1.85; }
   .bb-services-index-location { display: inline-flex; align-items: center; gap: 9px; margin-top: 29px; color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
-  .bb-services-index-featured { position: relative; display: flex; min-height: 444px; align-items: end; overflow: hidden; border-radius: 180px 180px 4px 4px; background: hsl(var(--muted)); }
-  .bb-services-index-featured::after { position: absolute; z-index: 1; inset: 35% 0 0; background: linear-gradient(transparent, hsl(var(--foreground) / .87)); content: ''; pointer-events: none; }
+  .bb-services-index-featured { position: relative; display: flex; isolation: isolate; min-height: 444px; align-items: end; border-radius: 180px 180px 4px 4px; background: hsl(var(--muted)); }
+  .bb-services-index-featured-clip { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
+  .bb-services-index-featured-clip::after { position: absolute; inset: 35% 0 0; background: linear-gradient(transparent, hsl(var(--foreground) / .87)); content: ''; pointer-events: none; }
   .bb-services-index-featured-image { object-fit: cover; transition: transform .6s ease; }
   .bb-services-index-featured-copy { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: start; padding: 38px; color: hsl(var(--card)); }
   .bb-services-index-featured-label { color: hsl(var(--secondary)); font-family: var(--app-font-mono); font-size: 9px; letter-spacing: .13em; text-transform: uppercase; }
