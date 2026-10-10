@@ -2,7 +2,7 @@
 
 ![Bengali Blush](./public/assets/versions/BengaliBlush_v0000_0.gif)
 
-A Next.js, TypeScript, Sass, and PWA storefront for Bengali Blush Atelier. Lash & Beauty Studio. Salon Suites.
+A Next.js, TypeScript, Sass, and PWA storefront for Bengali Blush Atelier. Lash & Beauty Studio. Salon Suites. Lashes.
 
 ## Run Locally
 
