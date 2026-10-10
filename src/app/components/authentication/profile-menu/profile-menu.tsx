@@ -6,16 +6,17 @@ import { roleLabels } from '@/types/types';
 import { siteRoutes } from '@/shared/navigation/routes';
 import Link from '@/app/components/navigation/page-link/page-link';
 import { useProfileMenu, type ProfileMenuProps } from './use-profile-menu';
-import { Leaf, Crown, LogOut, UserRound, ShieldCheck, LayoutDashboard } from 'lucide-react';
+import { Leaf, Crown, LogIn, LogOut, UserPlus, UserRound, ShieldCheck, LayoutDashboard } from 'lucide-react';
 
 const ProfileMenu = (props: ProfileMenuProps) => {
-  const { user, open, busy, error, close, toggle, loading, isAdmin, isOwner, photoUrl, buttonRef, controlRef, handleSignOut, handlePhotoError } = useProfileMenu(props);
+  const { user, open, busy, error, close, toggle, loading, isAdmin, isOwner, photoUrl, buttonRef, guestRoute, guestAction, controlRef, handleSignOut, handlePhotoError } = useProfileMenu(props);
   const initial = user?.name?.trim()?.[0]?.toUpperCase() || `B`;
+  const GuestIcon = guestRoute.icon === `UserPlus` ? UserPlus : LogIn;
 
   if (loading && !user) return <span id={`bb-account-loading`} className={`bb-account-loading`} role={`status`} aria-label={`Loading Your Account`} />;
   if (!user) return (
-    <Link href={siteRoutes.signin.href} onClick={props.onOpen} id={`bb-header-sign-in`} className={`bb-ghost-button`} data-testid={`button-header-sign-in`}>
-      <UserRound size={14} strokeWidth={1.9} aria-hidden={`true`} />Sign In
+    <Link href={guestRoute.href} onClick={props.onOpen} id={`bb-header-${guestAction}`} className={`bb-ghost-button`} data-testid={`button-header-${guestAction}`}>
+      <GuestIcon size={14} strokeWidth={1.9} aria-hidden={`true`} />{guestRoute.label}
     </Link>
   );
   const RoleIcon = isOwner ? Crown : isAdmin ? ShieldCheck : UserRound;

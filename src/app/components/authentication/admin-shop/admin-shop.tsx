@@ -55,7 +55,7 @@ const AdminShopContent = () => {
                 <h2 id={`bb-admin-shop-categories-title`} className={`bb-admin-shop-panel-title`}><Package size={18} aria-hidden={`true`} />Categories</h2>
                 {categories.length ? <ul id={`bb-admin-shop-category-list`} className={`bb-admin-shop-category-list`}>
                   {categories.map(([id, category]) => <li key={id} id={`bb-admin-shop-category-${id}`} className={`bb-admin-shop-category`}><span id={`bb-admin-shop-category-name-${id}`} className={`bb-admin-shop-category-name`}>{category.name}</span><strong id={`bb-admin-shop-category-count-${id}`} className={`bb-admin-shop-category-count`}>{category.products} Product(s)</strong></li>)}
-                </ul> : <p id={`bb-admin-shop-category-empty`}>Add products or use Import Existing Catalog on the Products page to start your shop.</p>}
+                </ul> : <p id={`bb-admin-shop-category-empty`}>Add products on the Products page to start your shop.</p>}
                 <Link href={siteRoutes.shop.href} id={`bb-admin-shop-visit-shop`} className={`bb-admin-shop-link`}><ShoppingBag size={15} aria-hidden={`true`} />Visit Shop<ArrowUpRight size={14} aria-hidden={`true`} /></Link>
               </div>
             </>

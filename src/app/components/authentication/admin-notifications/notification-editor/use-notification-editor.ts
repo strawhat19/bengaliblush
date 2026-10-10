@@ -7,6 +7,7 @@ export const useNotificationEditor = (record: NotificationRecord | null, onSave:
     body: record?.body ?? ``,
     slug: record?.slug ?? ``,
     title: record?.title ?? ``,
+    status: record?.status ?? `draft`,
     suffix: record?.suffix ?? ``,
     linkHref: record?.link?.href ?? ``,
     linkLabel: record?.link?.label ?? ``,

@@ -13,6 +13,7 @@ import NotificationRow from './notification-row/notification-row';
 import AccountNavigation from '../account-navigation/account-navigation';
 import NotificationEditor from './notification-editor/notification-editor';
 import RecordPagination from '../record-pagination/record-pagination';
+import AdminEditorModal from '../admin-editor-modal/admin-editor-modal';
 import { Bell, Plus, Search, RotateCcw, CircleCheck } from 'lucide-react';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 
@@ -52,15 +53,26 @@ const AdminNotificationsContent = () => {
                 { id: `published`, label: `Published`, value: published },
                 { id: `drafts`, label: `Drafts`, value: records.length - published },
               ].map(({ id, label, value }) => <div key={id} id={`${pageId}-summary-${id}`} className={`bb-admin-notifications-summary-card`}><dt id={`${pageId}-summary-${id}-label`} className={`bb-admin-notifications-summary-label`}>{label}</dt><dd id={`${pageId}-summary-${id}-value`} className={`bb-admin-notifications-summary-value`}>{value}</dd></div>)}</dl>
-              <button type={`button`} disabled={busy} id={`${pageId}-add`} className={`bb-button bb-button-primary bb-admin-notifications-add`} onClick={() => edit(`new`)}><Plus size={14} aria-hidden={`true`} />Add Notification</button>
-              {editor && <NotificationEditor key={typeof editor === `string` ? `new` : editor.id} busy={busy} record={typeof editor === `string` ? null : editor} onSave={save} onClose={() => setEditor(null)} />}
+              {editor && <AdminEditorModal
+                busy={busy}
+                error={error}
+                id={`${pageId}-editor-modal`}
+                onClose={() => setEditor(null)}
+                key={typeof editor === `string` ? `new` : editor.id}
+                labelledBy={`bb-notification-editor-${typeof editor === `string` ? `new` : editor.id}-title`}
+              >
+                {(dismiss) => <NotificationEditor busy={busy} record={typeof editor === `string` ? null : editor} onSave={save} onClose={dismiss} />}
+              </AdminEditorModal>}
               <section id={`${pageId}-records`} className={`bb-owner-records`} aria-labelledby={`${pageId}-records-title`}>
                 <div id={`${pageId}-records-heading`} className={`bb-owner-records-heading`}><h2 id={`${pageId}-records-title`} className={`bb-owner-records-title`}><Bell size={20} aria-hidden={`true`} />Studio Notifications</h2></div>
                 <div id={`${pageId}-filters`} className={`bb-owner-records-filters`}>
                   <label id={`${pageId}-search-label`} htmlFor={`${pageId}-search`} className={`bb-owner-records-search`}><Search size={15} aria-hidden={`true`} /><input id={`${pageId}-search`} type={`search`} value={search} className={`bb-owner-records-search-input`} aria-label={`Search Notifications`} placeholder={`Search notifications`} onChange={(event) => setSearch(event.currentTarget.value)} /></label>
                   <label id={`${pageId}-filter-label`} htmlFor={`${pageId}-filter`} className={`bb-owner-records-filter-label`}>Status</label>
                   <select id={`${pageId}-filter`} value={filter} className={`bb-owner-records-filter`} onChange={(event) => setFilter(event.currentTarget.value)}><option id={`${pageId}-filter-all`} value={`all`}>All Statuses</option><option id={`${pageId}-filter-published`} value={`published`}>Published</option><option id={`${pageId}-filter-draft`} value={`draft`}>Draft</option></select>
-                  <span id={`${pageId}-results`} className={`bb-owner-records-results`} role={`status`}>{matchingRecords.length} Of {records.length} Record(s)</span>
+                  <div id={`${pageId}-filter-actions`} className={`bb-admin-notifications-filter-actions`}>
+                    <span id={`${pageId}-results`} className={`bb-owner-records-results`} role={`status`}>{matchingRecords.length} Of {records.length} Record(s)</span>
+                    <button type={`button`} disabled={busy} id={`${pageId}-add`} className={`bb-button bb-button-primary bb-admin-notifications-add`} onClick={() => edit(`new`)}><Plus size={14} aria-hidden={`true`} />Add Notification</button>
+                  </div>
                 </div>
                 {matchingRecords.length ? <div id={`${pageId}-table-wrap`} className={`bb-owner-table-wrap`}><table id={`${pageId}-table`} className={`bb-owner-table bb-admin-notifications-table`}><caption id={`${pageId}-table-caption`} className={`bb-owner-table-caption`}>Studio Notifications</caption><thead id={`${pageId}-table-head`} className={`bb-owner-table-head`}><tr id={`${pageId}-column-row`} className={`bb-owner-table-column-row`}>{[`No.`, `Title`, `Kind`, `Status`, `Updated`, `Actions`].map((label, index) => <th key={label} scope={`col`} id={`${pageId}-column-${index}`} className={`bb-owner-table-column`}>{label}</th>)}</tr></thead><tbody id={`${pageId}-table-body`} className={`bb-owner-table-body`}>{matchingRecords.map((record) => <NotificationRow key={record.id} busy={busy} record={record} onEdit={edit} onDelete={remove} onStatus={changeStatus} onRequestDelete={requestDelete} confirming={deletingId === record.id} onCancelDelete={() => setDeletingId(``)} />)}</tbody></table></div>
                   : <p id={`${pageId}-empty`} className={`bb-owner-records-empty`}>{records.length ? `No notifications match these filters.` : `No notifications saved yet. Add a draft to get started.`}</p>}

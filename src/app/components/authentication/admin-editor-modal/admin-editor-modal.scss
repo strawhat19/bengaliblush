@@ -1,0 +1,51 @@
+.bb-admin-editor-modal { position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; max-height: none; overflow: hidden; margin: 0; border: 0; padding: 24px; background: transparent; color: var(--bb-panel-text, hsl(var(--foreground))); }
+.bb-admin-editor-modal[open] { display: grid; place-items: center; }
+.bb-admin-editor-modal::backdrop { background: hsl(340 24% 8% / 0); -webkit-backdrop-filter: blur(0); backdrop-filter: blur(0); transition: background-color .4s ease, backdrop-filter .4s ease; }
+.bb-admin-editor-modal.is-open::backdrop { background: hsl(340 24% 8% / .6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.bb-admin-editor-modal-panel { position: relative; width: min(760px, 100%); min-width: 0; border-radius: 18px; background: var(--bb-panel-surface, hsl(var(--card))); box-shadow: 0 24px 65px hsl(340 32% 8% / .35); transform: translate3d(0, calc(-100% - 50dvh - 100px), 0); transition: transform .68s cubic-bezier(.76, 0, .24, 1); }
+.bb-admin-editor-modal.is-open .bb-admin-editor-modal-panel { transform: translate3d(0, 0, 0); transition-duration: .78s; }
+dialog.bb-admin-editor-modal .bb-admin-editor-modal-panel > .bb-liquid-edge { fill: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-admin-editor-modal-content { max-height: calc(100dvh - 48px); overflow-y: auto; overscroll-behavior: contain; border-radius: inherit; scrollbar-width: thin; }
+.bb-admin-editor-modal-content > :is(.bb-notification-editor, .bb-commerce-editor) { margin: 0; border: 0; background: transparent; }
+.bb-admin-editor-modal-content :is(.bb-notification-editor-close, .bb-commerce-editor-close) { color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-admin-editor-modal-content :is(.bb-notification-editor-actions, .bb-commerce-editor-actions) { justify-content: flex-end; }
+.bb-admin-editor-modal-error { position: sticky; z-index: 1; top: 0; margin: 0; border-bottom: 1px solid var(--bb-panel-border, hsl(var(--border))); padding: 14px 24px; background: var(--bb-panel-surface, hsl(var(--card))); color: hsl(var(--destructive)); font-size: 11px; line-height: 1.7; }
+:root[data-theme='dark'] .bb-admin-editor-modal :is(.bb-admin-editor-modal-error, .bb-notification-editor-error) { color: #ffb4bf; }
+:root[data-theme='dark'] .bb-admin-editor-modal {
+  --bb-panel-surface: var(--bb-surface-raised);
+  --bb-editor-field-surface: color-mix(in srgb, var(--bb-surface) 65%, hsl(var(--background)));
+
+  .bb-admin-editor-modal-panel { box-shadow: 0 32px 90px hsl(var(--background) / .6), 0 0 0 1px hsl(var(--secondary) / .22); }
+  :is(.bb-notification-editor-heading, .bb-commerce-editor-heading) { border-bottom: 1px solid hsl(var(--secondary) / .14); padding-bottom: 18px; }
+  :is(.bb-notification-editor-field > span, .bb-commerce-editor-field-label) { color: var(--bb-panel-text); font-weight: 500; }
+  :is(.bb-notification-editor-input, .bb-commerce-editor-input) {
+    border-color: color-mix(in srgb, var(--bb-highlight) 24%, var(--bb-panel-border));
+    background: var(--bb-editor-field-surface);
+    color: var(--bb-panel-text);
+    caret-color: var(--bb-highlight);
+    box-shadow: inset 0 1px 3px hsl(var(--background) / .25);
+    transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+
+    &::placeholder { color: var(--bb-panel-muted); opacity: .8; }
+    &:hover:not(:disabled):not(:focus) { border-color: hsl(var(--secondary) / .5); }
+    &:focus { border-color: var(--bb-highlight); background: color-mix(in srgb, var(--bb-highlight) 5%, var(--bb-editor-field-surface)); box-shadow: 0 0 0 3px hsl(var(--secondary) / .18); }
+    &:disabled { cursor: not-allowed; opacity: .5; }
+    option { background: var(--bb-editor-field-surface); color: var(--bb-panel-text); }
+    &:is(:autofill, :-webkit-autofill) { -webkit-text-fill-color: var(--bb-panel-text); box-shadow: 0 0 0 1000px var(--bb-editor-field-surface) inset; }
+    &:is(:autofill, :-webkit-autofill):focus { box-shadow: 0 0 0 1000px var(--bb-editor-field-surface) inset, 0 0 0 3px hsl(var(--secondary) / .18); }
+  }
+  :is(.bb-notification-editor-actions, .bb-commerce-editor-actions) { border-top: 1px solid hsl(var(--secondary) / .14); padding-top: 20px; }
+  :is(.bb-notification-editor-close, .bb-commerce-editor-close, .bb-notification-editor-cancel, .bb-commerce-editor-cancel) {
+    border: 1px solid hsl(var(--secondary) / .28);
+    background: var(--bb-editor-field-surface);
+    color: var(--bb-highlight);
+    transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+
+    &:hover:not(:disabled) { border-color: hsl(var(--secondary) / .6); background: color-mix(in srgb, var(--bb-highlight) 12%, var(--bb-editor-field-surface)); color: var(--bb-brand-cream); }
+    &:focus-visible { outline: 2px solid var(--bb-highlight); outline-offset: 3px; }
+  }
+  :is(.bb-notification-editor-cancel, .bb-commerce-editor-cancel) { border-radius: 999px; padding: 10px 14px; }
+  @media (prefers-reduced-motion: reduce) { :is(.bb-notification-editor-input, .bb-commerce-editor-input, .bb-notification-editor-close, .bb-commerce-editor-close, .bb-notification-editor-cancel, .bb-commerce-editor-cancel) { transition: none; } }
+}
+@media (max-width: 600px) { .bb-admin-editor-modal { padding: 12px; } .bb-admin-editor-modal-panel { border-radius: 14px; } .bb-admin-editor-modal-content { max-height: calc(100dvh - 24px); } .bb-admin-editor-modal-error { padding-inline: 18px; } }
+@media (prefers-reduced-motion: reduce) { .bb-admin-editor-modal::backdrop, .bb-admin-editor-modal-panel { transition: none; } }

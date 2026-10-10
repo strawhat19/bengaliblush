@@ -55,8 +55,8 @@ const CommerceEditor = ({ busy, record, section, onSave, onClose }: CommerceEdit
       {section === `paymentMethods` && <p id={`${editorId}-payment-note`} className={`bb-commerce-editor-note`}>Store only a name and public description here. Card methods stay disabled until Stripe is connected.</p>}
       {section === `reviews` && <p id={`${editorId}-review-note`} className={`bb-commerce-editor-note`}>Published reviews appear on the website. Draft and archived reviews remain in Admin.</p>}
       <div id={`${editorId}-actions`} className={`bb-commerce-editor-actions`}>
-        <button type={`submit`} disabled={busy} id={`${editorId}-save`} className={`bb-button bb-button-primary`}><Save size={14} aria-hidden={`true`} />{busy ? `Saving` : `Save ${label}`}</button>
         <button type={`button`} disabled={busy} onClick={onClose} id={`${editorId}-cancel`} className={`bb-commerce-editor-cancel`}><X size={14} aria-hidden={`true`} />Cancel</button>
+        <button type={`submit`} disabled={busy} id={`${editorId}-save`} className={`bb-button bb-button-primary`}><Save size={14} aria-hidden={`true`} />{busy ? `Saving` : `Save`}</button>
       </div>
     </form>
   );

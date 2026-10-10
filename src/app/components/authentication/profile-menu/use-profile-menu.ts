@@ -1,4 +1,6 @@
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/shared/authContext/useAuth';
+import { siteRoutes } from '@/shared/navigation/routes';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 type ProfileMenuProps = {
@@ -8,6 +10,9 @@ type ProfileMenuProps = {
 };
 
 export const useProfileMenu = ({ onOpen, closeSignal, onOpenChange }: ProfileMenuProps) => {
+  const pathname = usePathname()?.replace(/\/+$/, ``) || `/`;
+  const guestAction = [siteRoutes.signin.href, ...siteRoutes.signin.aliases].includes(pathname) ? `sign-up` : `sign-in`;
+  const guestRoute = guestAction === `sign-up` ? siteRoutes.signup : siteRoutes.signin;
   const [openSignal, setOpenSignal] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [failedPhotoUrl, setFailedPhotoUrl] = useState(``);
@@ -58,7 +63,7 @@ export const useProfileMenu = ({ onOpen, closeSignal, onOpenChange }: ProfileMen
     }
   };
 
-  return { user, busy, error, close, toggle, loading, isAdmin, isOwner, photoUrl, buttonRef, controlRef, handleSignOut, handlePhotoError, open: visible };
+  return { user, busy, error, close, toggle, loading, isAdmin, isOwner, photoUrl, buttonRef, guestRoute, guestAction, controlRef, handleSignOut, handlePhotoError, open: visible };
 };
 
 export type { ProfileMenuProps };

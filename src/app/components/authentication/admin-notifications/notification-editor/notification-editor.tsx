@@ -1,7 +1,7 @@
 'use client';
 
 import './notification-editor.scss';
-import { X, Save, Send } from 'lucide-react';
+import { X, Save } from 'lucide-react';
 import { useNotificationEditor } from './use-notification-editor';
 import type { NotificationInput, NotificationRecord } from '@/shared/models/notifications/Notification';
 
@@ -22,9 +22,7 @@ const NotificationEditor = ({ busy, record, onSave, onClose }: NotificationEdito
       aria-labelledby={`${editorId}-title`}
       onSubmit={(event) => {
         event.preventDefault();
-        const submitter = (event.nativeEvent as SubmitEvent).submitter;
-        const status = submitter?.getAttribute(`value`) === `published` ? `published` : `draft`;
-        if (!busy) void submit(status).then((saved) => { if (saved) onClose(); });
+        if (!busy) void submit(values.status).then((saved) => { if (saved) onClose(); });
       }}
     >
       <div id={`${editorId}-heading`} className={`bb-notification-editor-heading`}>
@@ -40,13 +38,13 @@ const NotificationEditor = ({ busy, record, onSave, onClose }: NotificationEdito
         <label id={`${editorId}-suffix-label`} htmlFor={`${editorId}-suffix`} className={`bb-notification-editor-field is-wide`}><span id={`${editorId}-suffix-label-text`}>Optional Text After The Link</span><textarea id={`${editorId}-suffix`} value={values.suffix} maxLength={300} rows={2} className={`bb-notification-editor-input`} onChange={(event) => setField(`suffix`, event.currentTarget.value)} /></label>
         <label id={`${editorId}-link-label`} htmlFor={`${editorId}-link-label-input`} className={`bb-notification-editor-field`}><span id={`${editorId}-link-label-text`}>Optional Link Label</span><input id={`${editorId}-link-label-input`} value={values.linkLabel} maxLength={120} className={`bb-notification-editor-input`} onChange={(event) => setField(`linkLabel`, event.currentTarget.value)} /></label>
         <label id={`${editorId}-link-href-label`} htmlFor={`${editorId}-link-href`} className={`bb-notification-editor-field`}><span id={`${editorId}-link-href-label-text`}>Optional Link Destination</span><input id={`${editorId}-link-href`} value={values.linkHref} maxLength={2048} className={`bb-notification-editor-input`} placeholder={`/shop Or https://example.com`} onChange={(event) => setField(`linkHref`, event.currentTarget.value)} /></label>
+        <label id={`${editorId}-status-label`} htmlFor={`${editorId}-status`} className={`bb-notification-editor-field`}><span id={`${editorId}-status-label-text`} className={`bb-notification-editor-field-label`}>Status</span><select id={`${editorId}-status`} value={values.status} className={`bb-notification-editor-input`} onChange={(event) => setField(`status`, event.currentTarget.value)}><option id={`${editorId}-status-draft`} value={`draft`}>Draft</option><option id={`${editorId}-status-published`} value={`published`}>Published</option></select></label>
       </fieldset>
-      <p id={`${editorId}-publication-note`} className={`bb-notification-editor-note`}>Save Draft keeps this notification in Admin. Publish shows it in the bell menu and on the Notifications page.</p>
+      <p id={`${editorId}-publication-note`} className={`bb-notification-editor-note`}>Drafts stay in Admin. Published notifications appear in the bell menu and on the Notifications page.</p>
       {error && <p id={`${editorId}-error`} className={`bb-notification-editor-error`} role={`alert`}>{error}</p>}
       <div id={`${editorId}-actions`} className={`bb-notification-editor-actions`}>
-        <button type={`submit`} value={`draft`} disabled={busy} id={`${editorId}-save-draft`} className={`bb-button bb-button-outline bb-button-outline-dark`}><Save size={14} aria-hidden={`true`} />Save Draft</button>
-        <button type={`submit`} value={`published`} disabled={busy} id={`${editorId}-publish`} className={`bb-button bb-button-primary`}><Send size={14} aria-hidden={`true`} />Publish</button>
         <button type={`button`} disabled={busy} onClick={onClose} id={`${editorId}-cancel`} className={`bb-notification-editor-cancel`}><X size={14} aria-hidden={`true`} />Cancel</button>
+        <button type={`submit`} disabled={busy} id={`${editorId}-save`} className={`bb-button bb-button-primary`}><Save size={14} aria-hidden={`true`} />{busy ? `Saving` : `Save`}</button>
       </div>
     </form>
   );

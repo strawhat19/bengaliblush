@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/shared/authContext/useAuth';
 import Link from '@/app/components/navigation/page-link/page-link';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
@@ -64,6 +65,10 @@ export default function Header({
   cartButtonFilled = false,
 }: HeaderProps) {
   const pathname = usePathname();
+  const { user, loading } = useAuth();
+  const authPathname = pathname.replace(/\/+$/, ``) || `/`;
+  const mobileAuthRoutes = [siteRoutes.signin, siteRoutes.signup].filter(({ href, aliases }) =>
+    user || loading || ![href, ...aliases].includes(authPathname));
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -224,24 +229,22 @@ export default function Header({
             ))}
           </div>
           <div id={`bb-mobile-menu-auth`} className={`bb-mobile-menu-auth`}>
-            <Link
-              onClick={closeMobile}
-              href={siteRoutes.signin.href}
-              id={`bb-mobile-menu-signin`}
-              data-testid={`mobile-link-signin`}
-              className={`bb-button bb-button-primary bb-mobile-menu-auth-link`}
-            >
-              <LogIn size={16} strokeWidth={1.9} aria-hidden={`true`} />{siteRoutes.signin.label}
-            </Link>
-            <Link
-              onClick={closeMobile}
-              href={siteRoutes.signup.href}
-              id={`bb-mobile-menu-signup`}
-              data-testid={`mobile-link-signup`}
-              className={`bb-button bb-button-primary bb-mobile-menu-auth-link`}
-            >
-              <UserPlus size={16} strokeWidth={1.9} aria-hidden={`true`} />{siteRoutes.signup.label}
-            </Link>
+            {mobileAuthRoutes.map(({ href, icon, label }) => {
+              const Icon = navigationIcons[icon];
+              const locator = href.slice(1);
+              return (
+                <Link
+                  href={href}
+                  key={locator}
+                  onClick={closeMobile}
+                  id={`bb-mobile-menu-${locator}`}
+                  data-testid={`mobile-link-${locator}`}
+                  className={`bb-button bb-button-primary bb-mobile-menu-auth-link`}
+                >
+                  <Icon size={16} strokeWidth={1.9} aria-hidden={`true`} />{label}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </nav>
