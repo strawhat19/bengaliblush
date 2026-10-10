@@ -31,7 +31,7 @@ const ProfileDetails = () => {
   return (
     <section id={`bb-profile-page`} className={`bb-section bb-profile-page`} aria-labelledby={`bb-profile-title`}>
       <div id={`bb-profile-layout`} className={`bb-container bb-profile-layout`}>
-        <AccountNavigation />
+        {isAdmin && <AccountNavigation />}
         <div id={`bb-profile-content`} className={`bb-profile-content`}>
           <div id={`bb-profile-details`} className={`bb-profile-details`}>
             <span id={`bb-profile-eyebrow`} className={`bb-eyebrow`}>Your Account</span>

@@ -11,11 +11,11 @@ import OwnerRecordsTable from '../owner-records-table/owner-records-table';
 import RecordPagination from '../record-pagination/record-pagination';
 import OwnerDashboardSidebar from '../owner-dashboard-sidebar/owner-dashboard-sidebar';
 import OwnerDashboardSummary from '../owner-dashboard-summary/owner-dashboard-summary';
-import { dashboardSections, getDashboardSummary, type DashboardSection } from './dashboard-data';
+import { dashboardViews, dashboardSections, getDashboardSummary, type DashboardView, type DashboardSection } from './dashboard-data';
 
-const DashboardContent = ({ section }: { section: DashboardSection }) => {
+const DashboardContent = ({ view, section }: { view: DashboardView; section: DashboardSection }) => {
   const { error, notice, reload, loading, loadedAt, overview, commerce, savingId, refreshing, pagination, saveStatus, notifications } = useOwnerDashboard(section);
-  const { title, description } = dashboardSections[section];
+  const { title, description } = section === `overview` && view !== `overview` ? dashboardViews[view] : dashboardSections[section];
   const summary = overview && section === `overview` ? getDashboardSummary(overview, loadedAt, commerce, notifications) : null;
 
   return (
@@ -41,7 +41,7 @@ const DashboardContent = ({ section }: { section: DashboardSection }) => {
           </div>
           {error && <p id={`bb-owner-dashboard-error`} className={`bb-owner-dashboard-error`} role={`alert`}>{error}</p>}
           {notice && <p id={`bb-owner-dashboard-notice`} className={`bb-owner-dashboard-notice`} role={`status`}><CircleCheck size={14} aria-hidden={`true`} />{notice}</p>}
-          {section === `overview` && <p id={`bb-owner-dashboard-window-note`} className={`bb-owner-dashboard-description`}>Activity, Statuses, And Counts Cover The Latest 50 Record(s) Per Collection. Open A Record Page To Browse Older Entries.</p>}
+          {section === `overview` && <p id={`bb-owner-dashboard-window-note`} className={`bb-owner-dashboard-description`}>{view === `reports` ? `Reports Show The Latest 5 Record(s) Per Collection. Open A Record Page To Browse Older Entries.` : `Activity, Statuses, And Counts Cover The Latest 50 Record(s) Per Collection. Open A Record Page To Browse Older Entries.`}</p>}
           {loading ? (
             <div id={`bb-owner-dashboard-loading`} className={`bb-owner-dashboard-loading`} role={`status`} aria-label={`Loading Studio Records`}>
               {[0, 1, 2].map((index) => <div key={index} id={`bb-owner-dashboard-skeleton-${index}`} className={`bb-owner-dashboard-skeleton`} aria-hidden={`true`}>{[0, 1, 2].map((line) => <span key={line} id={`bb-owner-dashboard-skeleton-${index}-line-${line}`} className={`bb-owner-dashboard-skeleton-line`} />)}</div>)}
@@ -50,8 +50,8 @@ const DashboardContent = ({ section }: { section: DashboardSection }) => {
             section === `overview` ? (summary && (
               <div id={`bb-owner-dashboard-body`} className={`bb-owner-dashboard-body`}>
                 <div id={`bb-owner-dashboard-main`} className={`bb-owner-dashboard-main`}>
-                  <OwnerDashboardSummary summary={summary} overview={overview} commerce={commerce} notifications={notifications} />
-                  {([`contacts`, `appointments`, `users`] as const).map((kind) => (
+                  {view !== `reports` && <OwnerDashboardSummary summary={summary} overview={overview} commerce={commerce} notifications={notifications} />}
+                  {view !== `analytics` && ([`contacts`, `appointments`, `users`] as const).map((kind) => (
                     <OwnerRecordsTable kind={kind} limit={5} key={kind} overview={overview} disabled={refreshing} savingId={savingId} onStatus={saveStatus} />
                   ))}
                 </div>
@@ -67,9 +67,9 @@ const DashboardContent = ({ section }: { section: DashboardSection }) => {
   );
 };
 
-const OwnerDashboard = ({ section = `overview` }: { section?: DashboardSection }) => {
+const OwnerDashboard = ({ view = `overview`, section = `overview` }: { view?: DashboardView; section?: DashboardSection }) => {
   const { user } = useAuth();
-  return <AccountAccess adminOnly>{user && <DashboardContent section={section} key={`${user.id}:${section}`} />}</AccountAccess>;
+  return <AccountAccess adminOnly>{user && <DashboardContent view={view} section={section} key={`${user.id}:${section}:${view}`} />}</AccountAccess>;
 };
 
 export default OwnerDashboard;

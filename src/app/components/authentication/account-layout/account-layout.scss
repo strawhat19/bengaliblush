@@ -83,7 +83,7 @@
 @media (min-width: 651px) {
   .bb-account-shell {
     &:has(.bb-account-navigation.is-collapsed) {
-      --bb-account-sidebar-width: 84px;
+      --bb-account-sidebar-width: 56px;
       --bb-account-icon-center: calc((var(--bb-account-sidebar-width) - 1px) / 2);
     }
 
@@ -110,6 +110,17 @@
       > :not(.bb-account-navigation) {
         grid-column: 2;
         padding: 32px var(--bb-dashboard-gutter) clamp(32px, 4vw, 56px) 0;
+      }
+    }
+
+    &:not(:has(.bb-account-navigation)) {
+      .bb-header-inner.is-full-width { padding-inline-start: var(--bb-dashboard-gutter); }
+      .bb-profile-layout {
+        grid-template-columns: minmax(0, 1fr);
+        > :not(.bb-account-navigation) {
+          grid-column: 1;
+          padding-inline: var(--bb-dashboard-gutter);
+        }
       }
     }
 

@@ -1,6 +1,6 @@
 import { Roles, hasAdminAccess } from '../../types/types';
 
-export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `Images` | `MapPin` | `Package` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard`;
+export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `Images` | `MapPin` | `Package` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard` | `MessageSquareText`;
 
 export type SiteRoute = {
   href: string;
@@ -144,6 +144,33 @@ export const siteRoutes = {
     title: `Users | Bengali Blush`,
     aliases: [`/admin/users`, `/dashboard/users`],
     description: `Review studio accounts and access`,
+  },
+  adminReports: {
+    icon: `FileText`,
+    href: `/reports`,
+    label: `Reports`,
+    minimumRole: Roles.Admin,
+    title: `Reports | Bengali Blush`,
+    aliases: [`/admin/reports`, `/dashboard/reports`],
+    description: `Review recent studio requests, appointments, and accounts`,
+  },
+  adminAnalytics: {
+    href: `/analytics`,
+    label: `Analytics`,
+    icon: `LayoutDashboard`,
+    minimumRole: Roles.Admin,
+    title: `Analytics | Bengali Blush`,
+    aliases: [`/admin/analytics`, `/dashboard/analytics`],
+    description: `Explore studio activity, request statuses, and record counts`,
+  },
+  adminChats: {
+    href: `/chats`,
+    label: `Chats`,
+    icon: `MessageSquareText`,
+    minimumRole: Roles.Admin,
+    title: `Chats | Bengali Blush`,
+    description: `A dedicated space for studio chats`,
+    aliases: [`/chat`, `/comments`, `/admin/chats`, `/dashboard/chats`, `/admin/comments`, `/dashboard/comments`],
   },
   adminRequests: {
     label: `Requests`,

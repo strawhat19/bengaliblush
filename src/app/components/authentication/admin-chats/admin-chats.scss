@@ -1,0 +1,3 @@
+.bb-admin-chats-empty { display: flex; align-items: center; gap: 12px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 12px; padding: 24px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-admin-chats-empty-icon { flex: none; color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-admin-chats-empty-description { margin: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 12px; line-height: 1.8; }

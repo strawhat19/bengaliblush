@@ -1,41 +1,17 @@
-import type { LucideIcon } from 'lucide-react';
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/shared/authContext/useAuth';
-import { siteRoutes, type SiteRoute } from '@/shared/navigation/routes';
+import { siteRoutes } from '@/shared/navigation/routes';
+import { adminLinks, accountLinks } from '@/shared/navigation/account-navigation';
 import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
-import { Bell, Quote, Users, Images, Package, UserRound, CreditCard, ReceiptText, CalendarDays, ShoppingBag, MessageCircle, WandSparkles, LayoutDashboard } from 'lucide-react';
-
-type AccountNavigationLink = {
-  route: SiteRoute;
-  Icon: LucideIcon;
-  children?: readonly AccountNavigationLink[];
-};
-
-const adminLinks: readonly AccountNavigationLink[] = [
-  { route: siteRoutes.dashboard, Icon: LayoutDashboard },
-  { route: siteRoutes.adminUsers, Icon: Users },
-  { route: siteRoutes.adminGallery, Icon: Images },
-  { route: siteRoutes.adminNotifications, Icon: Bell },
-  { route: siteRoutes.adminServices, Icon: WandSparkles },
-  {
-    Icon: ShoppingBag,
-    route: siteRoutes.adminShop,
-    children: [
-      { route: siteRoutes.adminOrders, Icon: ReceiptText },
-      { route: siteRoutes.adminProducts, Icon: Package },
-    ],
-  },
-  { route: siteRoutes.adminEvents, Icon: CalendarDays },
-  { route: siteRoutes.adminReviews, Icon: Quote },
-  { route: siteRoutes.adminRequests, Icon: MessageCircle },
-  { route: siteRoutes.adminPaymentMethods, Icon: CreditCard },
-  { route: siteRoutes.adminAppointments, Icon: CalendarDays },
-];
-const accountLinks: readonly AccountNavigationLink[] = [{ route: siteRoutes.profile, Icon: UserRound }];
 
 export const useAccountNavigation = () => {
   const pathname = usePathname();
-  const { isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const [failedPhotoUrl, setFailedPhotoUrl] = useState(``);
   const navigationState = useAccountNavigationState();
-  return { isAdmin, pathname, adminLinks, accountLinks, ...navigationState };
+  const initial = user?.name?.trim()?.[0]?.toUpperCase() || `B`;
+  const photoUrl = user?.photo_url && failedPhotoUrl !== user.photo_url ? user.photo_url : ``;
+  const handlePhotoError = () => setFailedPhotoUrl(photoUrl);
+  return { initial, isAdmin, pathname, photoUrl, adminLinks, accountLinks, handlePhotoError, profileRoute: siteRoutes.profile, ...navigationState };
 };

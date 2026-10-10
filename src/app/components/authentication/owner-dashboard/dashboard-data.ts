@@ -3,12 +3,18 @@ import type { CommerceOverview } from '@/api/commerce';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 
 export type DashboardSection = `overview` | `users` | `contacts` | `appointments`;
+export type DashboardView = `overview` | `reports` | `analytics`;
 
 export const dashboardSections = {
   overview: { title: `Your Studio, At A Glance`, description: `Accounts, catalog, reviews, notifications, and requests from your studio database.` },
   users: { title: `Studio Accounts`, description: `Registered accounts, roles, and account status.` },
   contacts: { title: `Requests`, description: `Messages from guests and account holders, ready for your review.` },
   appointments: { title: `Appointment Requests`, description: `Requested services, preferred dates, and booking details.` },
+};
+
+export const dashboardViews = {
+  reports: { title: `Studio Reports`, description: `Recent requests, appointment requests, and registered accounts from your studio database.` },
+  analytics: { title: `Studio Analytics`, description: `Studio activity trends, request statuses, and counts from your recent database records.` },
 };
 
 export const formatRecordDate = (value: string, includeTime = false) => {
