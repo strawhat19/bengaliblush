@@ -27,5 +27,10 @@
 .bb-owner-records-filter-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
 .bb-owner-records-results { margin-left: auto; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
 .bb-owner-records-filter:focus-visible, .bb-owner-records-view-all:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+:root[data-theme='dark'] .bb-owner-dashboard {
+  .bb-owner-table-wrap { border-color: hsl(var(--secondary) / .16); }
+  .bb-owner-table th { border-bottom-color: hsl(var(--secondary) / .22); background: hsl(var(--secondary) / .065); }
+  .bb-owner-table tbody tr:hover { background: hsl(var(--secondary) / .035); }
+}
 @media (max-width: 480px) { .bb-owner-table th, .bb-owner-table td { padding: 13px; } .bb-owner-records-search-input, .bb-owner-records-filter { font-size: 16px; } .bb-owner-records-results { width: 100%; margin: 0; } }
 @media (prefers-reduced-motion: reduce) { .bb-owner-table tbody tr { transition: none; } }

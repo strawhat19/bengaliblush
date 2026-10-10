@@ -1,0 +1,5 @@
+.bb-owner-user-identity { display: flex; align-items: center; gap: 12px; }
+.bb-owner-user-copy { min-width: 0; }
+.bb-owner-user-avatar { position: relative; display: grid; width: 38px; height: 38px; flex: none; overflow: hidden; place-items: center; border: 1px solid hsl(var(--secondary) / .5); border-radius: 50%; background: hsl(var(--secondary)); color: hsl(var(--primary)); font-size: 16px; font-weight: 600; }
+.bb-owner-user-initial { display: grid; width: 100%; height: 100%; place-items: center; }
+.bb-owner-user-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }

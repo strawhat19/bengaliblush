@@ -3,7 +3,8 @@
 import { siteRoutes } from '@/shared/navigation/routes';
 import useNotificationDetails from './use-notification-details';
 import Link from '@/app/components/navigation/page-link/page-link';
-import { Heart, ArrowLeft, RotateCcw, Construction } from 'lucide-react';
+import { ArrowLeft, RotateCcw } from 'lucide-react';
+import { notificationIcons } from '@/shared/notifications/notification-icons';
 import type { Notification } from '@/shared/notifications/notification-types';
 import { getNotificationSpacing } from '@/shared/notifications/notification-utils';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
@@ -11,7 +12,6 @@ import './notification-details.scss';
 
 type NotificationDetailsProps = { notification: Notification };
 
-const notificationIcons = { announcement: Heart, development: Construction };
 const notificationLabels = { development: `Development`, announcement: `Announcement` };
 
 const NotificationDetails = ({ notification }: NotificationDetailsProps) => {

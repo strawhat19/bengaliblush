@@ -1,6 +1,6 @@
 import { Roles, hasAdminAccess } from '../../types/types';
 
-export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `MapPin` | `Package` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard`;
+export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `Images` | `MapPin` | `Package` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard`;
 
 export type SiteRoute = {
   href: string;
@@ -221,6 +221,14 @@ export const siteRoutes = {
     minimumRole: Roles.Admin,
     title: `Reviews | Bengali Blush`,
     description: `Manage published studio reviews`,
+  },
+  adminGallery: {
+    icon: `Images`,
+    label: `Gallery`,
+    href: `/admin/gallery`,
+    minimumRole: Roles.Admin,
+    title: `Gallery | Bengali Blush`,
+    description: `Explore the Bengali Blush image collection`,
   },
   adminNotifications: {
     icon: `Bell`,

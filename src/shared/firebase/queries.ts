@@ -7,6 +7,7 @@ export type RecordQuery = { cursor?: number; status?: string; direction?: OrderB
 type RecordReader<T> = (snapshot: DocumentSnapshot<DocumentData>) => T;
 type RecordSubscriber = { onRecords: (records: unknown[]) => void; onError: (error: Error) => void };
 type RecordWatch = {
+  error?: Error;
   failed: boolean;
   stop: () => void;
   records: unknown[] | null;
@@ -53,18 +54,25 @@ export const subscribeRecords = <T>(collectionName: string, read: RecordReader<T
     const reference = collection(getFirebaseClient().database, collectionName);
     watch = { stop: () => undefined, records: null, failed: false, subscribers: new Set() };
     const currentWatch = watch;
-    const reportError = (error: Error) => {
-      currentWatch.failed = true;
-      currentWatch.stop();
+    const reportError = (error: Error, terminal = true) => {
+      currentWatch.error = error;
+      currentWatch.records = null;
+      currentWatch.failed = terminal;
+      if (terminal) currentWatch.stop();
       currentWatch.subscribers.forEach((subscriber) => subscriber.onError(error));
     };
     currentWatch.stop = onSnapshot(status ? query(reference, where(`status`, `==`, status)) : reference, { includeMetadataChanges: true }, (snapshot) => {
       if (snapshot.metadata.hasPendingWrites) return;
       if (currentWatch.records === null && snapshot.metadata.fromCache && snapshot.empty) return;
-      try {
-        currentWatch.records = snapshot.docs.map(read);
-        currentWatch.subscribers.forEach((subscriber) => subscriber.onRecords([...(currentWatch.records ?? [])]));
-      } catch (error) { reportError(error instanceof Error ? error : new Error(`Saved Data Needs Attention`)); }
+      let records: T[];
+      try { records = snapshot.docs.map(read); }
+      catch (error) {
+        reportError(error instanceof Error ? error : new Error(`Saved Data Needs Attention`), false);
+        return;
+      }
+      currentWatch.error = undefined;
+      currentWatch.records = records;
+      currentWatch.subscribers.forEach((subscriber) => subscriber.onRecords([...records]));
     }, reportError);
     publicWatches.set(key, currentWatch);
   }
@@ -72,7 +80,8 @@ export const subscribeRecords = <T>(collectionName: string, read: RecordReader<T
   const subscriber: RecordSubscriber = { onError, onRecords: (records) => onRecords(records as T[]) };
   clearTimeout(activeWatch.idleTimer);
   activeWatch.subscribers.add(subscriber);
-  if (activeWatch.records) subscriber.onRecords([...activeWatch.records]);
+  if (activeWatch.error) subscriber.onError(activeWatch.error);
+  else if (activeWatch.records) subscriber.onRecords([...activeWatch.records]);
   return () => {
     activeWatch.subscribers.delete(subscriber);
     if (!activeWatch.subscribers.size) activeWatch.idleTimer = setTimeout(() => {

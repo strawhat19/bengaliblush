@@ -125,12 +125,9 @@ const readBase = (snapshot: DocumentSnapshot<DocumentData>) => {
   };
 };
 
-export const readProduct = (snapshot: DocumentSnapshot<DocumentData>): ProductRecord => {
-  const base = readBase(snapshot);
-  const product = normalizeProduct(snapshot.data() as ProductInput);
-  if (product.price_minor !== snapshot.data()?.price_minor || product.price !== snapshot.data()?.price) throw new Error(`Saved Product Price Needs Attention`);
-  return { ...base, ...product };
-};
+export const readProduct = (snapshot: DocumentSnapshot<DocumentData>): ProductRecord => ({
+  ...readBase(snapshot), ...normalizeProduct(snapshot.data() as ProductInput),
+});
 
 export const readService = (snapshot: DocumentSnapshot<DocumentData>): ServiceRecord => ({
   ...readBase(snapshot), ...normalizeService(snapshot.data() as ServiceInput),

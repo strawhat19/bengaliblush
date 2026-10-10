@@ -4,6 +4,7 @@ import './notification-row.scss';
 import { X, Eye, Pencil, EyeOff, Trash2 } from 'lucide-react';
 import { formatRecordDate } from '../../owner-dashboard/dashboard-data';
 import StatusCell, { getStatusLabel } from '../../status-cell/status-cell';
+import { notificationIcons } from '@/shared/notifications/notification-icons';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 
 type NotificationRowProps = {
@@ -20,10 +21,22 @@ type NotificationRowProps = {
 const NotificationRow = ({ busy, record, confirming, onEdit, onDelete, onStatus, onRequestDelete, onCancelDelete }: NotificationRowProps) => {
   const rowId = `bb-admin-notification-${record.id}`;
   const published = record.status === `published`;
+  const Icon = notificationIcons[record.kind];
   return (
     <tr id={rowId} className={`bb-admin-notification-row`}>
       <td id={`${rowId}-number`} className={`bb-admin-notification-number`}>{record.number}</td>
-      <td id={`${rowId}-title-cell`} className={`bb-admin-notification-main`}><strong id={`${rowId}-title`} className={`bb-admin-notification-title`}>{record.title}</strong><span id={`${rowId}-slug`} className={`bb-admin-notification-slug`}>{record.slug}</span><span id={`${rowId}-body`} className={`bb-admin-notification-body`}>{record.body}</span></td>
+      <td id={`${rowId}-title-cell`} className={`bb-admin-notification-main`}>
+        <div id={`${rowId}-identity`} className={`bb-admin-notification-identity`}>
+          <span id={`${rowId}-thumbnail`} className={`bb-admin-notification-thumbnail`} aria-hidden={`true`}>
+            <Icon size={18} strokeWidth={1.6} id={`${rowId}-icon`} className={`bb-admin-notification-icon`} />
+          </span>
+          <div id={`${rowId}-copy`} className={`bb-admin-notification-copy`}>
+            <strong id={`${rowId}-title`} className={`bb-admin-notification-title`}>{record.title}</strong>
+            <span id={`${rowId}-slug`} className={`bb-admin-notification-slug`}>{record.slug}</span>
+            <span id={`${rowId}-body`} className={`bb-admin-notification-body`}>{record.body}</span>
+          </div>
+        </div>
+      </td>
       <td id={`${rowId}-kind`} className={`bb-admin-notification-kind`}>{getStatusLabel(record.kind)}</td>
       <td id={`${rowId}-status-cell`} className={`bb-admin-notification-status`}><StatusCell id={rowId} status={record.status} /></td>
       <td id={`${rowId}-updated`} className={`bb-admin-notification-updated`}>{formatRecordDate(record.updated_at)}</td>

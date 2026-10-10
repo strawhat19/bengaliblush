@@ -232,7 +232,9 @@ service cloud.firestore {
     }
     function trustedOrderItem(item) {
       let product = get(/databases/$(database)/documents/products/$(item.product_id)).data;
-      return product.status == 'active' && item.name == product.name && item.unit_price == product.price_minor;
+      return product.status == 'active' && item.name == product.name
+        && product.price is number && product.price >= 0 && product.price <= 1000000
+        && item.unit_price == math.round(product.price * 100);
     }
     function trustedOrderItemAt(items, index) {
       return index >= items.size() || trustedOrderItem(items[index]);

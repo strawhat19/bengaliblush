@@ -1,8 +1,10 @@
 'use client';
 
+import Image from 'next/image';
 import './commerce-record-row.scss';
 import { Pencil, ChevronDown } from 'lucide-react';
 import StatusCell, { getStatusLabel } from '../../status-cell/status-cell';
+import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
 import type { OrderRecord, PaymentMethodRecord } from '@/shared/models/commerce/Commerce';
 import { formatCommerceDate, formatCommerceAmount, sectionStatuses, type CommerceRecord, type EditableCommerceRecord } from '../commerce-data';
 
@@ -56,12 +58,37 @@ const CommerceRecordRow = ({ busy, record, onEdit, onOrderStatus, paymentMethods
     : `duration` in record ? `${record.price} · ${record.duration}`
     : `quote` in record ? `${record.rating}/5 · ${record.service}`
     : record.type === `card` ? `Card · Stripe Pending` : `Manual`;
+  const image = `image` in record ? record.image : ``;
   const slug = `slug` in record ? record.slug : ``;
+  const product = `category_name` in record ? record : null;
+  const imageAlt = `imageAlt` in record ? record.imageAlt || record.name : record.name;
 
   return (
     <tr id={rowId} className={`bb-commerce-record-row`}>
       <td id={`${rowId}-number`} className={`bb-commerce-record-number`}>{record.number}</td>
-      <td id={`${rowId}-main`} className={`bb-commerce-record-main`}><strong id={`${rowId}-name`} className={`bb-commerce-record-name`}>{record.name}</strong>{slug && <span id={`${rowId}-slug`} className={`bb-commerce-record-meta`}>{slug}</span>}<span id={`${rowId}-description`} className={`bb-commerce-record-description`}>{description}</span></td>
+      <td id={`${rowId}-main`} className={`bb-commerce-record-main`}>
+        <div id={`${rowId}-identity`} className={`bb-commerce-record-identity`}>
+          {(product || image) && <div
+            id={`${rowId}-thumbnail`}
+            className={`bb-commerce-record-thumbnail${product ? ` is-product` : ``}${`quote` in record ? ` is-portrait` : ``}`}
+          >
+            {product ? <ProductArtwork context={`cart`} product={product} /> : image ? <Image
+              fill
+              alt={imageAlt}
+              src={image}
+              sizes={`62px`}
+              id={`${rowId}-image`}
+              className={`bb-commerce-record-image`}
+              unoptimized={/^https?:\/\//.test(image)}
+            /> : null}
+          </div>}
+          <div id={`${rowId}-copy`} className={`bb-commerce-record-copy`}>
+            <strong id={`${rowId}-name`} className={`bb-commerce-record-name`}>{record.name}</strong>
+            {slug && <span id={`${rowId}-slug`} className={`bb-commerce-record-meta`}>{slug}</span>}
+            <span id={`${rowId}-description`} className={`bb-commerce-record-description`}>{description}</span>
+          </div>
+        </div>
+      </td>
       <td id={`${rowId}-detail`} className={`bb-commerce-record-detail`}>{details}</td>
       <td id={`${rowId}-status-cell`} className={`bb-commerce-record-status`}><StatusCell id={rowId} status={record.status} /></td>
       <td id={`${rowId}-updated`} className={`bb-commerce-record-date`}>{formatCommerceDate(record.updated_at)}</td>

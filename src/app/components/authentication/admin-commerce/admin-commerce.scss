@@ -24,6 +24,12 @@
 .bb-commerce-table tbody tr:hover { background: hsl(var(--primary) / .025); }
 .bb-commerce-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .bb-commerce-empty { margin: 0; border: 1px dashed hsl(var(--primary) / .2); border-radius: 10px; padding: 24px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 12px; line-height: 1.7; }
+:root[data-theme='dark'] .bb-owner-dashboard {
+  .bb-commerce-summary-card { border-top-color: hsl(var(--secondary) / .16); }
+  .bb-commerce-table-wrap { border-color: hsl(var(--secondary) / .16); }
+  .bb-commerce-table th { border-bottom-color: hsl(var(--secondary) / .22); background: hsl(var(--secondary) / .065); }
+  .bb-commerce-table tbody tr:hover { background: hsl(var(--secondary) / .035); }
+}
 @media (min-width: 651px) { .bb-page:has(> .bb-admin-commerce) { overflow: clip; } }
 @media (max-width: 800px) { .bb-commerce-summary { gap: 10px; } .bb-commerce-summary-card { padding: 15px; } .bb-commerce-summary-value { font-size: 26px; } }
 @media (max-width: 480px) { .bb-commerce-summary { grid-template-columns: minmax(0, 1fr); } .bb-commerce-summary-card { grid-template-columns: 1fr auto; align-items: center; } .bb-commerce-table th, .bb-commerce-table td { padding: 13px; } .bb-commerce-search-input, .bb-commerce-filter { font-size: 16px; } .bb-commerce-filter-actions { width: 100%; justify-content: space-between; } .bb-commerce-results { width: 100%; margin: 0; } }

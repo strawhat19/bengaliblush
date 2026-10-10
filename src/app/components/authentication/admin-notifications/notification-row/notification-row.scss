@@ -1,5 +1,8 @@
 .bb-admin-notification-number { font-family: var(--app-font-mono); font-size: 10px; }
 .bb-admin-notification-main { min-width: 220px; max-width: 340px; }
+.bb-admin-notification-identity { display: flex; align-items: flex-start; gap: 13px; }
+.bb-admin-notification-copy { min-width: 0; flex: 1; }
+.bb-admin-notification-thumbnail { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border: 1px solid hsl(var(--secondary) / .35); border-radius: 50%; background: hsl(var(--secondary) / .18); color: var(--bb-panel-text, hsl(var(--foreground))); }
 .bb-admin-notification-title, .bb-admin-notification-slug { display: block; overflow-wrap: anywhere; }
 .bb-admin-notification-title { margin-bottom: 6px; font-size: 11px; font-weight: 600; }
 .bb-admin-notification-slug { margin: 5px 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }

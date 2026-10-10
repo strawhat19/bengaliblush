@@ -1,6 +1,16 @@
 .bb-commerce-record-name, .bb-commerce-record-meta, .bb-commerce-record-description { display: block; overflow-wrap: anywhere; }
 .bb-commerce-record-name { margin-bottom: 6px; font-size: 11px; font-weight: 600; }
 .bb-commerce-record-main { min-width: 210px; max-width: 350px; }
+.bb-commerce-record-identity { display: flex; align-items: flex-start; gap: 12px; }
+.bb-commerce-record-copy { min-width: 0; flex: 1; }
+.bb-commerce-record-thumbnail { position: relative; display: grid; width: 62px; height: 74px; flex: none; overflow: hidden; place-items: center; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 8px; background: hsl(var(--muted)); }
+.bb-commerce-record-image { object-fit: cover; }
+.bb-commerce-record-thumbnail.is-portrait { border-radius: 28px 28px 8px 8px; }
+.bb-commerce-record-thumbnail.is-portrait .bb-commerce-record-image { object-position: center 30%; }
+.bb-commerce-record-thumbnail .bb-product-art { width: 43px; height: 54px; filter: drop-shadow(4px 5px 0 hsl(var(--primary) / .1)); }
+.bb-commerce-record-thumbnail .bb-product-bottle { width: 27px; height: 52px; border-radius: 4px 4px 7px 7px; box-shadow: 4px 6px 0 hsl(var(--primary) / .1); }
+.bb-commerce-record-thumbnail .bb-product-bottle::before { top: -7px; height: 8px; }
+.bb-commerce-record-thumbnail .bb-product-bottle::after { height: 9px; font-size: 5.4px; line-height: 9px; }
 .bb-commerce-record-meta { margin: 5px 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
 .bb-commerce-record-description { display: -webkit-box; max-width: 350px; overflow: hidden; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); line-height: 1.6; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .bb-commerce-record-number { font-family: var(--app-font-mono); font-size: 10px; }

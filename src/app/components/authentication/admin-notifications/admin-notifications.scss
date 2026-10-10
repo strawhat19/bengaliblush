@@ -6,6 +6,7 @@
 .bb-admin-notifications-filter-actions .bb-owner-records-results { width: auto; margin: 0; white-space: nowrap; }
 .bb-admin-notifications-add { min-height: 38px; padding: 10px 14px; font-size: 10px; }
 .bb-admin-notifications-add:disabled { cursor: default; opacity: .5; transform: none; }
+:root[data-theme='dark'] .bb-admin-notifications-summary-card { border-top-color: hsl(var(--secondary) / .16); }
 @media (min-width: 651px) { .bb-page:has(> .bb-admin-notifications) { overflow: clip; } }
 @media (max-width: 800px) { .bb-admin-notifications-summary { gap: 10px; } .bb-admin-notifications-summary-card { padding: 15px; } .bb-admin-notifications-summary-value { font-size: 26px; } }
 @media (max-width: 480px) { .bb-admin-notifications-summary { grid-template-columns: minmax(0, 1fr); } .bb-admin-notifications-summary-card { grid-template-columns: 1fr auto; align-items: center; } .bb-admin-notifications-filter-actions { width: 100%; justify-content: space-between; } }

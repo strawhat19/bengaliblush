@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/shared/authContext/useAuth';
 import { siteRoutes, type SiteRoute } from '@/shared/navigation/routes';
 import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
-import { Bell, Quote, Users, Package, UserRound, CreditCard, ReceiptText, CalendarDays, ShoppingBag, MessageCircle, WandSparkles, LayoutDashboard } from 'lucide-react';
+import { Bell, Quote, Users, Images, Package, UserRound, CreditCard, ReceiptText, CalendarDays, ShoppingBag, MessageCircle, WandSparkles, LayoutDashboard } from 'lucide-react';
 
 type AccountNavigationLink = {
   route: SiteRoute;
@@ -14,6 +14,7 @@ type AccountNavigationLink = {
 const adminLinks: readonly AccountNavigationLink[] = [
   { route: siteRoutes.dashboard, Icon: LayoutDashboard },
   { route: siteRoutes.adminUsers, Icon: Users },
+  { route: siteRoutes.adminGallery, Icon: Images },
   { route: siteRoutes.adminNotifications, Icon: Bell },
   { route: siteRoutes.adminServices, Icon: WandSparkles },
   {

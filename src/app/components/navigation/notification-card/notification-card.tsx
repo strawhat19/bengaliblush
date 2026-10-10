@@ -1,7 +1,8 @@
 'use client';
 
-import { Heart, ArrowUpRight, Construction } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import Link from '@/app/components/navigation/page-link/page-link';
+import { notificationIcons } from '@/shared/notifications/notification-icons';
 import { getNotificationHref, getNotificationCopy } from '@/shared/notifications/notification-utils';
 import type { Notification } from '@/shared/notifications/notification-types';
 import './notification-card.scss';
@@ -12,8 +13,6 @@ type NotificationCardProps = {
   notification: Notification;
   onRead?: (id: string) => Promise<void>;
 };
-
-const notificationIcons = { announcement: Heart, development: Construction };
 
 export default function NotificationCard({
   onRead,
