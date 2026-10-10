@@ -1,5 +1,5 @@
 import { Timestamp, type DocumentData, type DocumentSnapshot } from 'firebase/firestore';
-import { orderStatuses, type OrderItem, type OrderRecord, type ReviewInput, type ReviewRecord, type ProductInput, type ProductRecord, type ServiceInput, type ServiceRecord, type PaymentMethodInput, type PaymentMethodRecord } from '@/shared/models/commerce/Commerce';
+import { orderStatuses, type OrderItem, type OrderRecord, type ReviewInput, type ReviewRecord, type ProductInput, type ProductRecord, type ServiceInput, type ServiceRecord, type CatalogStatus, type PaymentMethodInput, type PaymentMethodRecord } from '@/shared/models/commerce/Commerce';
 
 export const commerceText = (value: unknown, label: string, maximum: number, optional = false) => {
   const text = typeof value === `string` ? value.trim() : ``;
@@ -29,7 +29,7 @@ const slugText = (value: unknown) => {
   return slug;
 };
 
-const catalogStatus = (value: unknown) => {
+const catalogStatus = (value: unknown): CatalogStatus => {
   if (value !== `active` && value !== `archived`) throw new Error(`Choose A Valid Catalog Status`);
   return value;
 };
