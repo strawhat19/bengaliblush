@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { getPageName } from '@/shared/navigation/page-name';
 import { loaderOnPageTransitions } from '@/shared/config/storefront';
 import { landingRevealReadyEvent } from '@/app/components/effects/motion-events';
-import { pageTransitionStartEvent, sessionTransitionStartEvent, type SessionTransition, type PageTransitionRequest, type SessionTransitionRequest } from '@/shared/navigation/page-transition';
+import { shouldSkipPageTransition, pageTransitionStartEvent, sessionTransitionStartEvent, type SessionTransition, type PageTransitionRequest, type SessionTransitionRequest } from '@/shared/navigation/page-transition';
 
 const loaderStatuses = [
   { at: 0, label: `Preparing Your Glow` },
@@ -274,6 +274,7 @@ export const useBlushLoader = () => {
     const handleTransitionStart = (event: Event) => {
       const request = (event as CustomEvent<PageTransitionRequest>).detail;
       if (!request?.pathname || !request?.navigate) return;
+      if (!waitingForSession && shouldSkipPageTransition(committedPathname, request.pathname)) return;
       const routeReady = request.pathname === committedPathname;
       if (routeReady && !waitingForRoute && !pendingNavigation && !pendingHistory) return;
       event.preventDefault();
@@ -345,6 +346,7 @@ export const useBlushLoader = () => {
     const handlePopState = (event: PopStateEvent) => {
       if (event === replayedPopState || !event.state) return;
       const path = window.location.pathname;
+      if (!waitingForSession && shouldSkipPageTransition(committedPathname, path)) return;
       if (path === committedPathname && !pendingNavigation && !pendingHistory && !waitingForRoute) return;
       event.stopImmediatePropagation();
       pendingHistory = { href: window.location.href, state: event.state };
@@ -353,11 +355,13 @@ export const useBlushLoader = () => {
 
     routeCommittedRef.current = (path) => {
       if (path === committedPathname) return;
+      const skipTransition = !waitingForSession && shouldSkipPageTransition(committedPathname, path);
       committedPathname = path;
       if (!loaderOnPageTransitions) return;
+      if (skipTransition && (!loading || exitStartedAt !== null)) return;
       if (!loading || exitStartedAt !== null) begin(path, true, true);
       else {
-        const destinationReady = path === destinationPathname || getPageName(path) === getPageName(destinationPathname);
+        const destinationReady = skipTransition || path === destinationPathname || getPageName(path) === getPageName(destinationPathname);
         if (transitionLoad && !destinationReady) {
           waitingForRoute = true;
           completionStartedAt = null;

@@ -1,8 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { siteContact } from '@/shared/config/site';
-import { siteRoutes } from '@/shared/navigation/routes';
+import { siteRoutes, isProfileOrAdminPage } from '@/shared/navigation/routes';
 import { getProductHref } from '@/shared/shop/shop-utils';
 import { CatalogProvider, useCatalog } from '@/shared/shop/catalog-context';
 import ScrollToTop from '@/app/components/effects/scroll-to-top';
@@ -768,6 +768,8 @@ function BookingModal({ service, isOpen, onClose, onSuccess }: { service?: Servi
 
 function BengaliBlushContent({ children, onboarding = false }: { children?: ReactNode; onboarding?: boolean }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const accountShell = isProfileOrAdminPage(pathname);
   const cart = useSyncExternalStore(subscribeStoredCart, getStoredCartSnapshot, getStoredCartServerSnapshot);
   const storageNotice = useSyncExternalStore(subscribeStoredCart, getStoredCartNotice, getStoredCartServerNotice);
   const [bagPhase, setBagPhase] = useState<`closed` | `opening` | `open` | `closing`>(`closed`);
@@ -877,9 +879,15 @@ function BengaliBlushContent({ children, onboarding = false }: { children?: Reac
   return (
     <BookingContext.Provider value={openBooking}>
       <ShopProvider cart={cart} onAdd={addProduct} onOpenBag={openBag}>
-        <main id={`bb-storefront-page`} className={`bb-page${children ? ` bb-inner-page` : ``}${onboarding ? ` bb-onboarding-shell` : ``}`}>
+        <main id={`bb-storefront-page`} className={`bb-page${children ? ` bb-inner-page` : ``}${accountShell ? ` bb-account-shell` : ``}${onboarding ? ` bb-onboarding-shell` : ``}`}>
           <LandingMotion />
-          <Header sticky width="boxed" bagCount={bagCount} onBag={openBag} onBook={() => openBooking()} />
+          <Header
+            sticky
+            onBag={openBag}
+            bagCount={bagCount}
+            onBook={() => openBooking()}
+            width={accountShell ? `full` : `boxed`}
+          />
           {children ?? (
             <>
               <Hero onBook={() => openBooking()} />

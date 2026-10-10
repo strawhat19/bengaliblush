@@ -1,4 +1,4 @@
-import { Roles } from '../../types/types';
+import { Roles, hasAdminAccess } from '../../types/types';
 
 export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `MapPin` | `Package` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard`;
 
@@ -139,35 +139,36 @@ export const siteRoutes = {
   adminUsers: {
     icon: `Users`,
     label: `Users`,
-    href: `/admin/users`,
+    href: `/users`,
     minimumRole: Roles.Admin,
     title: `Users | Bengali Blush`,
-    aliases: [`/dashboard/users`],
+    aliases: [`/admin/users`, `/dashboard/users`],
     description: `Review studio accounts and access`,
   },
   adminRequests: {
     label: `Requests`,
     icon: `MessageCircle`,
     minimumRole: Roles.Admin,
-    href: `/admin/requests`,
+    href: `/requests`,
     title: `Requests | Bengali Blush`,
-    aliases: [`/dashboard/contacts`, `/dashboard/requests`],
+    aliases: [`/admin/requests`, `/dashboard/contacts`, `/dashboard/requests`],
     description: `Review contact messages saved by visitors`,
   },
   adminAppointments: {
     icon: `CalendarDays`,
     label: `Appointments`,
     minimumRole: Roles.Admin,
-    href: `/admin/appointments`,
+    href: `/appointments`,
     title: `Appointments | Bengali Blush`,
-    aliases: [`/dashboard/appointments`],
+    aliases: [`/admin/appointments`, `/dashboard/appointments`],
     description: `Review appointment requests saved by visitors`,
   },
   adminProducts: {
     icon: `Package`,
     label: `Products`,
-    href: `/admin/products`,
+    href: `/products`,
     minimumRole: Roles.Admin,
+    aliases: [`/admin/products`],
     title: `Products | Bengali Blush`,
     description: `Manage the studio product catalog`,
   },
@@ -178,6 +179,14 @@ export const siteRoutes = {
     minimumRole: Roles.Admin,
     title: `Shop Management | Bengali Blush`,
     description: `Review the shop catalog and unpaid orders`,
+  },
+  adminEvents: {
+    href: `/events`,
+    label: `Events`,
+    icon: `CalendarDays`,
+    minimumRole: Roles.Admin,
+    title: `Events | Bengali Blush`,
+    description: `Studio events and special occasions`,
   },
   adminServices: {
     label: `Services`,
@@ -190,8 +199,9 @@ export const siteRoutes = {
   adminOrders: {
     label: `Orders`,
     icon: `ReceiptText`,
-    href: `/admin/orders`,
+    href: `/orders`,
     minimumRole: Roles.Admin,
+    aliases: [`/admin/orders`],
     title: `Orders | Bengali Blush`,
     description: `Review unpaid shop order requests`,
   },
@@ -199,8 +209,9 @@ export const siteRoutes = {
     icon: `CreditCard`,
     label: `Payments`,
     minimumRole: Roles.Admin,
-    href: `/admin/payment-methods`,
+    href: `/payment-methods`,
     title: `Payments | Bengali Blush`,
+    aliases: [`/admin/payment-methods`],
     description: `Manage payment method configuration`,
   },
   adminReviews: {
@@ -220,6 +231,15 @@ export const siteRoutes = {
     description: `Manage draft and published studio notices`,
   },
 } satisfies Record<string, SiteRoute>;
+
+const profileAndAdminPaths = Object.values<SiteRoute>(siteRoutes)
+  .filter(({ href, minimumRole }) => href === siteRoutes.profile.href || hasAdminAccess(minimumRole))
+  .flatMap(({ href, aliases }) => [href, ...(aliases ?? [])]);
+
+export const isProfileOrAdminPage = (pathname: string) => {
+  const path = pathname.replace(/\/+$/, ``) || `/`;
+  return profileAndAdminPaths.some((route) => path === route || path.startsWith(`${route}/`));
+};
 
 export const navigationRoutes: readonly SiteRoute[] = [
   siteRoutes.about,

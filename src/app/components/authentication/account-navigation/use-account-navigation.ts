@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/shared/authContext/useAuth';
 import { siteRoutes, type SiteRoute } from '@/shared/navigation/routes';
+import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
 import { Bell, Quote, Users, Package, UserRound, CreditCard, ReceiptText, CalendarDays, ShoppingBag, MessageCircle, WandSparkles, LayoutDashboard } from 'lucide-react';
 
 type AccountNavigationLink = {
@@ -24,6 +24,7 @@ const adminLinks: readonly AccountNavigationLink[] = [
       { route: siteRoutes.adminProducts, Icon: Package },
     ],
   },
+  { route: siteRoutes.adminEvents, Icon: CalendarDays },
   { route: siteRoutes.adminReviews, Icon: Quote },
   { route: siteRoutes.adminRequests, Icon: MessageCircle },
   { route: siteRoutes.adminPaymentMethods, Icon: CreditCard },
@@ -34,7 +35,6 @@ const accountLinks: readonly AccountNavigationLink[] = [{ route: siteRoutes.prof
 export const useAccountNavigation = () => {
   const pathname = usePathname();
   const { isAdmin } = useAuth();
-  const [expandedRoutes, setExpandedRoutes] = useState<readonly string[]>([]);
-  const toggleSubmenu = (href: string) => setExpandedRoutes((current) => current.includes(href) ? current.filter((route) => route !== href) : [...current, href]);
-  return { isAdmin, pathname, adminLinks, accountLinks, toggleSubmenu, expandedRoutes };
+  const navigationState = useAccountNavigationState();
+  return { isAdmin, pathname, adminLinks, accountLinks, ...navigationState };
 };

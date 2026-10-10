@@ -226,7 +226,7 @@ export default function Header({
               href={siteRoutes.signin.href}
               id={`bb-mobile-menu-signin`}
               data-testid={`mobile-link-signin`}
-              className={`bb-button bb-button-outline bb-mobile-menu-auth-link`}
+              className={`bb-button bb-button-primary bb-mobile-menu-auth-link`}
             >
               <LogIn size={16} strokeWidth={1.9} aria-hidden={`true`} />{siteRoutes.signin.label}
             </Link>

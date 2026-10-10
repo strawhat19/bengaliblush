@@ -1,9 +1,15 @@
-.bb-account-navigation { display: grid; min-width: 0; align-content: start; gap: 26px; }
+.bb-account-navigation { display: grid; min-width: 0; align-content: start; gap: 18px; }
+.bb-account-navigation-toolbar { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 10px; }
+.bb-account-navigation-label { color: hsl(var(--primary) / .65); font-family: var(--app-font-mono); font-size: 11px; }
+.bb-account-navigation-collapse-toggle { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border: 1px solid hsl(var(--primary) / .12); border-radius: 8px; padding: 0; background: transparent; color: hsl(var(--primary)); cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
+.bb-account-navigation-collapse-toggle:hover { border-color: hsl(var(--primary) / .24); background: hsl(var(--primary) / .06); }
+.bb-account-navigation-links { display: grid; min-width: 0; gap: 26px; }
 .bb-account-navigation-group { display: grid; min-width: 0; gap: 8px; }
 .bb-account-navigation-title { grid-column: 1 / -1; margin: 0 0 6px; color: hsl(var(--primary)); font-family: var(--app-font-mono); font-size: 10px; font-weight: 500; letter-spacing: .14em; }
 .bb-account-navigation-item { display: grid; min-width: 0; align-self: start; }
 .bb-account-navigation-heading { display: flex; min-width: 0; }
-.bb-account-navigation-link { display: flex; min-width: 0; align-items: center; gap: 10px; border: 1px solid hsl(var(--primary) / .12); border-radius: 8px; padding: 14px; color: hsl(var(--primary)); font-size: 12px; transition: background-color .2s ease, border-color .2s ease; }
+.bb-account-navigation-link { display: flex; min-width: 0; align-items: center; gap: 10px; border: 1px solid hsl(var(--primary) / .12); border-radius: 8px; padding: 12px 14px; color: hsl(var(--primary)); font-size: 12px; transition: background-color .2s ease, border-color .2s ease; }
+.bb-account-navigation-link-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bb-account-navigation-heading > .bb-account-navigation-link { flex: 1; }
 .bb-account-navigation-link > svg { flex: none; }
 .bb-account-navigation-link:hover, .bb-account-navigation-link[aria-current='page'] { border-color: hsl(var(--primary) / .24); background: hsl(var(--primary) / .06); }
@@ -19,7 +25,20 @@
 .bb-account-navigation-submenu-inner { min-height: 0; overflow: hidden; }
 .bb-account-navigation-submenu-links { display: grid; gap: 6px; margin: 8px 0 0 10px; border-left: 1px solid hsl(var(--primary) / .15); padding: 4px 4px 4px 10px; }
 .bb-account-navigation-child-link { padding: 11px 10px; font-size: 11px; }
-.bb-account-navigation-toggle:focus-visible, .bb-account-navigation-link:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
-@media (min-width: 651px) { .bb-account-navigation { top: 112px; position: sticky; align-self: start; max-height: calc(100dvh - 136px); overflow-y: auto; scrollbar-width: thin; padding: 4px; margin: -4px; } }
-@media (max-width: 650px) { .bb-account-navigation-group { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (prefers-reduced-motion: reduce) { .bb-account-navigation-link, .bb-account-navigation-heading.has-submenu, .bb-account-navigation-toggle, .bb-account-navigation-toggle > svg, .bb-account-navigation-submenu { transition: none; } }
+.bb-account-navigation-toggle:focus-visible, .bb-account-navigation-link:focus-visible, .bb-account-navigation-collapse-toggle:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+@media (min-width: 651px) {
+  .bb-account-navigation { top: 112px; position: sticky; align-self: start; max-height: calc(100dvh - 136px); overflow-y: auto; scrollbar-width: thin; padding: 4px; margin: -4px; }
+  .bb-account-navigation.is-collapsed {
+    .bb-account-navigation-toolbar { justify-content: center; }
+    .bb-account-navigation-label, .bb-account-navigation-link-label { display: none; }
+    .bb-account-navigation-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .bb-account-navigation-link { min-height: 44px; justify-content: center; padding: 12px 0; }
+    .bb-account-navigation-heading.has-submenu > .bb-account-navigation-link { border-radius: 7px; padding-right: 0; }
+    .bb-account-navigation-submenu-links { margin: 6px 0 0; border-left: 0; padding: 0; }
+  }
+}
+@media (max-width: 650px) {
+  .bb-account-navigation-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bb-account-navigation.is-collapsed .bb-account-navigation-links { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .bb-account-navigation-link, .bb-account-navigation-heading.has-submenu, .bb-account-navigation-toggle, .bb-account-navigation-toggle > svg, .bb-account-navigation-submenu, .bb-account-navigation-collapse-toggle { transition: none; } }

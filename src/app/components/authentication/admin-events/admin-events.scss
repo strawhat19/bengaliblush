@@ -1,0 +1,5 @@
+.bb-admin-events-empty { display: flex; align-items: center; flex-direction: column; border: 1px solid hsl(var(--primary) / .15); border-radius: 12px; padding: clamp(36px, 6vw, 64px) 24px; text-align: center; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-admin-events-empty-icon-wrap { display: grid; width: 64px; height: 64px; place-items: center; margin-bottom: 20px; border-radius: 50%; color: var(--bb-highlight, hsl(var(--primary))); background: hsl(var(--primary) / .07); }
+.bb-admin-events-empty-title { margin: 0 0 12px; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: clamp(24px, 3vw, 32px); font-weight: 500; line-height: 1.25; }
+.bb-admin-events-empty-description { margin: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 12px; line-height: 1.8; }
+@media (min-width: 651px) { .bb-page:has(> #bb-admin-events) { overflow: clip; } }

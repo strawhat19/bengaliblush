@@ -100,10 +100,10 @@ a { color: inherit; text-decoration: none; }
 .bb-menu-icon > span:nth-child(1) { top: 0; }
 .bb-menu-icon > span:nth-child(2) { top: 5.5px; }
 .bb-menu-icon > span:nth-child(3) { top: 11px; }
-.bb-header.is-menu-open .bb-menu-icon > span:nth-child(1), .bb-header.is-menu-open .bb-menu-icon > span:nth-child(3) { top: 5.5px; }
-.bb-header.is-menu-open .bb-menu-icon > span:nth-child(1) { transform: rotate(45deg); }
-.bb-header.is-menu-open .bb-menu-icon > span:nth-child(2) { opacity: 0; transform: scaleX(.25); }
-.bb-header.is-menu-open .bb-menu-icon > span:nth-child(3) { transform: rotate(-45deg); }
+.bb-menu-button[aria-expanded='true'] .bb-menu-icon > span:nth-child(1), .bb-menu-button[aria-expanded='true'] .bb-menu-icon > span:nth-child(3) { top: 5.5px; }
+.bb-menu-button[aria-expanded='true'] .bb-menu-icon > span:nth-child(1) { transform: rotate(45deg); }
+.bb-menu-button[aria-expanded='true'] .bb-menu-icon > span:nth-child(2) { opacity: 0; transform: scaleX(.25); }
+.bb-menu-button[aria-expanded='true'] .bb-menu-icon > span:nth-child(3) { transform: rotate(-45deg); }
 .bb-bag-control { position: relative; display: inline-flex; }
 .bb-bag-button { position: relative; display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border: 1px solid hsl(var(--card) / .45); border-radius: 50%; background: transparent; color: hsl(var(--card)); transition: border-color .2s ease, background-color .2s ease, color .2s ease; }
 .bb-bag-button:not(.is-filled):hover { border-color: hsl(var(--secondary)); }

@@ -10,6 +10,7 @@ import { themeBootstrapScript } from '@/shared/themeContext/theme';
 import PwaRegistration from '@/app/components/pwa/pwa-registration';
 import { Allura, DM_Mono, DM_Sans, Fraunces } from 'next/font/google';
 import { NotificationsProvider } from '@/shared/notifications/notifications-context';
+import { AccountNavigationProvider } from '@/shared/accountNavigationContext/AccountNavigationContext';
 
 const sans = DM_Sans({
   subsets: ['latin'],
@@ -83,10 +84,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <AuthProvider>
           <ThemeProvider>
             <NotificationsProvider>
-              <BlushLoader />
-              {children}
-              <PwaRegistration />
-              <Analytics />
+              <AccountNavigationProvider>
+                <BlushLoader />
+                {children}
+                <PwaRegistration />
+                <Analytics />
+              </AccountNavigationProvider>
             </NotificationsProvider>
           </ThemeProvider>
         </AuthProvider>

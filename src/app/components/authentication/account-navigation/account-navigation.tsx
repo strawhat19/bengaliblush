@@ -1,27 +1,48 @@
 'use client';
 
 import './account-navigation.scss';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 import { useAccountNavigation } from './use-account-navigation';
 import Link from '@/app/components/navigation/page-link/page-link';
 
 const AccountNavigation = () => {
-  const { isAdmin, pathname, adminLinks, accountLinks, toggleSubmenu, expandedRoutes } = useAccountNavigation();
+  const { isAdmin, pathname, collapsed, adminLinks, accountLinks, toggleSubmenu, expandedRoutes, toggleCollapsed } = useAccountNavigation();
+  const SidebarIcon = collapsed ? PanelLeftOpen : PanelLeftClose;
   const groups = [
     { id: `account`, title: `ACCOUNT`, links: accountLinks },
     ...(isAdmin ? [{ id: `admin`, title: `ADMIN`, links: adminLinks }] : []),
   ];
 
   return (
-    <nav id={`bb-account-navigation`} className={`bb-account-navigation`} aria-label={`Account Navigation`}>
-      {groups.map(({ id, title, links }) => (
+    <nav
+      id={`bb-account-navigation`}
+      aria-label={`Account Navigation`}
+      className={`bb-account-navigation${collapsed ? ` is-collapsed` : ``}`}
+    >
+      <div id={`bb-account-navigation-toolbar`} className={`bb-account-navigation-toolbar`}>
+        <span id={`bb-account-navigation-label`} className={`bb-account-navigation-label`}>Navigation</span>
+        <button
+          type={`button`}
+          onClick={toggleCollapsed}
+          aria-expanded={!collapsed}
+          id={`bb-account-navigation-collapse-toggle`}
+          aria-controls={`bb-account-navigation-links`}
+          className={`bb-account-navigation-collapse-toggle`}
+          title={`${collapsed ? `Expand` : `Collapse`} Sidebar`}
+          aria-label={`${collapsed ? `Expand` : `Collapse`} Sidebar`}
+        >
+          <SidebarIcon size={18} aria-hidden={`true`} />
+        </button>
+      </div>
+      <div id={`bb-account-navigation-links`} className={`bb-account-navigation-links`}>
+        {groups.map(({ id, title, links }) => (
         <div key={id} id={`bb-account-navigation-${id}`} className={`bb-account-navigation-group`}>
           <h2 id={`bb-account-navigation-${id}-title`} className={`bb-account-navigation-title`}>{title}</h2>
           {links.map(({ route, Icon, children }, index) => {
             const itemId = `bb-account-navigation-${id}-item-${index}`;
             const linkId = `bb-account-navigation-${id}-link-${index}`;
             const hasChildren = Boolean(children?.length);
-            const expanded = expandedRoutes.includes(route.href);
+            const expanded = collapsed || expandedRoutes.includes(route.href);
             const active = pathname === route.href || Boolean(children?.some(({ route }) => pathname === route.href));
             return (
               <div key={route.href} id={itemId} className={`bb-account-navigation-item`}>
@@ -29,12 +50,15 @@ const AccountNavigation = () => {
                   <Link
                     href={route.href}
                     id={linkId}
+                    aria-label={route.label}
+                    title={collapsed ? route.label : undefined}
                     aria-current={pathname === route.href ? `page` : undefined}
                     className={`bb-account-navigation-link`}
                   >
-                    <Icon size={17} aria-hidden={`true`} />{route.label}
+                    <Icon size={17} aria-hidden={`true`} />
+                    <span id={`${linkId}-label`} className={`bb-account-navigation-link-label`}>{route.label}</span>
                   </Link>
-                  {hasChildren && (
+                  {hasChildren && !collapsed && (
                     <button
                       type={`button`}
                       aria-expanded={expanded}
@@ -63,11 +87,14 @@ const AccountNavigation = () => {
                           <Link
                             key={childRoute.href}
                             href={childRoute.href}
+                            aria-label={childRoute.label}
+                            title={collapsed ? childRoute.label : undefined}
                             id={`${itemId}-submenu-link-${childIndex}`}
                             aria-current={pathname === childRoute.href ? `page` : undefined}
                             className={`bb-account-navigation-link bb-account-navigation-child-link`}
                           >
-                            <ChildIcon size={15} aria-hidden={`true`} />{childRoute.label}
+                            <ChildIcon size={15} aria-hidden={`true`} />
+                            <span id={`${itemId}-submenu-link-${childIndex}-label`} className={`bb-account-navigation-link-label`}>{childRoute.label}</span>
                           </Link>
                         ))}
                       </div>
@@ -78,7 +105,8 @@ const AccountNavigation = () => {
             );
           })}
         </div>
-      ))}
+        ))}
+      </div>
     </nav>
   );
 };
