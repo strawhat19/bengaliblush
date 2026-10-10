@@ -1,13 +1,12 @@
 'use client';
 
 import './account-navigation.scss';
-import { ChevronDown, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
+import { ChevronDown, ChevronLeft } from 'lucide-react';
 import { useAccountNavigation } from './use-account-navigation';
 import Link from '@/app/components/navigation/page-link/page-link';
 
 const AccountNavigation = () => {
   const { isAdmin, pathname, collapsed, adminLinks, accountLinks, toggleSubmenu, expandedRoutes, toggleCollapsed } = useAccountNavigation();
-  const SidebarIcon = collapsed ? PanelLeftOpen : PanelLeftClose;
   const groups = [
     { id: `account`, title: `ACCOUNT`, links: accountLinks },
     ...(isAdmin ? [{ id: `admin`, title: `ADMIN`, links: adminLinks }] : []),
@@ -21,18 +20,6 @@ const AccountNavigation = () => {
     >
       <div id={`bb-account-navigation-toolbar`} className={`bb-account-navigation-toolbar`}>
         <span id={`bb-account-navigation-label`} className={`bb-account-navigation-label`}>Navigation</span>
-        <button
-          type={`button`}
-          onClick={toggleCollapsed}
-          aria-expanded={!collapsed}
-          id={`bb-account-navigation-collapse-toggle`}
-          aria-controls={`bb-account-navigation-links`}
-          className={`bb-account-navigation-collapse-toggle`}
-          title={`${collapsed ? `Expand` : `Collapse`} Sidebar`}
-          aria-label={`${collapsed ? `Expand` : `Collapse`} Sidebar`}
-        >
-          <SidebarIcon size={18} aria-hidden={`true`} />
-        </button>
       </div>
       <div id={`bb-account-navigation-links`} className={`bb-account-navigation-links`}>
         {groups.map(({ id, title, links }) => (
@@ -106,6 +93,20 @@ const AccountNavigation = () => {
           })}
         </div>
         ))}
+      </div>
+      <div id={`bb-account-navigation-footer`} className={`bb-account-navigation-footer`}>
+        <button
+          type={`button`}
+          onClick={toggleCollapsed}
+          aria-expanded={!collapsed}
+          id={`bb-account-navigation-collapse-toggle`}
+          aria-controls={`bb-account-navigation-links`}
+          className={`bb-account-navigation-collapse-toggle`}
+          title={`${collapsed ? `Expand` : `Collapse`} Sidebar`}
+          aria-label={`${collapsed ? `Expand` : `Collapse`} Sidebar`}
+        >
+          <ChevronLeft size={19} strokeWidth={1.8} aria-hidden={`true`} />
+        </button>
       </div>
     </nav>
   );

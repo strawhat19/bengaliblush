@@ -19,6 +19,7 @@ type HeaderProps = {
   onBook: () => void;
   sticky?: boolean;
   width?: HeaderWidth;
+  pinkheader?: boolean;
   cartButtonFilled?: boolean;
 };
 
@@ -59,6 +60,7 @@ export default function Header({
   bagCount,
   sticky = true,
   width = 'boxed',
+  pinkheader = false,
   cartButtonFilled = false,
 }: HeaderProps) {
   const pathname = usePathname();
@@ -130,6 +132,7 @@ export default function Header({
   const headerClassName = [
     `bb-header`,
     sticky ? `is-sticky` : ``,
+    pinkheader ? `is-pinkheader` : ``,
     mobileOpen || profileOpen || notificationsOpen ? `is-menu-open` : ``,
     sticky && scrolled ? `is-scrolled` : ``,
   ].filter(Boolean).join(` `);

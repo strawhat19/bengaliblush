@@ -1,6 +1,7 @@
 .bb-account-shell {
   overflow: clip;
-  --bb-account-sidebar-width: 224px;
+  --bb-account-header-height: 89px;
+  --bb-account-sidebar-width: 318px;
   --bb-dashboard-gutter: clamp(18px, 2.4vw, 40px);
 
   .bb-header-inner.is-full-width {
@@ -31,9 +32,88 @@
     padding-inline: var(--bb-dashboard-gutter);
     grid-template-columns: var(--bb-account-sidebar-width) minmax(0, 1fr);
     transition: grid-template-columns .3s cubic-bezier(.22, 1, .36, 1);
+  }
+}
 
-    &:has(> .bb-account-navigation.is-collapsed) {
-      --bb-account-sidebar-width: 64px;
+:root .bb-account-shell.bb-inner-page .bb-header.is-pinkheader {
+  color: var(--bb-highlight, hsl(var(--primary)));
+  border-color: var(--bb-panel-border, hsl(var(--border)));
+
+  &::before {
+    background: hsl(var(--baby-pink));
+  }
+
+  &.is-menu-open::before,
+  &.is-sticky.is-scrolled::before {
+    background: hsl(var(--baby-pink) / .84);
+  }
+
+  .bb-nav .bb-nav-link {
+    color: inherit;
+  }
+
+  .bb-logo-mark {
+    background-image: url('/favicon.svg?v=bb-arc');
+  }
+
+  .bb-header-actions .bb-bag-button:not(.is-filled) {
+    color: var(--bb-highlight, hsl(var(--primary)));
+    border-color: var(--bb-panel-border, hsl(var(--border)));
+
+    &:is(:hover, :focus-visible, :active) {
+      color: var(--bb-brand-ink);
+      border-color: hsl(var(--secondary));
+    }
+  }
+}
+
+@media (min-width: 651px) {
+  .bb-account-shell {
+    &:has(.bb-account-navigation.is-collapsed) {
+      --bb-account-sidebar-width: 84px;
+    }
+
+    .bb-header {
+      height: var(--bb-account-header-height);
+    }
+
+    .bb-header-inner.is-full-width {
+      height: 100%;
+      padding-block: 0;
+    }
+
+    .bb-profile-page,
+    .bb-owner-dashboard {
+      padding: var(--bb-account-header-height) 0 0;
+    }
+
+    .bb-profile-layout {
+      padding-inline: 0;
+      gap: max(28px, var(--bb-dashboard-gutter));
+
+      > :not(.bb-account-navigation) {
+        grid-column: 2;
+        padding: 32px var(--bb-dashboard-gutter) clamp(32px, 4vw, 56px) 0;
+      }
+    }
+
+    .bb-account-navigation {
+      left: 0;
+      bottom: 0;
+      z-index: 20;
+      position: fixed;
+      border-radius: 0;
+      border-width: 0 1px 0 0;
+      padding: 16px 8px 0;
+      top: var(--bb-account-header-height);
+      width: var(--bb-account-sidebar-width);
+      height: calc(100dvh - var(--bb-account-header-height));
+      transition: width .3s cubic-bezier(.22, 1, .36, 1), background-color .35s ease, border-color .35s ease, color .35s ease;
+    }
+
+    &:has(.bb-account-navigation) .bb-footer {
+      margin-left: var(--bb-account-sidebar-width);
+      transition: margin-left .3s cubic-bezier(.22, 1, .36, 1), background-color .38s ease, color .38s ease;
     }
   }
 }
@@ -54,7 +134,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bb-account-shell .bb-profile-layout {
+  .bb-account-shell .bb-profile-layout,
+  .bb-account-shell .bb-account-navigation,
+  .bb-account-shell:has(.bb-account-navigation) .bb-footer {
     transition: none;
   }
 }
