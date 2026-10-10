@@ -1,5 +1,5 @@
-import { getPublishedNotifications } from '@/api/notifications';
 import { useLocalStorage } from '@/shared/config/storefront';
+import { getPublishedNotifications, subscribePublishedNotifications } from '@/api/notifications';
 import { readPreference, writePreference } from '@/shared/storage/preference-storage';
 import type { NotificationPreferences, NotificationSnapshot } from './notification-types';
 
@@ -45,6 +45,17 @@ export const getNotifications = async (): Promise<NotificationSnapshot> => {
     notice: storageNotice,
     notifications: records.map((notification) => ({ ...notification, isRead: preferences.readIds.includes(notification.id) })),
   };
+};
+
+export const subscribeNotifications = (onSnapshot: (snapshot: NotificationSnapshot) => void, onError: (error: Error) => void) => {
+  loadReadPreferences();
+  return subscribePublishedNotifications((records) => {
+    const readIds = new Set(preferences.readIds);
+    onSnapshot({
+      notice: storageNotice,
+      notifications: records.map((notification) => ({ ...notification, isRead: readIds.has(notification.id) })),
+    });
+  }, onError);
 };
 
 export const markNotificationRead = async (id: string): Promise<NotificationReadSnapshot> => saveReadIds([id]);

@@ -18,9 +18,6 @@ const AccountNavigation = () => {
       aria-label={`Account Navigation`}
       className={`bb-account-navigation${collapsed ? ` is-collapsed` : ``}`}
     >
-      <div id={`bb-account-navigation-toolbar`} className={`bb-account-navigation-toolbar`}>
-        <span id={`bb-account-navigation-label`} className={`bb-account-navigation-label`}>Navigation</span>
-      </div>
       <div id={`bb-account-navigation-links`} className={`bb-account-navigation-links`}>
         {groups.map(({ id, title, links }) => (
         <div key={id} id={`bb-account-navigation-${id}`} className={`bb-account-navigation-group`}>

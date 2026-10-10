@@ -10,7 +10,7 @@ import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 
 const ReviewsPage = () => {
-  const { reviews } = useCatalog();
+  const { reviews } = useCatalog(`reviews`);
   const portrait = reviews.records.find((review) => review.image);
 
   return (

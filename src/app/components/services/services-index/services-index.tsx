@@ -11,7 +11,7 @@ import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 
 const ServicesIndex = () => {
-  const { services } = useCatalog();
+  const { services } = useCatalog(`services`);
   const featuredService = services.records.find((service) => service.legacy_id === `signature-set`) ?? services.records?.[0];
 
   return (

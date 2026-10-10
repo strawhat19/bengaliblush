@@ -8,7 +8,7 @@ import { useShopReady } from '../order-summary/use-shop-ready';
 export const useCheckoutPage = () => {
   const cartReady = useShopReady();
   const pendingRef = useRef(false);
-  const { paymentMethods } = useCatalog();
+  const { paymentMethods } = useCatalog(`paymentMethods`);
   const { lines, clearCart, catalogError, catalogLoading, unavailableProductIds } = useShop();
   const [notes, setNotes] = useState(``);
   const [error, setError] = useState(``);

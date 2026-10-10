@@ -28,7 +28,7 @@ const AdminShopContent = () => {
             <div id={`bb-admin-shop-heading-copy`} className={`bb-owner-dashboard-heading-copy`}>
               <span id={`bb-admin-shop-eyebrow`} className={`bb-eyebrow`}>Admin · Shop</span>
               <h1 id={`bb-admin-shop-title`} className={`bb-owner-dashboard-title`}>Your Shop</h1>
-              <p id={`bb-admin-shop-description`} className={`bb-owner-dashboard-description`}>Catalog availability and order requests from your studio database.</p>
+              <p id={`bb-admin-shop-description`} className={`bb-owner-dashboard-description`}>Catalog availability and requests among the latest 50 records per collection. Open a record page to browse older entries.</p>
             </div>
             <button type={`button`} disabled={loading || refreshing} id={`bb-admin-shop-refresh`} className={`bb-button bb-button-outline bb-button-outline-dark bb-owner-dashboard-refresh`} onClick={() => { void reload(); }}>
               <RotateCcw size={15} aria-hidden={`true`} />{refreshing ? `Refreshing` : `Refresh`}
@@ -48,7 +48,7 @@ const AdminShopContent = () => {
                 <h2 id={`bb-admin-shop-payment-title`} className={`bb-admin-shop-panel-title`}><CreditCard size={18} aria-hidden={`true`} />Payments</h2>
                 <p id={`bb-admin-shop-payment-copy`}>Orders are saved as unpaid requests. Card payments stay disabled until Stripe is connected.</p>
                 <p id={`bb-admin-shop-quoted-total`}>Quoted Product Subtotal: <strong>{new Intl.NumberFormat(undefined, { style: `currency`, currency: `USD` }).format(quotedSubtotal / 100)}</strong></p>
-                <p id={`bb-admin-shop-subtotal-note`} className={`bb-admin-shop-muted`}>Across non-cancelled requests. Delivery, tax, final availability, and payment are confirmed separately.</p>
+                <p id={`bb-admin-shop-subtotal-note`} className={`bb-admin-shop-muted`}>Across recent non-cancelled requests. Delivery, tax, final availability, and payment are confirmed separately.</p>
                 <Link href={siteRoutes.adminPaymentMethods.href} id={`bb-admin-shop-manage-methods`} className={`bb-admin-shop-link`}><CreditCard size={15} aria-hidden={`true`} />Manage Payment Methods</Link>
               </div>
               <div id={`bb-admin-shop-categories`} className={`bb-admin-shop-panel`}>

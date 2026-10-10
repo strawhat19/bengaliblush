@@ -1,8 +1,9 @@
 import { useAuth } from '@/shared/authContext/useAuth';
 import { useCatalog } from '@/shared/shop/catalog-context';
 import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRecordPagination } from '@/shared/firebase/use-record-pagination';
 import type { OrderRecord, ProductInput, ServiceInput, ReviewInput, PaymentMethodInput } from '@/shared/models/commerce/Commerce';
-import { getCommerceOverview, saveProduct, saveService, saveReview, savePaymentMethod, updateOrderStatus, importStudioCatalog, type CommerceOverview } from '@/api/commerce';
+import { subscribeCommerceOverview, saveProduct, saveService, saveReview, savePaymentMethod, updateOrderStatus, importStudioCatalog, type CommerceOverview } from '@/api/commerce';
 
 export type CommerceMutation =
   | { section: `products`; input: ProductInput; id?: string }
@@ -10,11 +11,14 @@ export type CommerceMutation =
   | { section: `reviews`; input: ReviewInput; id?: string }
   | { section: `paymentMethods`; input: PaymentMethodInput; id?: string };
 
-export const useAdminCommerce = () => {
+export const useAdminCommerce = (section?: keyof CommerceOverview) => {
   const { user, isAdmin } = useAuth();
   const { refresh } = useCatalog();
   const requestRef = useRef(0);
   const pendingRef = useRef(false);
+  const pagination = useRecordPagination(JSON.stringify([user?.id, section]));
+  const { cursor, setNextCursor } = pagination;
+  const [revision, setRevision] = useState(0);
   const [notice, setNotice] = useState(``);
   const [savingId, setSavingId] = useState(``);
   const [refreshing, setRefreshing] = useState(false);
@@ -25,25 +29,31 @@ export const useAdminCommerce = () => {
   const error = failure?.accountId === accountId ? failure?.message ?? `` : ``;
   const loading = Boolean(accountId && isAdmin && !overview && !error);
 
-  const reload = useCallback(async () => {
-    if (!accountId || !isAdmin) return;
-    const request = ++requestRef.current;
-    setFailure(null);
-    setRefreshing(true);
-    try {
-      const data = await getCommerceOverview();
-      if (request === requestRef.current) setRecords({ data, accountId });
-    } catch (error) {
-      if (request === requestRef.current) setFailure({ accountId, message: error instanceof Error ? error.message : `Unable To Load Studio Records` });
-    } finally {
-      if (request === requestRef.current) setRefreshing(false);
-    }
-  }, [isAdmin, accountId]);
+  const reload = useCallback(async () => { setRevision((current) => current + 1); }, []);
 
   useEffect(() => {
-    void reload();
-    return () => { requestRef.current += 1; };
-  }, [reload]);
+    if (!accountId || !isAdmin) return;
+    const request = ++requestRef.current;
+    let unsubscribe: (() => void) | undefined;
+    setRecords(null);
+    setFailure(null);
+    setRefreshing(true);
+    const onError = (error: Error) => {
+      if (request !== requestRef.current) return;
+      setFailure({ accountId, message: error.message });
+      setRefreshing(false);
+    };
+    void subscribeCommerceOverview((data, nextCursor) => {
+      if (request !== requestRef.current) return;
+      setRecords({ data, accountId });
+      setNextCursor(nextCursor);
+      setRefreshing(false);
+    }, onError, section, cursor).then((stop) => {
+      if (request === requestRef.current) unsubscribe = stop;
+      else stop();
+    }).catch(onError);
+    return () => { requestRef.current += 1; unsubscribe?.(); };
+  }, [cursor, isAdmin, section, revision, accountId, setNextCursor]);
 
   const runMutation = async (id: string, operation: () => Promise<string>, refreshCatalog = false) => {
     if (pendingRef.current || !accountId || !isAdmin) return false;
@@ -57,7 +67,6 @@ export const useAdminCommerce = () => {
       if (refreshCatalog) refresh();
       if (request !== requestRef.current) return false;
       setNotice(message);
-      await reload();
       return true;
     } catch (error) {
       if (request === requestRef.current) setFailure({ accountId, message: error instanceof Error ? error.message : `Unable To Save Studio Record` });
@@ -88,5 +97,5 @@ export const useAdminCommerce = () => {
     return `${result.products} Product(s) And ${result.services} Service(s) Imported`;
   }, true);
 
-  return { error, notice, reload, loading, overview, savingId, refreshing, saveRecord, importCatalog, saveOrderStatus };
+  return { error, notice, reload, loading, overview, savingId, refreshing, pagination, saveRecord, importCatalog, saveOrderStatus };
 };

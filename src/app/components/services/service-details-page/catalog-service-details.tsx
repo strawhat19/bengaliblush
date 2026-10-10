@@ -6,7 +6,7 @@ import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 import { getServicesSchema, serializeServiceSchema } from '@/shared/services/service-seo';
 
 const CatalogServiceDetails = ({ slug }: { slug: string }) => {
-  const { services } = useCatalog();
+  const { services } = useCatalog(`services`);
   const service = services.records.find((item) => item.slug === slug);
   return services.loading || services.error || !service ? (
     <section id={`top`} className={`bb-section bb-container`}><CatalogStatus id={`bb-service-${slug}-status`} loading={services.loading} error={services.error} empty={`This service is not currently available.`} /></section>

@@ -1,8 +1,6 @@
 .bb-account-navigation { display: flex; min-width: 0; flex-direction: column; gap: 18px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 12px; padding: 8px; background: hsl(var(--baby-pink)); color: var(--bb-highlight, hsl(var(--primary))); transition: background-color .35s ease, border-color .35s ease, color .35s ease; }
-.bb-account-navigation-toolbar { display: flex; min-width: 0; flex: none; align-items: center; padding: 8px 6px 0; }
-.bb-account-navigation-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-family: var(--app-font-mono); font-size: 11px; }
-.bb-account-navigation-footer { display: flex; min-height: 79px; flex: none; align-items: center; justify-content: center; margin-top: auto; border-top: 1px solid var(--bb-panel-border, hsl(var(--border))); padding: 16px 8px; }
-.bb-account-navigation-collapse-toggle { display: grid; width: 46px; height: 46px; flex: none; place-items: center; border: 0; border-radius: 50%; padding: 0; background: hsl(var(--primary)); color: var(--bb-brand-cream); box-shadow: 0 12px 28px hsl(340 32% 15% / .2); cursor: pointer; transition: transform .25s cubic-bezier(.2, .75, .2, 1), background-color .35s ease, color .35s ease; }
+.bb-account-navigation-footer { display: flex; min-height: 43px; flex: none; align-items: center; justify-content: center; margin-top: auto; border-top: 1px solid var(--bb-panel-border, hsl(var(--border))); padding: 4px 8px; }
+.bb-account-navigation-collapse-toggle { display: grid; width: 34px; height: 34px; flex: none; place-items: center; border: 0; border-radius: 50%; padding: 0; background: hsl(var(--primary)); color: var(--bb-brand-cream); box-shadow: 0 12px 28px hsl(340 32% 15% / .2); cursor: pointer; transition: transform .25s cubic-bezier(.2, .75, .2, 1), background-color .35s ease, color .35s ease; }
 .bb-account-navigation-collapse-toggle:hover { background: var(--bb-brand-ink); transform: translateY(-2px) scale(1.03); }
 .bb-account-navigation-collapse-toggle > svg { transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
 .bb-account-navigation.is-collapsed .bb-account-navigation-collapse-toggle > svg { transform: rotate(180deg); }
@@ -59,7 +57,7 @@
   .bb-account-navigation.is-collapsed .bb-account-navigation-footer { justify-content: center; padding-inline: 0; }
   .bb-account-navigation-links { min-height: 0; flex: 1; overflow-y: auto; scrollbar-width: thin; padding: 4px; margin: -4px; }
   .bb-account-navigation.is-collapsed {
-    .bb-account-navigation-toolbar, .bb-account-navigation-link-label { display: none; }
+    .bb-account-navigation-link-label { display: none; }
     .bb-account-navigation-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .bb-account-navigation-link { min-height: 44px; justify-content: center; padding: 12px 0; }
     .bb-account-navigation-heading.has-submenu > .bb-account-navigation-link { border-radius: 7px; padding-right: 0; }

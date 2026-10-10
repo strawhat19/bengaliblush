@@ -5,14 +5,12 @@ import Image from 'next/image';
 import { roleLabels } from '@/types/types';
 import { useProfilePage } from './use-profile-page';
 import { useAuth } from '@/shared/authContext/useAuth';
-import { siteRoutes } from '@/shared/navigation/routes';
 import { useTheme } from '@/shared/themeContext/useTheme';
 import AccountAccess from '../account-access/account-access';
-import Link from '@/app/components/navigation/page-link/page-link';
 import AccountNavigation from '../account-navigation/account-navigation';
 import AccountPasswordPanel from '../account-password-panel/account-password-panel';
 import AccountActionConfirmation from '../account-action-confirmation/account-action-confirmation';
-import { Sun, Save, Leaf, Moon, Mail, Crown, Globe, LogOut, Trash2, KeyRound, UserRound, RotateCcw, CirclePause, LockKeyhole, CalendarDays, ShieldCheck, ArrowUpRight, LayoutDashboard } from 'lucide-react';
+import { Sun, Save, Leaf, Moon, Mail, Crown, Globe, LogOut, Trash2, KeyRound, UserRound, RotateCcw, CirclePause, LockKeyhole, CalendarDays, ShieldCheck, ArrowUpRight } from 'lucide-react';
 
 const privacyAppearance = {
   private: { label: `Private`, Icon: LockKeyhole, className: `is-private` },
@@ -137,7 +135,6 @@ const ProfileDetails = () => {
                 </dd>
               </div>
             </dl>
-            {isAdmin && <Link href={siteRoutes.dashboard.href} id={`bb-profile-open-dashboard`} className={`bb-button`}><LayoutDashboard size={17} aria-hidden={`true`} />Open Dashboard</Link>}
             {passwordAction && passwordSettings && (
               <div id={`bb-profile-password-panel`} className={`bb-profile-action-confirmation`}>
                 <AccountPasswordPanel

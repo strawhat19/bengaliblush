@@ -4,6 +4,9 @@ service cloud.firestore {
     function signedIn() {
       return request.auth != null;
     }
+    function boundedList(maximum) {
+      return request.query.limit != null && request.query.limit <= maximum;
+    }
     function hasStatus(data, status) {
       return data.keys().hasAny(['account_status']) ? data.account_status == status : status == 'active';
     }
@@ -256,7 +259,7 @@ service cloud.firestore {
     // Infrastructure indices use deterministic keys; business records use numbered app-owned IDs.
     match /accountAccess/{firebaseUid} {
       allow get: if signedIn() && (request.auth.uid == firebaseUid || isOwner());
-      allow list: if isOwner();
+      allow list: if boundedList(100) && isOwner();
       allow create: if signedIn() && request.auth.uid == firebaseUid
         && exactKeys(request.resource.data, ['user_id'])
         && validText(request.resource.data.user_id, 1, 200)
@@ -278,7 +281,7 @@ service cloud.firestore {
         || (collectionName in ['products', 'services', 'reviews', 'paymentMethods', 'notifications'] && isAdmin())
         || (signedIn() && collectionName == 'users'
           && (!exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid)) || activeAccount()));
-      allow list: if isOwner();
+      allow list: if boundedList(100) && isOwner();
       allow create, update: if collectionName in ['users', 'contactSubmissions', 'appointmentSubmissions', 'orders', 'products', 'services', 'reviews', 'paymentMethods', 'notifications']
         && exactKeys(request.resource.data, ['number', 'record_id'])
         && request.resource.data.number is int
@@ -291,7 +294,7 @@ service cloud.firestore {
     match /users/{id} {
       allow get: if signedIn() && ((ownProfile(id)
         && (!exists(/databases/$(database)/documents/users/$(id)) || resource.data.firebase_uid == request.auth.uid)) || isAdmin());
-      allow list: if isAdmin();
+      allow list: if boundedList(51) && isAdmin();
       allow create: if signedIn() && validUser(request.resource.data, id) && hasStatus(request.resource.data, 'active')
         && request.resource.data.firebase_uid == request.auth.uid && request.resource.data.email == request.auth.token.email
         && ((request.resource.data.provider == 'google' && request.auth.token.firebase.sign_in_provider == 'google.com' && request.auth.token.email_verified == true)
@@ -313,7 +316,8 @@ service cloud.firestore {
         || (ownProfile(id) && resource.data.firebase_uid == request.auth.uid && hasStatus(resource.data, 'deleting') && deletingAccount() && recentlyAuthenticated());
     }
     match /contactSubmissions/{id} {
-      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
+      allow get: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
+      allow list: if boundedList(100) && signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
       allow create: if validContact(request.resource.data, id) && request.resource.data.status == 'new'
         && newSubmission(request.resource.data, 'contactSubmissions', id);
       allow update: if adminSubmissionWrite(resource.data) && validContact(request.resource.data, id) && immutableSubmissionFields(request.resource.data)
@@ -321,7 +325,8 @@ service cloud.firestore {
       allow delete: if ownerSubmissionWrite(resource.data) || ownSubmissionDelete(resource.data);
     }
     match /appointmentSubmissions/{id} {
-      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
+      allow get: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
+      allow list: if boundedList(100) && signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
       allow create: if validAppointment(request.resource.data, id) && request.resource.data.status == 'requested'
         && newSubmission(request.resource.data, 'appointmentSubmissions', id);
       allow update: if adminSubmissionWrite(resource.data) && validAppointment(request.resource.data, id) && immutableSubmissionFields(request.resource.data)
@@ -329,7 +334,8 @@ service cloud.firestore {
       allow delete: if ownerSubmissionWrite(resource.data) || ownSubmissionDelete(resource.data);
     }
     match /catalogSlugs/{slugId} {
-      allow get, list: if isAdmin();
+      allow get: if isAdmin();
+      allow list: if boundedList(51) && isAdmin();
       allow create, update: if isAdmin()
         && exactKeys(request.resource.data, ['collection_name', 'record_id', 'slug'])
         && request.resource.data.collection_name in ['products', 'services', 'notifications'] && validSlug(request.resource.data.slug)
@@ -343,7 +349,7 @@ service cloud.firestore {
           || getAfter(/databases/$(database)/documents/$(resource.data.collection_name)/$(resource.data.record_id)).data.slug != resource.data.slug);
     }
     match /products/{id} {
-      allow get, list: if isAdmin() || resource.data.status == 'active';
+      allow get, list: if (resource != null && resource.data.status == 'active') || isAdmin();
       allow create: if validProduct(request.resource.data, id) && matchingSlug('products', request.resource.data)
         && newCommerceRecord(request.resource.data, 'products', id);
       allow update: if isAdmin() && validProduct(request.resource.data, id) && immutableCommerceFields(request.resource.data)
@@ -351,7 +357,7 @@ service cloud.firestore {
       allow delete: if false;
     }
     match /services/{id} {
-      allow get, list: if isAdmin() || resource.data.status == 'active';
+      allow get, list: if (resource != null && resource.data.status == 'active') || isAdmin();
       allow create: if validService(request.resource.data, id) && matchingSlug('services', request.resource.data)
         && newCommerceRecord(request.resource.data, 'services', id);
       allow update: if isAdmin() && validService(request.resource.data, id) && immutableCommerceFields(request.resource.data)
@@ -359,19 +365,20 @@ service cloud.firestore {
       allow delete: if false;
     }
     match /reviews/{id} {
-      allow get, list: if isAdmin() || resource.data.status == 'published';
+      allow get, list: if (resource != null && resource.data.status == 'published') || isAdmin();
       allow create: if validReview(request.resource.data, id) && newCommerceRecord(request.resource.data, 'reviews', id);
       allow update: if isAdmin() && validReview(request.resource.data, id) && immutableCommerceFields(request.resource.data);
       allow delete: if false;
     }
     match /paymentMethods/{id} {
-      allow get, list: if isAdmin() || resource.data.status == 'active';
+      allow get, list: if (resource != null && resource.data.status == 'active') || isAdmin();
       allow create: if validPaymentMethod(request.resource.data, id) && newCommerceRecord(request.resource.data, 'paymentMethods', id);
       allow update: if isAdmin() && validPaymentMethod(request.resource.data, id) && immutableCommerceFields(request.resource.data);
       allow delete: if false;
     }
     match /orders/{id} {
-      allow get, list: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
+      allow get: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
+      allow list: if boundedList(100) && signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
       allow create: if validOrder(request.resource.data, id) && request.resource.data.status == 'requested'
         && trustedOrderItems(request.resource.data.items) && availablePaymentMethod(request.resource.data.payment_method_id)
         && newSubmission(request.resource.data, 'orders', id);
@@ -381,7 +388,7 @@ service cloud.firestore {
       allow delete: if ownSubmissionDelete(resource.data);
     }
     match /notifications/{id} {
-      allow get, list: if isAdmin() || resource.data.status == 'published';
+      allow get, list: if (resource != null && resource.data.status == 'published') || isAdmin();
       allow create: if validNotification(request.resource.data, id) && matchingSlug('notifications', request.resource.data)
         && newCommerceRecord(request.resource.data, 'notifications', id);
       allow update: if isAdmin() && validNotification(request.resource.data, id) && immutableCommerceFields(request.resource.data)

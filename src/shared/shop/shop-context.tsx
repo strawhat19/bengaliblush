@@ -51,12 +51,13 @@ export const ShopProvider = ({ cart, onAdd, onOpenBag, children }: {
   onOpenBag: () => void;
   onAdd: (product: Product, quantity?: number) => void;
 }) => {
-  const { products } = useCatalog();
+  const { products } = useCatalog(`products`, cart.length > 0);
   useEffect(() => {
     if (products.loading || products.error) return;
     const storedCart = getStoredCartSnapshot();
-    const refreshedCart = storedCart.map((item) => products.records.find((product) => product.id === item.id || product.slug === item.id) ?? item);
-    if (refreshedCart.some((item, index) => item !== storedCart[index])) writeStoredCart(refreshedCart);
+    const catalog = new Map(products.records.flatMap((product) => [[product.id, product] as const, [product.slug, product] as const]));
+    const refreshedCart = storedCart.map((item) => catalog.get(item.id) ?? item);
+    if (JSON.stringify(refreshedCart) !== JSON.stringify(storedCart)) writeStoredCart(refreshedCart);
   }, [products]);
   const value = useMemo<ShopContextValue>(() => {
     const lines = getCartLines(cart, products.records);
@@ -66,8 +67,8 @@ export const ShopProvider = ({ cart, onAdd, onOpenBag, children }: {
       count: cart.length,
       addProduct: onAdd,
       openBag: onOpenBag,
-      catalogError: products.error,
-      catalogLoading: products.loading,
+      catalogError: cart.length > 0 ? products.error : ``,
+      catalogLoading: cart.length > 0 && products.loading,
       clearCart: () => writeStoredCart([]),
       unavailableProductIds: lines.filter(({ product }) => !products.records.some((item) => item.id === product.id)).map(({ product }) => product.id),
       removeProduct: removeCartProduct,

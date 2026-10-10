@@ -1,7 +1,7 @@
 import { useAuth } from '@/shared/authContext/useAuth';
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { useNotifications } from '@/shared/notifications/notifications-context';
-import { getAdminNotifications, saveNotification, deleteNotification } from '@/api/notifications';
+import { useRecordPagination } from '@/shared/firebase/use-record-pagination';
+import { subscribeAdminNotifications, saveNotification, deleteNotification } from '@/api/notifications';
 import type { NotificationInput, NotificationRecord, NotificationStatus } from '@/shared/models/notifications/Notification';
 
 export const getNotificationInput = (record: NotificationRecord, status: NotificationStatus = record.status): NotificationInput => ({
@@ -16,10 +16,12 @@ export const getNotificationInput = (record: NotificationRecord, status: Notific
 
 export const useAdminNotifications = () => {
   const { user, isAdmin } = useAuth();
-  const { reload: reloadPublic } = useNotifications();
   const scopeRef = useRef(0);
   const requestRef = useRef(0);
   const pendingRef = useRef(false);
+  const pagination = useRecordPagination(JSON.stringify([user?.id, `notifications`]));
+  const { cursor, setNextCursor } = pagination;
+  const [revision, setRevision] = useState(0);
   const [notice, setNotice] = useState(``);
   const [savingId, setSavingId] = useState(``);
   const [refreshing, setRefreshing] = useState(false);
@@ -30,25 +32,31 @@ export const useAdminNotifications = () => {
   const error = failure?.accountId === accountId ? failure?.message ?? `` : ``;
   const loading = Boolean(accountId && isAdmin && !records && !error);
 
-  const reload = useCallback(async () => {
-    if (!accountId || !isAdmin) return;
-    const request = ++requestRef.current;
-    setFailure(null);
-    setRefreshing(true);
-    try {
-      const records = await getAdminNotifications();
-      if (request === requestRef.current) setSnapshot({ records, accountId });
-    } catch (error) {
-      if (request === requestRef.current) setFailure({ accountId, message: error instanceof Error ? error.message : `Unable To Load Notifications` });
-    } finally {
-      if (request === requestRef.current) setRefreshing(false);
-    }
-  }, [isAdmin, accountId]);
+  const reload = useCallback(async () => { setRevision((current) => current + 1); }, []);
 
   useEffect(() => {
-    void reload();
-    return () => { scopeRef.current += 1; requestRef.current += 1; };
-  }, [reload]);
+    if (!accountId || !isAdmin) return;
+    const request = ++requestRef.current;
+    let unsubscribe: (() => void) | undefined;
+    setSnapshot(null);
+    setFailure(null);
+    setRefreshing(true);
+    const onError = (error: Error) => {
+      if (request !== requestRef.current) return;
+      setFailure({ accountId, message: error.message });
+      setRefreshing(false);
+    };
+    void subscribeAdminNotifications((records, nextCursor) => {
+      if (request !== requestRef.current) return;
+      setSnapshot({ records, accountId });
+      setNextCursor(nextCursor);
+      setRefreshing(false);
+    }, onError, cursor).then((stop) => {
+      if (request === requestRef.current) unsubscribe = stop;
+      else stop();
+    }).catch(onError);
+    return () => { scopeRef.current += 1; requestRef.current += 1; unsubscribe?.(); };
+  }, [cursor, isAdmin, revision, accountId, setNextCursor]);
 
   const runMutation = async (id: string, operation: () => Promise<void>, message: string) => {
     if (pendingRef.current || !accountId || !isAdmin) return false;
@@ -59,10 +67,8 @@ export const useAdminNotifications = () => {
     setSavingId(id);
     try {
       await operation();
-      const publicRefresh = reloadPublic();
-      if (scope !== scopeRef.current) { await publicRefresh; return false; }
+      if (scope !== scopeRef.current) return false;
       setNotice(message);
-      await Promise.all([reload(), publicRefresh]);
       return scope === scopeRef.current;
     } catch (error) {
       if (scope === scopeRef.current) setFailure({ accountId, message: error instanceof Error ? error.message : `Unable To Save Notification` });
@@ -77,5 +83,5 @@ export const useAdminNotifications = () => {
   const remove = (record: NotificationRecord) => runMutation(record.id, () => deleteNotification(record.id), `Notification Deleted`);
   const changeStatus = (record: NotificationRecord) => save(getNotificationInput(record, record.status === `published` ? `draft` : `published`), record.id);
 
-  return { save, error, notice, reload, remove, records, loading, savingId, refreshing, changeStatus };
+  return { save, error, notice, reload, remove, records, loading, savingId, refreshing, pagination, changeStatus };
 };

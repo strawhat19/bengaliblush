@@ -18,6 +18,22 @@ export const getNextNumber = (snapshot: DocumentSnapshot<DocumentData>) => {
   return number + 1;
 };
 
+const sameValue = (first: unknown, second: unknown): boolean => {
+  if (first === second) return true;
+  if (!first || !second || typeof first !== `object` || typeof second !== `object`) return false;
+  if (Array.isArray(first) || Array.isArray(second)) return Array.isArray(first) && Array.isArray(second)
+    && first.length === second.length && first.every((value, index) => sameValue(value, second?.[index]));
+  const firstValues = first as Record<string, unknown>;
+  const secondValues = second as Record<string, unknown>;
+  const keys = Object.keys(firstValues);
+  return keys.length === Object.keys(secondValues).length && keys.every((key) => Object.hasOwn(secondValues, key) && sameValue(firstValues[key], secondValues[key]));
+};
+
+export const hasMatchingValues = (snapshot: DocumentSnapshot<DocumentData>, values: DocumentData) => {
+  const previous = Object.fromEntries(Object.entries(snapshot.data() ?? {}).filter(([key]) => ![`id`, `number`, `created_at`, `updated_at`].includes(key)));
+  return snapshot.exists() && sameValue(previous, values);
+};
+
 const readString = (data: DocumentData, field: string) => {
   const value = data?.[field];
   if (typeof value !== `string`) throw new Error(`Saved Data Needs Attention`);

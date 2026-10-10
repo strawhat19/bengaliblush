@@ -22,7 +22,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Firebase
 
-Google and email/password sign-in use Firebase project `bengaliblush-9ac28` and return to Home after authentication. Email sign-up collects a name, email, and password with 8–128 characters. Firebase Authentication handles passwords and password reset emails; passwords are never saved in Firestore. A verification email is requested after registration, without delaying access to Home. Account profiles, contact messages, and appointment requests are saved privately in Firestore. Sign-in is required to submit a message or appointment request; public browsing remains available. An appointment request does not reserve a time until the studio confirms it.
+Google and email/password sign-in use Firebase project `bengaliblush-9ac28` and return to Home after authentication. Email sign-up collects a name, email, and password with 8–128 characters. Firebase Authentication handles passwords and password reset emails; passwords are never saved in Firestore. A verification email is requested after registration, without delaying access to Home. Account profiles, contact messages, and appointment requests are saved privately in Firestore. Guests can submit a message or appointment request; an active signed-in account is associated when available. Public browsing remains available. An appointment request does not reserve a time until the studio confirms it.
 
 Firebase web configuration is saved in the gitignored `.env` file. `.env.example` lists the required variables. Firebase web API keys identify the app; Firebase Authentication and the deployed Firestore rules enforce access. No service-account private key is required for this client SDK integration.
 
@@ -37,6 +37,8 @@ New accounts receive the `subscriber` role. To appoint an Owner, have that perso
 Business documents use numbered app-owned IDs. The `accountAccess` UID-to-record index and collection counters use deterministic infrastructure keys for secure authorization and atomic numbering. Authentication credentials stay with Firebase Authentication and Google, separate from Firestore profiles.
 
 Deploy updated Firestore rules and indexes with `firebase deploy --only firestore:rules,firestore:indexes --project bengaliblush-9ac28`. Firebase configuration is also saved in the existing Vercel project's Production, Preview, and Development environments; future app deployments will receive it. Add any additional preview hostname to Firebase Authentication's Authorized domains before using Google sign-in there.
+
+See [Firebase Scaling And Cost](./FIREBASE_SCALING.md) for realtime pagination, selective public listeners, index exemptions, App Check setup, deployment order, and remaining high-volume boundaries. Optional `NEXT_PUBLIC_FIREBASE_APP_CHECK_SITE_KEY` enables the reCAPTCHA Enterprise client; enforcement must be enabled separately after monitoring.
 
 Shopping bag storage and checkout remain in their existing mode. Payments, file uploads, Firebase Storage, and Cloud Functions are not connected.
 

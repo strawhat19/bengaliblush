@@ -35,7 +35,7 @@ const CommerceRecordRow = ({ busy, record, onEdit, onOrderStatus, paymentMethods
                   { id: `record`, label: `Order ID`, value: record.id },
                   { id: `phone`, label: `Phone`, value: record.phone || `—` },
                   { id: `address`, label: `Delivery`, value: [record.address, record.city, record.region, record.postal_code, record.country].filter(Boolean).join(`, `) },
-                  { id: `method`, label: `Payment Method`, value: paymentMethod?.name ?? `Not Selected` },
+                  { id: `method`, label: `Payment Method`, value: paymentMethod?.name ?? (record.payment_method_id || `Not Selected`) },
                   { id: `notes`, label: `Notes`, value: record.notes || `—` },
                 ].map(({ id, label, value }) => <div key={id} id={`${rowId}-detail-${id}`} className={`bb-commerce-order-detail`}><dt id={`${rowId}-detail-${id}-label`} className={`bb-commerce-order-detail-label`}>{label}</dt><dd id={`${rowId}-detail-${id}-value`} className={`bb-commerce-order-detail-value`}>{value}</dd></div>)}
               </dl>

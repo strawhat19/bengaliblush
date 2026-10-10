@@ -1,7 +1,8 @@
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
-import { createRecordId, getNextNumber } from './records';
+import { getRecordPage, subscribeRecords, subscribeRecordPage } from './queries';
+import { createRecordId, getNextNumber, hasMatchingValues } from './records';
 import type { NotificationInput, NotificationRecord } from '@/shared/models/notifications/Notification';
 import { doc, query, where, Timestamp, collection, runTransaction, serverTimestamp, getDocsFromServer, type DocumentData, type DocumentSnapshot } from 'firebase/firestore';
 
@@ -72,11 +73,21 @@ export const getPublishedNotifications = async (): Promise<NotificationRecord[]>
   return records.docs.map(readNotification).sort((first, second) => second.number - first.number);
 };
 
+export const subscribePublishedNotifications = (onRecords: (records: NotificationRecord[]) => void, onError: (error: Error) => void) => subscribeRecords(`notifications`, readNotification, (records) => onRecords(records.sort((first, second) => second.number - first.number)), onError, `published`);
+
+export const subscribeAdminNotifications = async (onRecords: (records: NotificationRecord[], nextCursor: number | null) => void, onError: (error: Error) => void, cursor?: number) => {
+  const { auth, firebaseUid } = await requireAdmin();
+  return subscribeRecordPage(`notifications`, readNotification, (page) => {
+    if (auth.currentUser?.uid !== firebaseUid) { onError(new Error(`Your Account Changed, Try Again`)); return; }
+    onRecords(page.records, page.nextCursor);
+  }, onError, { cursor });
+};
+
 export const getAdminNotifications = async (): Promise<NotificationRecord[]> => {
-  const { auth, database, firebaseUid } = await requireAdmin();
-  const records = await getDocsFromServer(collection(database, `notifications`));
+  const { auth, firebaseUid } = await requireAdmin();
+  const records = await getRecordPage(`notifications`, readNotification);
   if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
-  return records.docs.map(readNotification).sort((first, second) => second.number - first.number);
+  return records.records;
 };
 
 export const saveNotification = async (input: NotificationInput, id?: string): Promise<void> => {
@@ -98,6 +109,7 @@ export const saveNotification = async (input: NotificationInput, id?: string): P
     const oldSlugRef = oldSlug && oldSlug !== values.slug ? doc(database, `catalogSlugs`, `notifications_${oldSlug}`) : null;
     const oldReservation = oldSlugRef ? await transaction.get(oldSlugRef) : null;
     if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
+    if (existing && hasMatchingValues(existing, values)) return;
     transaction.set(existingRef ?? doc(database, `notifications`, savedId), {
       ...values,
       id: savedId,
@@ -106,7 +118,7 @@ export const saveNotification = async (input: NotificationInput, id?: string): P
       updated_at: serverTimestamp(),
     });
     if (!existingRef) transaction.set(counterRef, { number, record_id: savedId });
-    transaction.set(slugRef, { collection_name: `notifications`, record_id: savedId, slug: values.slug });
+    if (!reservation.exists()) transaction.set(slugRef, { collection_name: `notifications`, record_id: savedId, slug: values.slug });
     if (oldSlugRef && oldReservation?.data()?.record_id === savedId) transaction.delete(oldSlugRef);
   });
 };

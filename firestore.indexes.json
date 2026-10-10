@@ -1,4 +1,35 @@
 {
   "indexes": [],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    { "collectionGroup": "users", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "users", "fieldPath": "email", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "users", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "orders", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "orders", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "orders", "fieldPath": "firebase_uid", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "reviews", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "reviews", "fieldPath": "status", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "reviews", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "products", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "products", "fieldPath": "status", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "products", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "services", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "services", "fieldPath": "status", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "services", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "counters", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "catalogSlugs", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "accountAccess", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "notifications", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "notifications", "fieldPath": "status", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "notifications", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "paymentMethods", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "paymentMethods", "fieldPath": "status", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "paymentMethods", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "contactSubmissions", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "contactSubmissions", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "contactSubmissions", "fieldPath": "firebase_uid", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "appointmentSubmissions", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "appointmentSubmissions", "fieldPath": "number", "indexes": [{ "order": "DESCENDING", "queryScope": "COLLECTION" }] },
+    { "collectionGroup": "appointmentSubmissions", "fieldPath": "firebase_uid", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] }
+  ]
 }

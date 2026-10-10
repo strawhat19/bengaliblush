@@ -12,10 +12,11 @@ import { getStatusLabel } from '../status-cell/status-cell';
 import AccountNavigation from '../account-navigation/account-navigation';
 import { Plus, Search, Database, RotateCcw, CircleCheck } from 'lucide-react';
 import CommerceRecordRow from './commerce-record-row/commerce-record-row';
+import RecordPagination from '../record-pagination/record-pagination';
 import { getCommerceRecords, getCommerceSearchText, formatCommerceAmount, commerceSections, sectionStatuses, type CommerceSection, type EditableCommerceRecord } from './commerce-data';
 
 const CommerceContent = ({ section }: { section: CommerceSection }) => {
-  const { error, notice, reload, loading, overview, savingId, refreshing, saveRecord, importCatalog, saveOrderStatus } = useAdminCommerce();
+  const { error, notice, reload, loading, overview, savingId, refreshing, pagination, saveRecord, importCatalog, saveOrderStatus } = useAdminCommerce(section);
   const [search, setSearch] = useState(``);
   const [filter, setFilter] = useState(`all`);
   const [editor, setEditor] = useState<EditableCommerceRecord | `new` | null>(null);
@@ -29,11 +30,11 @@ const CommerceContent = ({ section }: { section: CommerceSection }) => {
   const singular = section === `paymentMethods` ? `Payment Method` : section === `reviews` ? `Review` : section === `services` ? `Service` : `Product`;
   const columns = section === `orders` ? [`No.`, `Customer`, `Items`, `Total`, `Status`, `Received`, `Manage`] : [`No.`, `Record`, `Details`, `Status`, `Updated`, `Manage`];
   const summaries = section === `orders` ? [
-    { label: `Total Orders`, value: records.length },
+    { label: `Orders On This Page`, value: records.length },
     { label: `Awaiting Fulfillment`, value: records.filter((record) => [`requested`, `confirmed`].includes(record.status)).length },
     { label: `Requested Value`, value: formatCommerceAmount(overview?.orders.filter((record) => record.status !== `cancelled`).reduce((sum, record) => sum + record.subtotal, 0) ?? 0) },
   ] : [
-    { label: `Total ${route.label}`, value: records.length },
+    { label: `${route.label} On This Page`, value: records.length },
     { label: section === `reviews` ? `Published` : `Active`, value: records.filter((record) => record.status === (section === `reviews` ? `published` : `active`)).length },
     { label: section === `paymentMethods` ? `Disabled` : section === `reviews` ? `Drafts` : `Archived`, value: records.filter((record) => record.status === (section === `paymentMethods` ? `disabled` : section === `reviews` ? `draft` : `archived`)).length },
   ];
@@ -71,6 +72,7 @@ const CommerceContent = ({ section }: { section: CommerceSection }) => {
               </div>
               {matches.length ? <div id={`${pageId}-table-wrap`} className={`bb-commerce-table-wrap`}><table id={`${pageId}-table`} className={`bb-commerce-table`}><caption id={`${pageId}-table-caption`} className={`bb-commerce-sr-only`}>{route.label}</caption><thead id={`${pageId}-table-head`} className={`bb-commerce-table-head`}><tr id={`${pageId}-column-row`} className={`bb-commerce-table-column-row`}>{columns.map((label, index) => <th key={label} scope={`col`} id={`${pageId}-column-${index}`} className={`bb-commerce-table-column`}>{label}</th>)}</tr></thead><tbody id={`${pageId}-table-body`} className={`bb-commerce-table-body`}>{matches.map((record) => <CommerceRecordRow busy={busy} record={record} key={record.id} onEdit={setEditor} onOrderStatus={saveOrderStatus} paymentMethods={overview.paymentMethods} />)}</tbody></table></div>
                 : <p id={`${pageId}-empty`} className={`bb-commerce-empty`}>{records.length ? `No records match these filters.` : empty}</p>}
+              <RecordPagination {...pagination} id={`${pageId}-pagination`} disabled={busy} />
             </>
           )}
           {!loading && !overview && error && <p id={`${pageId}-retry-note`} className={`bb-commerce-note`}>Use Refresh to try loading the database again.</p>}

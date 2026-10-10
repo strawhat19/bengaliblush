@@ -1,0 +1,4 @@
+.bb-record-pagination { gap: 14px; display: flex; margin-top: 22px; align-items: center; justify-content: space-between; }
+.bb-record-pagination-label { color: hsl(var(--foreground) / .6); font-size: 12px; text-align: center; }
+.bb-record-pagination .bb-button:disabled { opacity: .5; cursor: default; }
+@media (max-width: 600px) { .bb-record-pagination { flex-wrap: wrap; } .bb-record-pagination-label { order: 3; width: 100%; } }

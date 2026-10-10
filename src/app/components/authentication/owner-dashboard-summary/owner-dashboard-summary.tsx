@@ -48,7 +48,7 @@ const OwnerDashboardSummary = ({ summary, overview, commerce, notifications }: {
         <section id={`bb-owner-activity`} className={`bb-owner-chart-panel`} aria-labelledby={`bb-owner-activity-title`}>
           <div id={`bb-owner-activity-heading`} className={`bb-owner-chart-heading`}>
             <h2 id={`bb-owner-activity-title`} className={`bb-owner-chart-title`}>Studio Activity</h2>
-            <span id={`bb-owner-activity-caption`} className={`bb-owner-chart-caption`}>Last 6 Months</span>
+            <span id={`bb-owner-activity-caption`} className={`bb-owner-chart-caption`}>Recent Records · Last 6 Months</span>
           </div>
           <div id={`bb-owner-activity-legend`} className={`bb-owner-chart-legend`}>
             {activityCategories.map(({ id, label }) => <span key={id} id={`bb-owner-activity-legend-${id}`} className={`bb-owner-chart-key is-${id}`}><span id={`bb-owner-activity-legend-dot-${id}`} className={`bb-owner-chart-key-dot`} aria-hidden={`true`} />{label}</span>)}
@@ -76,7 +76,7 @@ const OwnerDashboardSummary = ({ summary, overview, commerce, notifications }: {
         <section id={`bb-owner-request-status`} className={`bb-owner-chart-panel`} aria-labelledby={`bb-owner-request-status-title`}>
           <div id={`bb-owner-request-status-heading`} className={`bb-owner-chart-heading`}>
             <h2 id={`bb-owner-request-status-title`} className={`bb-owner-chart-title`}>Request Status</h2>
-            <span id={`bb-owner-request-status-caption`} className={`bb-owner-chart-caption`}>All Requests</span>
+            <span id={`bb-owner-request-status-caption`} className={`bb-owner-chart-caption`}>Recent Requests</span>
           </div>
           <div id={`bb-owner-status-chart-content`} className={`bb-owner-status-chart-content`}>
             <div

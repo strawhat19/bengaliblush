@@ -8,12 +8,13 @@ import { useOwnerDashboard } from './use-owner-dashboard';
 import AccountAccess from '../account-access/account-access';
 import AccountNavigation from '../account-navigation/account-navigation';
 import OwnerRecordsTable from '../owner-records-table/owner-records-table';
+import RecordPagination from '../record-pagination/record-pagination';
 import OwnerDashboardSidebar from '../owner-dashboard-sidebar/owner-dashboard-sidebar';
 import OwnerDashboardSummary from '../owner-dashboard-summary/owner-dashboard-summary';
 import { dashboardSections, getDashboardSummary, type DashboardSection } from './dashboard-data';
 
 const DashboardContent = ({ section }: { section: DashboardSection }) => {
-  const { error, notice, reload, loading, loadedAt, overview, commerce, savingId, refreshing, saveStatus, notifications } = useOwnerDashboard(section === `overview`);
+  const { error, notice, reload, loading, loadedAt, overview, commerce, savingId, refreshing, pagination, saveStatus, notifications } = useOwnerDashboard(section);
   const { title, description } = dashboardSections[section];
   const summary = overview && section === `overview` ? getDashboardSummary(overview, loadedAt, commerce, notifications) : null;
 
@@ -40,6 +41,7 @@ const DashboardContent = ({ section }: { section: DashboardSection }) => {
           </div>
           {error && <p id={`bb-owner-dashboard-error`} className={`bb-owner-dashboard-error`} role={`alert`}>{error}</p>}
           {notice && <p id={`bb-owner-dashboard-notice`} className={`bb-owner-dashboard-notice`} role={`status`}><CircleCheck size={14} aria-hidden={`true`} />{notice}</p>}
+          {section === `overview` && <p id={`bb-owner-dashboard-window-note`} className={`bb-owner-dashboard-description`}>Activity, Statuses, And Counts Cover The Latest 50 Record(s) Per Collection. Open A Record Page To Browse Older Entries.</p>}
           {loading ? (
             <div id={`bb-owner-dashboard-loading`} className={`bb-owner-dashboard-loading`} role={`status`} aria-label={`Loading Studio Records`}>
               {[0, 1, 2].map((index) => <div key={index} id={`bb-owner-dashboard-skeleton-${index}`} className={`bb-owner-dashboard-skeleton`} aria-hidden={`true`}>{[0, 1, 2].map((line) => <span key={line} id={`bb-owner-dashboard-skeleton-${index}-line-${line}`} className={`bb-owner-dashboard-skeleton-line`} />)}</div>)}
@@ -57,6 +59,7 @@ const DashboardContent = ({ section }: { section: DashboardSection }) => {
               </div>
             )) : <OwnerRecordsTable kind={section} overview={overview} disabled={refreshing} savingId={savingId} onStatus={saveStatus} />
           )}
+          {section !== `overview` && overview && <RecordPagination {...pagination} id={`bb-owner-dashboard-pagination`} disabled={refreshing || Boolean(savingId)} />}
           {!loading && !overview && error && <p id={`bb-owner-dashboard-retry-note`} className={`bb-owner-dashboard-description`}>Use Refresh to try loading the database again.</p>}
         </div>
       </div>

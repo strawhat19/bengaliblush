@@ -18,7 +18,7 @@ type ServiceDetailsPageProps = {
 };
 
 const ServiceDetailsPage = ({ service }: ServiceDetailsPageProps) => {
-  const { services } = useCatalog();
+  const { services } = useCatalog(`services`);
   const pageId = `bb-service-details-${service.id}`;
   const otherServices = services.records.filter((otherService) => otherService.id !== service.id).slice(0, 3);
   const relatedArticles = service.relatedBlogSlugs

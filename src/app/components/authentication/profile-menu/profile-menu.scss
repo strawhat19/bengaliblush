@@ -5,13 +5,13 @@
 .bb-profile-avatar:hover, .bb-profile-avatar[aria-expanded='true'] { border-color: hsl(var(--card)); box-shadow: 0 0 0 3px hsl(var(--secondary) / .18); }
 .bb-profile-avatar-initial { display: grid; width: 100%; height: 100%; place-items: center; }
 .bb-profile-avatar-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.bb-profile-menu { position: absolute; top: calc(100% + 15px); right: 0; z-index: 6; width: 260px; max-width: calc(100vw - 36px); overflow: hidden; border: 1px solid hsl(var(--primary) / .12); border-radius: 14px; padding: 9px; background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 18px 50px hsl(var(--primary) / .18); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity .2s ease, transform .2s ease, visibility .2s ease; }
+.bb-profile-menu { --bb-profile-menu-danger: hsl(var(--primary)); position: absolute; top: calc(100% + 15px); right: 0; z-index: 6; width: 260px; max-width: calc(100vw - 36px); overflow: hidden; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 14px; padding: 9px; background: hsl(var(--popover)); color: hsl(var(--popover-foreground)); box-shadow: 0 18px 50px hsl(340 32% 8% / .28); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity .2s ease, transform .2s ease, visibility .2s ease; }
 .bb-profile-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
-.bb-profile-menu-identity { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 8px; margin: 0 4px 7px; border-bottom: 1px solid hsl(var(--primary) / .12); padding: 10px 7px 15px; }
+.bb-profile-menu-identity { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 8px; margin: 0 4px 7px; border-bottom: 1px solid var(--bb-panel-border, hsl(var(--border))); padding: 10px 7px 15px; }
 .bb-profile-menu-account { display: grid; min-width: 0; gap: 4px; }
 .bb-profile-menu-metadata { display: grid; justify-items: end; gap: 4px; }
 .bb-profile-menu-metadata:has(> .bb-profile-menu-role:only-child) { align-self: center; }
-.bb-profile-menu-badge { display: inline-flex; align-items: center; gap: 4px; border: 1px solid hsl(var(--primary) / .12); border-radius: 6px; padding: 0 4px; font-size: 9px; line-height: 1.3; white-space: nowrap; }
+.bb-profile-menu-badge { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 6px; padding: 0 4px; font-size: 9px; line-height: 1.3; white-space: nowrap; }
 .bb-profile-menu-badge > svg { flex: none; }
 .bb-profile-menu-role.is-owner .bb-profile-menu-role-icon { color: #d4a017; }
 .bb-profile-menu-role.is-admin .bb-profile-menu-role-icon { color: #2563eb; }
@@ -21,10 +21,12 @@
 .bb-profile-menu-name, .bb-profile-menu-email { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bb-profile-menu-email { color: hsl(var(--muted-foreground)); font-size: 10px; overflow-wrap: anywhere; }
 .bb-profile-menu-link { display: flex; width: 100%; align-items: center; gap: 10px; border: 0; border-radius: 7px; padding: 12px; background: transparent; color: inherit; font-size: 12px; text-align: left; transition: background-color .2s ease, color .2s ease; }
-.bb-profile-menu-link:hover { background: hsl(var(--primary) / .06); color: hsl(var(--primary)); }
-.bb-profile-sign-out { margin-top: 5px; border-top: 1px solid hsl(var(--primary) / .1); border-radius: 0 0 7px 7px; color: hsl(var(--primary)); }
+.bb-profile-menu-link:is(:hover, :focus-visible) { background: color-mix(in srgb, var(--bb-highlight, hsl(var(--primary))) 10%, hsl(var(--popover))); color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-profile-sign-out { margin-top: 5px; border-top: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 0 0 7px 7px; color: var(--bb-profile-menu-danger); }
+.bb-profile-sign-out:is(:hover, :focus-visible) { background: color-mix(in srgb, var(--bb-profile-menu-danger) 10%, hsl(var(--popover))); color: var(--bb-profile-menu-danger); }
 .bb-profile-menu-link:disabled { cursor: wait; opacity: .6; }
-.bb-profile-menu-error { margin: 7px 12px; color: #be123c; font-size: 11px; line-height: 1.5; }
+.bb-profile-menu-error { margin: 7px 12px; color: var(--bb-profile-menu-danger); font-size: 11px; line-height: 1.5; }
 .bb-profile-avatar:focus-visible, .bb-profile-menu-link:focus-visible { outline: 2px solid hsl(var(--secondary)); outline-offset: 3px; }
+:root[data-theme='dark'] .bb-profile-menu { --bb-profile-menu-danger: hsl(345 78% 80%); }
 @media (max-width: 480px) { .bb-account-loading, .bb-profile-avatar { width: 36px; height: 36px; } }
 @media (prefers-reduced-motion: reduce) { .bb-profile-avatar, .bb-profile-menu, .bb-profile-menu-link { transition: none; } }

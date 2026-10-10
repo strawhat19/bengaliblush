@@ -1,1 +1,1 @@
-export { getOwnerOverview, updateSubmissionStatus, type OwnerOverview } from '@/shared/firebase/owner';
+export { getOwnerOverview, subscribeOwnerOverview, updateSubmissionStatus, type OwnerOverview } from '@/shared/firebase/owner';

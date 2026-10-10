@@ -207,7 +207,7 @@ function ProductCardCartControl({ product, quantity, isActive, onAdd, onDecremen
 }
 
 function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: Product) => void; onDecrement: (id: string) => void }) {
-  const { products, categories: productCategories } = useCatalog();
+  const { products, categories: productCategories } = useCatalog(`products`);
   const [selectedCategoryIndex, setActiveCategoryIndex] = useState(0);
   const activeCategoryIndex = Math.min(selectedCategoryIndex, Math.max(0, productCategories.length - 1));
   const [dragOffset, setDragOffset] = useState(0);
@@ -361,7 +361,7 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
 const testimonialAutoplayDuration = 6500;
 
 function Reviews() {
-  const { reviews } = useCatalog();
+  const { reviews } = useCatalog(`reviews`);
   const testimonials = reviews.records;
   const [selectedTestimonialIndex, setActiveTestimonialIndex] = useState(0);
   const activeTestimonialIndex = Math.min(selectedTestimonialIndex, Math.max(0, testimonials.length - 1));
@@ -690,7 +690,7 @@ function Footer({ onBook }: { onBook: () => void }) {
 }
 
 function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, onCheckout }: { cart: Product[]; isOpen: boolean; onClose: () => void; onRemove: (id: string) => void; onIncrement: (product: Product) => void; onDecrement: (id: string) => void; onCheckout: () => void }) {
-  const { products } = useCatalog();
+  const { products } = useCatalog(`products`);
   const drawerRef = useRef<HTMLElement>(null);
   const cartLines = getCartLines(cart, products.records);
   const subtotal = cartLines.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0);

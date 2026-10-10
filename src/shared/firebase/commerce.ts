@@ -1,7 +1,8 @@
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
-import { createRecordId, getNextNumber } from './records';
+import { getRecordPage, subscribeRecords, subscribeRecordPage } from './queries';
+import { createRecordId, getNextNumber, hasMatchingValues } from './records';
 import type { User } from '@/shared/models/users/User';
 import { AccountDeletionPending } from './account-actions';
 import { services } from '@/shared/services/service-content';
@@ -33,22 +34,46 @@ export const getCatalogServices = async () => (await readCollection(`services`, 
 export const getPublishedReviews = async () => (await readCollection(`reviews`, readReview, `published`)).sort((first, second) => second.number - first.number);
 export const getAvailablePaymentMethods = async () => (await readCollection(`paymentMethods`, readPaymentMethod, `active`)).filter((method) => method.type === `manual`).sort((first, second) => first.number - second.number);
 
+export const subscribePublicProducts = (onRecords: Parameters<typeof subscribeRecords<ReturnType<typeof readProduct>>>[2], onError: (error: Error) => void) => subscribeRecords(`products`, readProduct, (records) => onRecords(records.sort((first, second) => first.number - second.number)), onError, `active`);
+export const subscribePublicServices = (onRecords: Parameters<typeof subscribeRecords<ReturnType<typeof readService>>>[2], onError: (error: Error) => void) => subscribeRecords(`services`, readService, (records) => onRecords(records.sort((first, second) => first.number - second.number)), onError, `active`);
+export const subscribePublishedReviews = (onRecords: Parameters<typeof subscribeRecords<ReturnType<typeof readReview>>>[2], onError: (error: Error) => void) => subscribeRecords(`reviews`, readReview, (records) => onRecords(records.sort((first, second) => second.number - first.number)), onError, `published`);
+export const subscribeAvailablePaymentMethods = (onRecords: Parameters<typeof subscribeRecords<ReturnType<typeof readPaymentMethod>>>[2], onError: (error: Error) => void) => subscribeRecords(`paymentMethods`, readPaymentMethod, (records) => onRecords(records.filter((method) => method.type === `manual`).sort((first, second) => first.number - second.number)), onError, `active`);
+
+const commerceReaders = { orders: readOrder, reviews: readReview, products: readProduct, services: readService, paymentMethods: readPaymentMethod };
+export type CommerceSection = keyof CommerceOverview;
+
+export const subscribeCommerceOverview = async (onOverview: (overview: CommerceOverview, nextCursor: number | null) => void, onError: (error: Error) => void, section?: CommerceSection, cursor?: number) => {
+  const { auth, firebaseUid } = await requireAdmin();
+  const overview: CommerceOverview = { orders: [], reviews: [], products: [], services: [], paymentMethods: [] };
+  const sections: CommerceSection[] = section === `orders` ? [`orders`, `paymentMethods`] : section ? [section] : Object.keys(commerceReaders) as CommerceSection[];
+  const loaded = new Set<CommerceSection>();
+  let nextCursor: number | null = null;
+  const subscriptions = sections.map((key) => subscribeRecordPage(key, (snapshot) => commerceReaders[key](snapshot), (page) => {
+    if (auth.currentUser?.uid !== firebaseUid) { onError(new Error(`Your Account Changed, Try Again`)); return; }
+    Object.assign(overview, { [key]: page.records });
+    if (key === section) nextCursor = page.nextCursor;
+    loaded.add(key);
+    if (loaded.size === sections.length) onOverview({ ...overview }, nextCursor);
+  }, onError, { cursor: key === section ? cursor : undefined }));
+  return () => subscriptions.forEach((unsubscribe) => unsubscribe());
+};
+
 export const getCommerceOverview = async (): Promise<CommerceOverview> => {
   const { auth, firebaseUid } = await requireAdmin();
   const [products, services, reviews, orders, paymentMethods] = await Promise.all([
-    readCollection(`products`, readProduct),
-    readCollection(`services`, readService),
-    readCollection(`reviews`, readReview),
-    readCollection(`orders`, readOrder),
-    readCollection(`paymentMethods`, readPaymentMethod),
+    getRecordPage(`products`, readProduct),
+    getRecordPage(`services`, readService),
+    getRecordPage(`reviews`, readReview),
+    getRecordPage(`orders`, readOrder),
+    getRecordPage(`paymentMethods`, readPaymentMethod),
   ]);
   if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
   return {
-    orders: orders.sort((first, second) => second.number - first.number),
-    reviews: reviews.sort((first, second) => second.number - first.number),
-    products: products.sort((first, second) => first.number - second.number),
-    services: services.sort((first, second) => first.number - second.number),
-    paymentMethods: paymentMethods.sort((first, second) => first.number - second.number),
+    orders: orders.records,
+    reviews: reviews.records,
+    products: products.records,
+    services: services.records,
+    paymentMethods: paymentMethods.records,
   };
 };
 
@@ -59,13 +84,14 @@ const saveRecord = async (collectionName: string, type: string, values: Document
     const existingRef = id ? doc(database, collectionName, recordId(id)) : null;
     const existing = existingRef ? await transaction.get(existingRef) : null;
     if (existingRef && !existing?.exists()) throw new Error(`Saved Record Was Not Found`);
+    const hasSlug = collectionName === `products` || collectionName === `services`;
+    const slugRef = hasSlug ? doc(database, `catalogSlugs`, `${collectionName}_${values.slug}`) : null;
+    const slugRecord = slugRef ? await transaction.get(slugRef) : null;
+    if (skipExistingSlug && slugRecord?.exists()) return false;
     const counterRef = doc(database, `counters`, collectionName);
     const number = existing?.data()?.number ?? getNextNumber(await transaction.get(counterRef));
     if (!Number.isSafeInteger(number) || number < 1) throw new Error(`Saved Commerce Data Needs Attention`);
     const savedId = id ?? createRecordId(type, number, values.name);
-    const hasSlug = collectionName === `products` || collectionName === `services`;
-    const slugRef = hasSlug ? doc(database, `catalogSlugs`, `${collectionName}_${values.slug}`) : null;
-    const slugRecord = slugRef ? await transaction.get(slugRef) : null;
     if (slugRecord?.exists() && slugRecord.data()?.record_id !== savedId) {
       if (skipExistingSlug) return false;
       throw new Error(`That Slug Is Already In Use`);
@@ -73,6 +99,7 @@ const saveRecord = async (collectionName: string, type: string, values: Document
     const oldSlug = existing?.data()?.slug;
     const oldSlugRef = hasSlug && oldSlug && oldSlug !== values.slug ? doc(database, `catalogSlugs`, `${collectionName}_${oldSlug}`) : null;
     const oldSlugRecord = oldSlugRef ? await transaction.get(oldSlugRef) : null;
+    if (existing && hasMatchingValues(existing, values)) return false;
     transaction.set(existingRef ?? doc(database, collectionName, savedId), {
       ...values,
       id: savedId,
@@ -81,7 +108,7 @@ const saveRecord = async (collectionName: string, type: string, values: Document
       updated_at: serverTimestamp(),
     });
     if (!existingRef) transaction.set(counterRef, { number, record_id: savedId });
-    if (slugRef) transaction.set(slugRef, { collection_name: collectionName, record_id: savedId, slug: values.slug });
+    if (slugRef && !slugRecord?.exists()) transaction.set(slugRef, { collection_name: collectionName, record_id: savedId, slug: values.slug });
     if (oldSlugRef && oldSlugRecord?.data()?.record_id === savedId) transaction.delete(oldSlugRef);
     return !existingRef;
   });
@@ -100,25 +127,21 @@ export const updateOrderStatus = async (id: string, status: OrderStatus): Promis
     const snapshot = await transaction.get(ref);
     if (!snapshot.exists()) throw new Error(`Saved Order Was Not Found`);
     if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
+    if (snapshot.data()?.status === status) return;
     transaction.update(ref, { status, updated_at: serverTimestamp() });
   });
 };
 
 export const importStudioCatalog = async (): Promise<{ products: number; services: number }> => {
   await requireAdmin();
-  const existing = await getCommerceOverview();
-  const productSlugs = new Set(existing.products.map((product) => product.slug));
-  const serviceSlugs = new Set(existing.services.map((service) => service.slug));
   const imported = { products: 0, services: 0 };
   for (const category of productCategories) {
     for (const product of category.products) {
-      if (productSlugs.has(product.id)) continue;
       const { id, ...fields } = product;
       if (await saveRecord(`products`, `Product`, normalizeProduct({ ...fields, slug: id, category_id: category.id, category_name: category.name, status: `active` }), undefined, true)) imported.products += 1;
     }
   }
   for (const service of services) {
-    if (serviceSlugs.has(service.slug)) continue;
     if (await saveRecord(`services`, `Service`, normalizeService({ ...service, legacy_id: service.id, status: `active` }), undefined, true)) imported.services += 1;
   }
   return imported;

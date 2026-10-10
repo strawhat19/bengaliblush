@@ -12,11 +12,12 @@ import AccountAccess from '../account-access/account-access';
 import NotificationRow from './notification-row/notification-row';
 import AccountNavigation from '../account-navigation/account-navigation';
 import NotificationEditor from './notification-editor/notification-editor';
+import RecordPagination from '../record-pagination/record-pagination';
 import { Bell, Plus, Search, RotateCcw, CircleCheck } from 'lucide-react';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 
 const AdminNotificationsContent = () => {
-  const { save, error, notice, reload, remove, records, loading, savingId, refreshing, changeStatus } = useAdminNotifications();
+  const { save, error, notice, reload, remove, records, loading, savingId, refreshing, pagination, changeStatus } = useAdminNotifications();
   const [search, setSearch] = useState(``);
   const [filter, setFilter] = useState(`all`);
   const [deletingId, setDeletingId] = useState(``);
@@ -47,7 +48,7 @@ const AdminNotificationsContent = () => {
           {loading ? <div id={`${pageId}-loading`} className={`bb-owner-dashboard-loading`} role={`status`} aria-label={`Loading Notifications`}>{[0, 1].map((index) => <div key={index} id={`${pageId}-skeleton-${index}`} className={`bb-owner-dashboard-skeleton`} aria-hidden={`true`}>{[0, 1, 2].map((line) => <span key={line} id={`${pageId}-skeleton-${index}-line-${line}`} className={`bb-owner-dashboard-skeleton-line`} />)}</div>)}</div> : records && (
             <>
               <dl id={`${pageId}-summary`} className={`bb-admin-notifications-summary`}>{[
-                { id: `total`, label: `Total Notifications`, value: records.length },
+                { id: `total`, label: `Notifications On This Page`, value: records.length },
                 { id: `published`, label: `Published`, value: published },
                 { id: `drafts`, label: `Drafts`, value: records.length - published },
               ].map(({ id, label, value }) => <div key={id} id={`${pageId}-summary-${id}`} className={`bb-admin-notifications-summary-card`}><dt id={`${pageId}-summary-${id}-label`} className={`bb-admin-notifications-summary-label`}>{label}</dt><dd id={`${pageId}-summary-${id}-value`} className={`bb-admin-notifications-summary-value`}>{value}</dd></div>)}</dl>
@@ -64,6 +65,7 @@ const AdminNotificationsContent = () => {
                 {matchingRecords.length ? <div id={`${pageId}-table-wrap`} className={`bb-owner-table-wrap`}><table id={`${pageId}-table`} className={`bb-owner-table bb-admin-notifications-table`}><caption id={`${pageId}-table-caption`} className={`bb-owner-table-caption`}>Studio Notifications</caption><thead id={`${pageId}-table-head`} className={`bb-owner-table-head`}><tr id={`${pageId}-column-row`} className={`bb-owner-table-column-row`}>{[`No.`, `Title`, `Kind`, `Status`, `Updated`, `Actions`].map((label, index) => <th key={label} scope={`col`} id={`${pageId}-column-${index}`} className={`bb-owner-table-column`}>{label}</th>)}</tr></thead><tbody id={`${pageId}-table-body`} className={`bb-owner-table-body`}>{matchingRecords.map((record) => <NotificationRow key={record.id} busy={busy} record={record} onEdit={edit} onDelete={remove} onStatus={changeStatus} onRequestDelete={requestDelete} confirming={deletingId === record.id} onCancelDelete={() => setDeletingId(``)} />)}</tbody></table></div>
                   : <p id={`${pageId}-empty`} className={`bb-owner-records-empty`}>{records.length ? `No notifications match these filters.` : `No notifications saved yet. Add a draft to get started.`}</p>}
               </section>
+              <RecordPagination {...pagination} id={`${pageId}-pagination`} disabled={busy} />
             </>
           )}
           {!loading && !records && error && <p id={`${pageId}-retry-note`} className={`bb-owner-dashboard-description`}>Use Refresh to try loading the database again.</p>}

@@ -1,8 +1,8 @@
 'use client';
 
-import type { Notification } from './notification-types';
+import type { Notification, NotificationSnapshot } from './notification-types';
 import { createContext, useContext, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { getNotifications, markNotificationRead, markAllNotificationsRead, type NotificationReadSnapshot } from './notification-service';
+import { subscribeNotifications, markNotificationRead, markAllNotificationsRead, type NotificationReadSnapshot } from './notification-service';
 
 type NotificationsContextValue = {
   loading: boolean;
@@ -16,34 +16,50 @@ type NotificationsContextValue = {
 };
 
 const NotificationsContext = createContext<NotificationsContextValue | null>(null);
+type NotificationWatch = { failed: boolean; ready: Promise<void>; stop: () => void; finish: () => void };
 
 export const NotificationsProvider = ({ children }: { children: ReactNode }) => {
-  const requestRef = useRef(0);
   const mountedRef = useRef(false);
+  const subscriptionRef = useRef<NotificationWatch | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const reload = useCallback(async () => {
-    const requestId = ++requestRef.current;
+    if (!mountedRef.current) return;
+    const previous = subscriptionRef.current;
+    if (previous && !previous.failed) return previous.ready;
+    previous?.stop();
+    previous?.finish();
     setLoading(true);
     setError(null);
-    try {
-      const snapshot = await getNotifications();
-      if (!mountedRef.current || requestId !== requestRef.current) return;
+    const watch: NotificationWatch = { failed: false, stop: () => undefined, finish: () => undefined, ready: Promise.resolve() };
+    watch.ready = new Promise((resolve) => { watch.finish = resolve; });
+    subscriptionRef.current = watch;
+    const receive = (snapshot: NotificationSnapshot) => {
+      if (!mountedRef.current || subscriptionRef.current !== watch) return;
+      watch.failed = false;
       setNotice(snapshot.notice);
-      setNotifications((current) => snapshot.notifications.map((notification) => ({
-        ...notification,
-        isRead: notification.isRead || Boolean(current.find((item) => item.id === notification.id)?.isRead),
-      })));
-    } catch (error) {
-      if (!mountedRef.current || requestId !== requestRef.current) return;
+      setLoading(false);
+      setError(null);
+      setNotifications((current) => {
+        const readIds = new Set(current.filter((notification) => notification.isRead).map(({ id }) => id));
+        return snapshot.notifications.map((notification) => ({ ...notification, isRead: notification.isRead || readIds.has(notification.id) }));
+      });
+      watch.finish();
+    };
+    const fail = (error: Error) => {
+      if (!mountedRef.current || subscriptionRef.current !== watch) return;
+      watch.failed = true;
+      setLoading(false);
       setNotifications([]);
-      setError(error instanceof Error ? error.message : `Notifications Could Not Be Loaded`);
-    } finally {
-      if (mountedRef.current && requestId === requestRef.current) setLoading(false);
-    }
+      setError(error.message || `Notifications Could Not Be Loaded`);
+      watch.finish();
+    };
+    try { watch.stop = subscribeNotifications(receive, fail); }
+    catch (error) { fail(error instanceof Error ? error : new Error(`Notifications Could Not Be Loaded`)); }
+    return watch.ready;
   }, []);
 
   const applyReadPreferences = useCallback((snapshot: NotificationReadSnapshot) => {
@@ -68,7 +84,12 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   useEffect(() => {
     mountedRef.current = true;
     void reload();
-    return () => { mountedRef.current = false; requestRef.current += 1; };
+    return () => {
+      mountedRef.current = false;
+      subscriptionRef.current?.stop();
+      subscriptionRef.current?.finish();
+      subscriptionRef.current = null;
+    };
   }, [reload]);
 
   const value = useMemo<NotificationsContextValue>(() => ({

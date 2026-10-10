@@ -26,6 +26,8 @@ export type EmailSignInInput = {
 export type EmailSignUpInput = EmailSignInInput & { name: string };
 
 const pendingSignupNames = new Map<string, string>();
+const pendingAccounts = new Map<string, Promise<User>>();
+let liveAccount: User | null = null;
 
 const normalizeEmail = (value: string) => {
   const email = value?.trim().toLowerCase() ?? ``;
@@ -61,7 +63,7 @@ const loadMappedAccount = async (firebaseUser: FirebaseUser, value: unknown): Pr
   return account;
 };
 
-const ensureAccount = async (firebaseUser: FirebaseUser): Promise<User> => {
+const loadAccount = async (firebaseUser: FirebaseUser): Promise<User> => {
   const { database } = getFirebaseClient();
   if (!firebaseUser.email) throw new Error(`An Email Address Is Required`);
   const signupName = pendingSignupNames.get(firebaseUser.email.toLowerCase());
@@ -107,11 +109,21 @@ const ensureAccount = async (firebaseUser: FirebaseUser): Promise<User> => {
   return loadMappedAccount(firebaseUser, userId);
 };
 
+const ensureAccount = (firebaseUser: FirebaseUser): Promise<User> => {
+  const pending = pendingAccounts.get(firebaseUser.uid);
+  if (pending) return pending;
+  const operation: Promise<User> = loadAccount(firebaseUser).finally(() => {
+    if (pendingAccounts.get(firebaseUser.uid) === operation) pendingAccounts.delete(firebaseUser.uid);
+  });
+  pendingAccounts.set(firebaseUser.uid, operation);
+  return operation;
+};
+
 export const getCurrentAccount = async (): Promise<User> => {
   const { auth } = getFirebaseClient();
   if (!auth.currentUser) throw new Error(`Sign In To Continue`);
   const firebaseUser = auth.currentUser;
-  const account = await ensureAccount(firebaseUser);
+  const account = liveAccount?.firebase_uid === firebaseUser.uid ? liveAccount : await ensureAccount(firebaseUser);
   if (auth.currentUser?.uid !== firebaseUser.uid) throw new Error(`Your Account Changed, Try Again`);
   if (account.account_status === `deactivated`) throw new Error(`Reactivate Your Account To Continue`);
   return account;
@@ -204,6 +216,7 @@ export const subscribeAuth = (onAccount: (account: User | null) => void, onError
     if (expectedRevision !== revision) return;
     unsubscribeAccount?.();
     unsubscribeAccount = undefined;
+    liveAccount = null;
     onAccount(null);
     onError?.(error instanceof Error ? error : new Error(`Unable To Load Your Account`));
     if (!(error instanceof AccountDeletionPending) && firebaseUid && auth.currentUser?.uid === firebaseUid) {
@@ -216,6 +229,7 @@ export const subscribeAuth = (onAccount: (account: User | null) => void, onError
     const currentRevision = ++revision;
     unsubscribeAccount?.();
     unsubscribeAccount = undefined;
+    liveAccount = null;
     if (!firebaseUser) {
       onAccount(null);
       return;
@@ -229,7 +243,9 @@ export const subscribeAuth = (onAccount: (account: User | null) => void, onError
         if (snapshot.metadata.hasPendingWrites) return;
         try {
           const updatedAccount = readUser(snapshot);
+          if (updatedAccount.firebase_uid !== firebaseUser.uid) throw new Error(`Account Data Needs Attention`);
           if (updatedAccount.account_status === `deleting`) throw new AccountDeletionPending(account.id);
+          if (!snapshot.metadata.fromCache) liveAccount = updatedAccount;
           onAccount(updatedAccount);
         } catch (error) {
           if (!snapshot.exists()) {
@@ -268,6 +284,7 @@ export const subscribeAuth = (onAccount: (account: User | null) => void, onError
     revision += 1;
     unsubscribeAuth();
     unsubscribeAccount?.();
+    liveAccount = null;
   };
 };
 

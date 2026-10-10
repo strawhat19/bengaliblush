@@ -11,7 +11,7 @@ import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-
 import { ArrowUpRight, Search, ShoppingBag, SlidersHorizontal, Sparkles, X } from 'lucide-react';
 
 const ShopIndex = () => {
-  const { categories, products: catalogState } = useCatalog();
+  const { categories, products: catalogState } = useCatalog(`products`);
   const { sort, query, catalog, category, products, setSort, setQuery, categoryId, resetFilters, setCategoryId } = useShopIndex(categories);
   const featuredProduct = categories.find((item) => item.id === `apparel`)?.products[1] ?? catalog[0];
 

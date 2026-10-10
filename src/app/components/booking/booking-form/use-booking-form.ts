@@ -22,7 +22,7 @@ type BookingIdentityDraft = {
 };
 
 export const useBookingForm = (onSuccess: BookingSuccessHandler, selectedService?: Service) => {
-  const { services } = useCatalog();
+  const { services } = useCatalog(`services`);
   const { user } = useAuth();
   const accountId = user?.id ?? null;
   const pendingRef = useRef(false);

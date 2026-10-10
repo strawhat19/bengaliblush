@@ -8,7 +8,7 @@ import ServiceRow from '@/app/components/services/service-row/service-row';
 import CatalogStatus from '@/app/components/shop/catalog-status/catalog-status';
 
 const LandingServices = () => {
-  const { services } = useCatalog();
+  const { services } = useCatalog(`services`);
   return (
   <section
     id={`services`}

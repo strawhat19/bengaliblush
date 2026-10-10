@@ -14,7 +14,7 @@ import { ArrowLeft, ArrowUpRight, Check, ChevronDown, ChevronRight, Heart, Minus
 type ProductDetailsProps = { product: Product };
 
 const ProductDetails = ({ product }: ProductDetailsProps) => {
-  const { categories, products } = useCatalog();
+  const { categories, products } = useCatalog(`products`);
   const { quantity, addToBag, bagQuantity, addedQuantity, changeQuantity } = useProductDetails(product);
   const category = getProductCategory(product, categories);
   const story = productCategoryStories[category?.id ?? `health`];
