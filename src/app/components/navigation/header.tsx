@@ -56,7 +56,6 @@ export function BrandMark({ testId = `link-logo` }: { testId?: string }) {
 
 export default function Header({
   onBag,
-  onBook,
   bagCount,
   sticky = true,
   width = 'boxed',
@@ -77,12 +76,6 @@ export default function Header({
     closeProfile();
     closeNotifications();
     onBag();
-  };
-  const openBooking = () => {
-    closeMobile();
-    closeProfile();
-    closeNotifications();
-    onBook();
   };
   const navigateToSection = (event: MouseEvent<HTMLAnchorElement>, section?: string) => {
     closeMobile();
@@ -227,10 +220,26 @@ export default function Header({
               </Link>
             ))}
           </div>
-          <button className="bb-mobile-menu-book" onClick={openBooking} data-testid="button-mobile-book">
-            <span><small>Reserve your chair</small><strong>Book your appointment</strong></span>
-            <span className="bb-mobile-menu-book-icon" aria-hidden="true"><CalendarDays size={17} strokeWidth={1.9} /></span>
-          </button>
+          <div id={`bb-mobile-menu-auth`} className={`bb-mobile-menu-auth`}>
+            <Link
+              onClick={closeMobile}
+              href={siteRoutes.signin.href}
+              id={`bb-mobile-menu-signin`}
+              data-testid={`mobile-link-signin`}
+              className={`bb-button bb-button-outline bb-mobile-menu-auth-link`}
+            >
+              <LogIn size={16} strokeWidth={1.9} aria-hidden={`true`} />{siteRoutes.signin.label}
+            </Link>
+            <Link
+              onClick={closeMobile}
+              href={siteRoutes.signup.href}
+              id={`bb-mobile-menu-signup`}
+              data-testid={`mobile-link-signup`}
+              className={`bb-button bb-button-primary bb-mobile-menu-auth-link`}
+            >
+              <UserPlus size={16} strokeWidth={1.9} aria-hidden={`true`} />{siteRoutes.signup.label}
+            </Link>
+          </div>
         </div>
       </nav>
     </header>

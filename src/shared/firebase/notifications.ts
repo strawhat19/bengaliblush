@@ -24,7 +24,7 @@ const notificationHref = (value: unknown) => {
   throw new Error(`Use An Internal Path Or HTTP URL`);
 };
 
-const normalizeNotification = (input: NotificationInput): NotificationInput => {
+export const normalizeNotification = (input: NotificationInput): NotificationInput => {
   const slug = notificationText(input.slug, `Slug`, 100);
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error(`Use Lowercase Letters, Numbers, And Hyphens For The Slug`);
   if (![`development`, `announcement`].includes(input.kind)) throw new Error(`Choose A Valid Notification Type`);
