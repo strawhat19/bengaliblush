@@ -17,3 +17,5 @@
 9. Expose loading, error, and submission state through the shared service or context. Use skeletons while account data loads and concise Title Case toasts for outcomes. Keep the current user and persisted user record consistent after a profile change.
 
 10. Apply [database guidance](../database/database.md) when persisting users or sessions, [API guidance](../api/api.md) for service operations, [social guidance](../social/social.md) for public profiles, privacy, and authenticated social actions, and [route guidance](../routes/routes.md) for roles and redirects. Follow the chosen framework and preserve existing user data during adoption.
+
+11. In a requested [full App System](../app-system/SKILL.md), define chat participation and catalog/article authoring capabilities explicitly. A dashboard role does not grant every private chat or existing Owner-only contact inbox. Ordinary profile edits cannot change plan/entitlement fields; [pricing publication](../app-system/references/plans.md) is separate from trusted account access. Public contact intake, published blog, active pricing, and public notifications retain their intended guest access.

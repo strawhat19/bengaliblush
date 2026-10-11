@@ -14,6 +14,8 @@
 
 8. Messages and conversations stay private to their authorized participants. Read, send, and mark-read operations enforce membership, and profile visibility never publishes message content. Keep message previews and counts scoped to the current account and clear cached conversation state when the account changes.
 
+Read [the realtime chat contract](../app-system/references/chats.md) when implementing actual conversations, bounded message paging, unread/read receipts, or the full starter; an unconfigured reference screen is not working chat.
+
 9. Support the requested Markdown, rich-text, and code formatting for posts and messages with one shared content format and renderer. Render through an allowlisted parser or structured nodes, escape code and text, and sanitize links. Do not execute scripts or render arbitrary user-authored HTML.
 
 10. Support images through public HTTPS image URLs only; do not add image uploads. Validate URLs at save and render boundaries, allow only the expected HTTPS protocol, and treat images as content rather than executable markup. Preserve useful alt text when supplied.
@@ -23,3 +25,5 @@
 12. Keep editors, feed records, profiles, and conversation views in their own component folders with shared logic and separate web/native rendering where needed. Use the existing theme, descriptive element identifiers, icons, loading skeletons, empty states, and concise Title Case feedback. Local social data is a device demo until a real backend is connected; describe its actual sharing and persistence behavior.
 
 13. Apply [database guidance](../database/database.md) for records and persistence, [API guidance](../api/api.md) for operations, [authentication guidance](../authentication/authentication.md) for sessions and private account data, and [route guidance](../routes/routes.md) for public pages and account actions. Keep the implementation scoped and leave validation to the user unless requested.
+
+14. [App System](../app-system/SKILL.md) includes participant-private chat in the explicitly requested complete core; it does not implicitly add follows or public post feeds. Public blog articles and external YouTube/Reddit references follow [the blog publication/source contract](../app-system/references/blog.md) rather than inheriting access to private social records.

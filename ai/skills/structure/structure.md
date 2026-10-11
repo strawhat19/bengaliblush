@@ -151,6 +151,17 @@ ai/
     social/
       SKILL.md
       social.md
+    admin/
+      SKILL.md
+      admin.md
+      layout.md
+    app-system/
+      SKILL.md
+      system.md
+      references/
+        chats.md
+        plans.md
+        blog.md
 ```
 
 3. app/ is the framework's routing entrypoint. Its layout composes providers and the app shell; page files render component entrypoints or redirects. In another framework, use its existing router directory with the same separation.
@@ -169,7 +180,7 @@ ai/
 
 10. The shared route registry keeps canonical paths, aliases, labels, icons, and allowed roles/capabilities. Profile and Admin navigation consume that registry and the same capability helpers as direct routes. Preserve framework conventions and current URLs; avoid unrelated pages or empty scaffolds.
 
-11. ai/ contains portable instructions and shared integration patterns. Keep app-specific schemas, branding, cloud IDs, credentials, owner bootstrap details, and historical plans in project configuration/documentation outside ai/. Each SKILL.md links to its focused reference. ai/README.md indexes adoption and ai/skills/admin/ describes the connected account/admin/reporting system.
+11. ai/ contains portable instructions and shared integration patterns. Keep app-specific schemas, branding, cloud IDs, credentials, owner bootstrap details, and historical plans in project configuration/documentation outside ai/. Each SKILL.md links to its focused reference. ai/README.md indexes adoption, ai/skills/admin/ describes the connected account/admin/reporting system, and [App System](../app-system/SKILL.md) orchestrates a requested complete starter with focused chat/plans/blog references.
 
 12. Follow the complete data flow: shared enums and helpers support Data, reusable models extend Data, services import those models, contexts consume the service facades, component hooks consume context, and thin routes import component entrypoints. The model index.ts re-exports models; keep service operations in their focused API or service modules. Serialize with toRecord() at the persistence boundary and return public records without credential fields.
 
@@ -180,3 +191,15 @@ ai/
 15. ProfileSettings and useProfileSettings own authenticated profile editing; AccountConnections and useAccountConnections own private connection settings. shared/connections/types.ts defines the private snapshot, values.ts normalizes supported input, and service.ts owns account-scoped persistence. api/connections.ts exposes getConnections, saveConnections, and clearConnections. Keep provider-specific fields in the app's configuration, and keep all credentials separate from public User records regardless of profile visibility.
 
 16. Read [database guidance](../database/database.md) before persistence changes, [API guidance](../api/api.md) before service changes, [authentication guidance](../authentication/authentication.md) for sessions, [social guidance](../social/social.md) for profiles/privacy, [route guidance](../routes/routes.md) for access, then [Admin guidance](../admin/admin.md) for connected profiles, roles, sidebars, dashboards, and reports. Follow AGENTS.md and leave verification to the user unless requested.
+
+17. For the requested full core, map these additional modules to the existing architecture; names below are examples of reusable boundaries, not replacements for working folders. Read [the App System feature map](../app-system/system.md) and its focused contracts. Reuse Firebase, auth/capabilities, IDs, theme, and account shell while keeping private and public data separate.
+
+| Module | Shared Models/Service Boundary | Components/Routes |
+| --- | --- | --- |
+| Admin/Reports | shared/admin, shared/analytics, shared/observability; focused API facades | AdminDashboard, AdminRecords, AnalyticsCharts, ObservabilityPanel |
+| Notifications/Contacts | shared/notifications and shared/formSubmissions; notification/contact facades | Public bell/cards/Contact, private notification manager/request viewer |
+| Private Chat | shared/models/chats and shared/chats; chat facade | ChatInbox/ChatThread/composer and participant-private account/admin routes |
+| Plans/Pricing | shared/models/plans and shared/plans; plans facade | Public Pricing/Home cards and authorized AdminPlans |
+| Blog | shared/models/blog and shared/blog; published-content/authoring facades | BlogIndex/BlogArticle/categories/search and authorized AdminBlog |
+
+Give each view its own logic/rendering/styles where the platforms differ. Thin route files compose the component and capability boundary; shared subscriptions/persistence never live inside route JSX.

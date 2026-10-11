@@ -12,4 +12,10 @@
 
 7. For publishing work: Prepare concrete, reviewable output within the authorized scope. Ensure public policy pages, internal navigation, common redirects, dynamic copyright year, and the Piratechs link are present. Perform external publishing only when authorized.
 
-8. For a new full app or admin system: Use ai/skills/admin/SKILL.md to build themed Profile/Admin sidebars, secure Owner/Admin/Developer/Subscriber capabilities, realtime Firestore feature data, animated dashboards, and protected Vercel Analytics/Observability reports. Adapt sections to the app's purpose/framework. Deliver rules/indexes, secret-free environment examples, and project setup notes; display missing setup or unsupported metrics honestly. Copy ai/ with AGENTS.md to reuse the workflow, keeping app-specific details outside it.
+8. For an account/admin system: Use ai/skills/admin/SKILL.md to build themed Profile/Admin sidebars, secure Owner/Admin/Developer/Subscriber capabilities, realtime Firestore feature data, animated dashboards, and protected Vercel Analytics/Observability reports. Adapt sections to the app's purpose/framework. Deliver rules/indexes, secret-free environment examples, and project setup notes; display missing setup or unsupported metrics honestly. Copy ai/ with AGENTS.md to reuse the workflow, keeping app-specific details outside it.
+
+9. For the complete common-core starter, copy ai/ and AGENTS.md into the destination repository and use this prompt:
+
+> Implement the full App System from ai/skills/app-system/SKILL.md in this project, completing every common-core module while preserving its framework, theme, features, and existing data. Follow AGENTS.md and report any external setup still needed.
+
+Read [the feature map and completion matrix](../skills/app-system/system.md) for what this prompt includes. It requests public frontend, connected auth/users/profile/admin, dashboards/analytics/charts/icons, notifications/contact intake, private realtime chat, plans/pricing, and the sourced blog; existing working modules are reused. Payments, uploads, and external publishing remain separate requested work.
