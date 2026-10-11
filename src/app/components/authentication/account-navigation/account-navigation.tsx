@@ -34,8 +34,8 @@ const AccountNavigation = () => {
           {links.map((item, index) => {
             const { Icon, children } = item;
             const route = `route` in item ? item.route : undefined;
-            const label = `label` in item ? item.label : item.route.label;
-            const navigationKey = `id` in item ? item.id : item.route.href;
+            const label = item.label ?? item.route.label;
+            const navigationKey = item.id ?? item.route.href;
             const itemId = `bb-account-navigation-${id}-item-${index}`;
             const linkId = `bb-account-navigation-${id}-link-${index}`;
             const hasChildren = Boolean(children?.length);

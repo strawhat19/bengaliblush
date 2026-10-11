@@ -3,6 +3,8 @@ import { siteRoutes, type SiteRoute } from '@/shared/navigation/routes';
 import { Bell, Quote, Users, Images, Palette, Package, FileText, UserRound, CreditCard, ReceiptText, CalendarDays, ShoppingBag, MessageCircle, WandSparkles, LayoutDashboard, MessageSquareText } from 'lucide-react';
 
 type AccountNavigationLink = {
+  id?: string;
+  label?: string;
   route: SiteRoute;
   Icon: LucideIcon;
   children?: readonly AccountNavigationLink[];
@@ -63,4 +65,4 @@ export const adminLinks: readonly AccountNavigationItem[] = [
   },
 ];
 export const accountLinks: readonly AccountNavigationLink[] = [{ route: siteRoutes.profile, Icon: UserRound }];
-export const expandableNavigationKeys = [...accountLinks, ...adminLinks].filter((item) => item.children?.length).map((item) => `id` in item ? item.id : item.route.href);
+export const expandableNavigationKeys = [...accountLinks, ...adminLinks].filter((item) => item.children?.length).map((item) => item.id ?? item.route.href);
