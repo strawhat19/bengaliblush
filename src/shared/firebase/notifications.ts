@@ -3,7 +3,7 @@ import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
 import { getRecordPage, subscribeRecords, subscribeRecordPage, firestoreMediaPageSize } from './queries';
 import { createRecordId, getNextNumber, hasMatchingValues } from './records';
-import type { NotificationInput, NotificationRecord } from '@/shared/models/notifications/Notification';
+import type { NotificationInput, NotificationRecord, NotificationStatus } from '@/shared/models/notifications/Notification';
 import { doc, query, where, Timestamp, collection, runTransaction, serverTimestamp, getDocsFromServer, type DocumentData, type DocumentSnapshot, type OrderByDirection } from 'firebase/firestore';
 
 const notificationText = (value: unknown, label: string, maximum: number, optional = false, preserveSpacing = false) => {
@@ -120,6 +120,21 @@ export const saveNotification = async (input: NotificationInput, id?: string): P
     if (!existingRef) transaction.set(counterRef, { number, record_id: savedId });
     if (!reservation.exists()) transaction.set(slugRef, { collection_name: `notifications`, record_id: savedId, slug: values.slug });
     if (oldSlugRef && oldReservation?.data()?.record_id === savedId) transaction.delete(oldSlugRef);
+  });
+};
+
+export const updateNotificationStatus = async (id: string, status: NotificationStatus): Promise<void> => {
+  if (![`draft`, `published`].includes(status)) throw new Error(`Choose A Valid Notification Status`);
+  const { auth, database, firebaseUid } = await requireAdmin();
+  await runTransaction(database, async (transaction) => {
+    if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
+    const ref = doc(database, `notifications`, notificationId(id));
+    const snapshot = await transaction.get(ref);
+    if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
+    if (!snapshot.exists()) throw new Error(`Saved Notification Was Not Found`);
+    const notification = readNotification(snapshot);
+    if (notification.status === status) return;
+    transaction.update(ref, { status, updated_at: serverTimestamp() });
   });
 };
 

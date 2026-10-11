@@ -19,7 +19,7 @@ type OwnerRecordsTableProps = {
   disabled?: boolean;
   overview: OwnerOverview;
   kind: `users` | `contacts` | `appointments`;
-  pagination?: Omit<RecordPaginationProps, `id` | `columns` | `disabled` | `matchingRows`>;
+  pagination?: Omit<RecordPaginationProps, `id` | `columns` | `disabled` | `isFiltered` | `recordType` | `matchingRows`>;
   onStatus: (kind: `contact` | `appointment`, id: string, status: SubmissionStatus) => Promise<void>;
 };
 
@@ -36,6 +36,7 @@ const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, paginati
   const [filter, setFilter] = useState(`all`);
   const { Icon, title, empty, columns } = tableLabels[kind];
   const query = search.trim().toLocaleLowerCase();
+  const isFiltered = Boolean(query) || filter !== `all`;
   const matches = (...values: (string | number)[]) => values.join(` `).toLocaleLowerCase().includes(query);
   const users = overview.users.filter((record) => (filter === `all` || record.role === filter) && matches(record.number, record.name, record.email, record.role, record.account_status ?? `active`));
   const contacts = overview.contacts.filter((record) => (filter === `all` || record.status === filter) && matches(record.number, record.contact, record.message, record.user_id ? `account` : `guest`));
@@ -114,12 +115,12 @@ const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, paginati
                 />
               ))}
             </tbody>
-            {!limit && pagination && <RecordPagination {...pagination} id={`${tableId}-pagination`} columns={columns.length} matchingRows={matchingCount} disabled={disabled || Boolean(savingId)} />}
+            {!limit && pagination && <RecordPagination {...pagination} recordType={title} isFiltered={isFiltered} id={`${tableId}-pagination`} columns={columns.length} matchingRows={matchingCount} disabled={disabled || Boolean(savingId)} />}
           </table>
         </div>
       ) : <>
         <p id={`${tableId}-empty`} className={`bb-owner-records-empty`}>{overview[kind].length ? `No records match these filters.` : empty}</p>
-        {!limit && pagination && <RecordPagination {...pagination} id={`${tableId}-pagination`} matchingRows={matchingCount} disabled={disabled || Boolean(savingId)} />}
+        {!limit && pagination && <RecordPagination {...pagination} recordType={title} isFiltered={isFiltered} id={`${tableId}-pagination`} matchingRows={matchingCount} disabled={disabled || Boolean(savingId)} />}
       </>}
     </section>
   );

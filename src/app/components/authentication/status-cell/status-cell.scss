@@ -1,6 +1,10 @@
 .bb-owner-dashboard {
   .actionsCell { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
   .rowStatus { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .rowStatus.is-editable { padding: 0; border: 0; min-height: 26px; background: transparent; border-radius: 4px; font: inherit; cursor: pointer; transition: opacity 180ms ease; }
+  .rowStatus.is-editable:disabled { opacity: .5; cursor: not-allowed; }
+  .rowStatus.is-editable:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 4px; }
+  .rowStatus.is-editable:hover:not(:disabled) .statusText { text-decoration: underline; text-underline-offset: 3px; }
   .statusDotWrap { display: grid; width: 16px; height: 16px; place-items: center; border-radius: 50%; background: currentColor; }
   .statusDot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .statusText { color: hsl(var(--foreground)); font-size: 11px; }
@@ -8,3 +12,5 @@
   .rowStatus.is-gray .statusDotWrap { background: #64748b20; color: #64748b; }
   .rowStatus.is-red .statusDotWrap { background: #dc262620; color: #dc2626; }
 }
+
+@media (prefers-reduced-motion: reduce) { .bb-owner-dashboard .rowStatus.is-editable { transition: none; } }

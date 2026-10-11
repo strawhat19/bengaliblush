@@ -46,9 +46,9 @@ export const legalContent = {
       },
       {
         id: `reviews`,
-        title: `Published reviews`,
+        title: `Active reviews`,
         paragraphs: [
-          `Reviews managed by the studio are stored in Firestore. Published reviews show the reviewer’s display name, rating, message, service description, and any supplied image on the website. Draft and archived reviews are available only to authorised studio admins and the owner.`,
+          `Reviews managed by the studio are stored in Firestore. Active reviews show the reviewer’s display name, rating, message, service description, and any supplied image on the website. Inactive reviews are available only to authorised studio admins and the owner.`,
         ],
       },
       {

@@ -3,7 +3,7 @@
 import './commerce-editor.scss';
 import { Save, X } from 'lucide-react';
 import { sectionStatuses } from '../commerce-data';
-import { getStatusLabel } from '../../status-cell/status-cell';
+import { getStatusLabel, getVisibilityStatus } from '../../status-cell/status-cell';
 import type { CommerceMutation } from '../use-admin-commerce';
 import { commerceFields, useCommerceEditor } from './use-commerce-editor';
 import type { EditableCommerceSection, EditableCommerceRecord } from '../commerce-data';
@@ -48,12 +48,12 @@ const CommerceEditor = ({ busy, record, section, onSave, onClose }: CommerceEdit
         })}
         <label id={`${editorId}-status-label`} htmlFor={`${editorId}-status`} className={`bb-commerce-editor-field`}>
           <span id={`${editorId}-status-label-text`} className={`bb-commerce-editor-field-label`}>Status</span>
-          <select id={`${editorId}-status`} value={values.status} disabled={cardMethod} className={`bb-commerce-editor-input`} onChange={(event) => setField(`status`, event.currentTarget.value)}>{sectionStatuses[section].map((status) => <option key={status} value={status} id={`${editorId}-status-${status}`}>{getStatusLabel(status)}</option>)}</select>
+          <select id={`${editorId}-status`} value={values.status} disabled={cardMethod} className={`bb-commerce-editor-input`} onChange={(event) => setField(`status`, event.currentTarget.value)}>{sectionStatuses[section].map((status) => <option key={status} value={status} id={`${editorId}-status-${status}`}>{getStatusLabel(getVisibilityStatus(status))}</option>)}</select>
         </label>
       </fieldset>
       {section === `services` && record && <p id={`${editorId}-service-note`} className={`bb-commerce-editor-note`}>Existing highlights, preparation, frequently asked questions, and related articles are preserved.</p>}
-      {section === `paymentMethods` && <p id={`${editorId}-payment-note`} className={`bb-commerce-editor-note`}>Store only a name and public description here. Card methods stay disabled until Stripe is connected.</p>}
-      {section === `reviews` && <p id={`${editorId}-review-note`} className={`bb-commerce-editor-note`}>Published reviews appear on the website. Draft and archived reviews remain in Admin.</p>}
+      {section === `paymentMethods` && <p id={`${editorId}-payment-note`} className={`bb-commerce-editor-note`}>Store only a name and public description here. Card methods stay inactive until Stripe is connected.</p>}
+      {section === `reviews` && <p id={`${editorId}-review-note`} className={`bb-commerce-editor-note`}>Active reviews appear on the website. Inactive reviews remain in Admin.</p>}
       <div id={`${editorId}-actions`} className={`bb-commerce-editor-actions`}>
         <button type={`button`} disabled={busy} onClick={onClose} id={`${editorId}-cancel`} className={`bb-commerce-editor-cancel`}><X size={14} aria-hidden={`true`} />Cancel</button>
         <button type={`submit`} disabled={busy} id={`${editorId}-save`} className={`bb-button bb-button-primary`}><Save size={14} aria-hidden={`true`} />{busy ? `Saving` : `Save`}</button>

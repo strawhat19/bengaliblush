@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import './commerce-record-row.scss';
 import { Eye, Settings } from 'lucide-react';
-import StatusCell, { getStatusLabel } from '../../status-cell/status-cell';
+import StatusCell, { getStatusLabel, getVisibilityStatus } from '../../status-cell/status-cell';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
 import type { OrderRecord, PaymentMethodRecord } from '@/shared/models/commerce/Commerce';
 import { formatCommerceDate, formatCommerceAmount, sectionStatuses, type CommerceRecord, type EditableCommerceRecord } from '../commerce-data';
@@ -13,10 +13,11 @@ type CommerceRecordRowProps = {
   record: CommerceRecord;
   paymentMethods: PaymentMethodRecord[];
   onEdit: (record: EditableCommerceRecord) => void;
+  onStatus: (record: EditableCommerceRecord) => Promise<boolean>;
   onOrderStatus: (id: string, status: OrderRecord[`status`]) => Promise<boolean>;
 };
 
-const CommerceRecordRow = ({ busy, record, onEdit, onOrderStatus, paymentMethods }: CommerceRecordRowProps) => {
+const CommerceRecordRow = ({ busy, record, onEdit, onStatus, onOrderStatus, paymentMethods }: CommerceRecordRowProps) => {
   const rowId = `bb-commerce-row-${record.id}`;
   if (`items` in record) {
     const paymentMethod = paymentMethods.find((method) => method.id === record.payment_method_id);
@@ -90,7 +91,7 @@ const CommerceRecordRow = ({ busy, record, onEdit, onOrderStatus, paymentMethods
         </div>
       </td>
       <td id={`${rowId}-detail`} className={`bb-commerce-record-detail`}>{details}</td>
-      <td id={`${rowId}-status-cell`} className={`bb-commerce-record-status`}><StatusCell id={rowId} status={record.status} /></td>
+      <td id={`${rowId}-status-cell`} className={`bb-commerce-record-status`}><StatusCell id={rowId} label={record.name} status={getVisibilityStatus(record.status)} disabled={busy || (`type` in record && record.type === `card`)} onToggle={() => { void onStatus(record); }} /></td>
       <td id={`${rowId}-updated`} className={`bb-commerce-record-date`}>{formatCommerceDate(record.updated_at)}</td>
       <td id={`${rowId}-actions-cell`} className={`bb-commerce-record-actions`}><div id={`${rowId}-actions`} className={`actionsCell`}><button type={`button`} disabled={busy} id={`${rowId}-edit`} title={`Edit ${record.name}`} className={`bb-commerce-record-edit`} aria-label={`Edit ${record.name}`} onClick={() => onEdit(record)}><Settings size={14} aria-hidden={`true`} /></button></div></td>
     </tr>

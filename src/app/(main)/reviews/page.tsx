@@ -5,7 +5,7 @@ import BengaliBlushLanding from '@/app/components/landing/bengali-blush-landing'
 export const metadata: Metadata = {
   title: `Reviews | Bengali Blush`,
   alternates: { canonical: `/reviews` },
-  description: `Explore published Bengali Blush reviews and beauty stories from the studio.`,
+  description: `Explore active Bengali Blush reviews and beauty stories from the studio.`,
 };
 
 const ReviewsRoute = () => {

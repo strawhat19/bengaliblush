@@ -15,6 +15,10 @@
 .bb-owner-dashboard-title { margin: 15px 0 12px; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: clamp(34px, 4vw, 52px); font-weight: 500; letter-spacing: -.04em; line-height: 1.15; }
 .bb-owner-dashboard-title.has-table-icon { display: flex; align-items: center; gap: 12px; }
 .bb-owner-dashboard-title-icon { flex: none; color: hsl(var(--secondary)); }
+:root[data-theme='dark'] .bb-owner-dashboard-heading.has-table-stats {
+  .bb-eyebrow::before { background: hsl(var(--primary)); }
+  .bb-owner-dashboard-title-icon, .bb-owner-dashboard-eyebrow-separator { color: hsl(var(--primary)); }
+}
 .bb-table-number-badge { display: inline-flex; min-width: 24px; min-height: 24px; align-items: center; justify-content: center; border-radius: 5px; padding: 3px 6px; background: hsl(var(--primary)); color: var(--bb-brand-cream); font-family: var(--app-font-mono); font-size: 10px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
 .bb-owner-dashboard-description { max-width: 580px; margin: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 12px; line-height: 1.8; }
 .bb-owner-dashboard-refresh { min-height: 38px; flex: none; padding: 10px 14px; font-size: 10px; }

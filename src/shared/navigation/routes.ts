@@ -263,7 +263,7 @@ export const siteRoutes = {
     href: `/admin/reviews`,
     minimumRole: Roles.Admin,
     title: `Reviews | Bengali Blush`,
-    description: `Manage published studio reviews`,
+    description: `Manage active and inactive studio reviews`,
   },
   adminGallery: {
     icon: `Images`,
@@ -279,7 +279,7 @@ export const siteRoutes = {
     minimumRole: Roles.Admin,
     href: `/admin/notifications`,
     title: `Notifications | Bengali Blush`,
-    description: `Manage draft and published studio notices`,
+    description: `Manage active and inactive studio notices`,
   },
 } satisfies Record<string, SiteRoute>;
 

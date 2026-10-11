@@ -1,11 +1,12 @@
 import { useAuth } from '@/shared/authContext/useAuth';
+import type { EditableCommerceRecord } from './commerce-data';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { useCatalog } from '@/shared/shop/catalog-context';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useRecordPagination } from '@/shared/firebase/use-record-pagination';
 import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
 import type { OrderRecord, ProductInput, ServiceInput, ReviewInput, PaymentMethodInput } from '@/shared/models/commerce/Commerce';
-import { subscribeCommerceOverview, saveProduct, saveService, saveReview, savePaymentMethod, updateOrderStatus, importStudioCatalog, type CommerceOverview } from '@/api/commerce';
+import { subscribeCommerceOverview, saveProduct, saveService, saveReview, savePaymentMethod, updateOrderStatus, importStudioCatalog, updateCommerceRecordStatus, type CommerceOverview } from '@/api/commerce';
 
 export type CommerceMutation =
   | { section: `products`; input: ProductInput; id?: string }
@@ -96,10 +97,19 @@ export const useAdminCommerce = (section?: keyof CommerceOverview) => {
     return `Order Status Updated`;
   });
 
+  const saveRecordStatus = (record: EditableCommerceRecord) => {
+    if (!section || section === `orders`) return Promise.resolve(false);
+    const active = record.status !== `active` && record.status !== `published`;
+    return runMutation(record.id, async () => {
+      await updateCommerceRecordStatus(section, record.id, active);
+      return `Record ${active ? `Activated` : `Deactivated`}`;
+    }, true);
+  };
+
   const importCatalog = () => runMutation(`import`, async () => {
     const result = await importStudioCatalog();
     return `${result.products} Product(s) And ${result.services} Service(s) Imported`;
   }, true);
 
-  return { error, notice, reload, loading, overview, savingId, refreshing, pagination, saveRecord, importCatalog, saveOrderStatus };
+  return { error, notice, reload, loading, overview, savingId, refreshing, pagination, saveRecord, importCatalog, saveOrderStatus, saveRecordStatus };
 };

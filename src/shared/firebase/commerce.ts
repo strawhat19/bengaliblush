@@ -119,6 +119,22 @@ export const saveService = async (input: ServiceInput, id?: string): Promise<voi
 export const saveReview = async (input: ReviewInput, id?: string): Promise<void> => { await saveRecord(`reviews`, `Review`, normalizeReview(input), id); };
 export const savePaymentMethod = async (input: PaymentMethodInput, id?: string): Promise<void> => { await saveRecord(`paymentMethods`, `PaymentMethod`, normalizePaymentMethod(input), id); };
 
+export const updateCommerceRecordStatus = async (section: Exclude<CommerceSection, `orders`>, id: string, active: boolean): Promise<void> => {
+  if (![`reviews`, `products`, `services`, `paymentMethods`].includes(section) || typeof active !== `boolean`) throw new Error(`Choose A Valid Record Status`);
+  const { auth, database, firebaseUid } = await requireAdmin();
+  const status = section === `reviews` ? active ? `published` : `draft` : active ? `active` : section === `paymentMethods` ? `disabled` : `archived`;
+  await runTransaction(database, async (transaction) => {
+    const ref = doc(database, section, recordId(id));
+    const snapshot = await transaction.get(ref);
+    if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
+    if (!snapshot.exists()) throw new Error(`Saved Record Was Not Found`);
+    const record = commerceReaders[section](snapshot);
+    if (active && `type` in record && record.type === `card`) throw new Error(`Card Payments Are Not Connected`);
+    if (record.status === status) return;
+    transaction.update(ref, { status, updated_at: serverTimestamp() });
+  });
+};
+
 export const updateOrderStatus = async (id: string, status: OrderStatus): Promise<void> => {
   if (!orderStatuses.includes(status)) throw new Error(`Choose A Valid Order Status`);
   const { auth, database, firebaseUid } = await requireAdmin();

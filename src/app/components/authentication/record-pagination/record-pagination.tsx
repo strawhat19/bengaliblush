@@ -3,10 +3,11 @@ import './record-pagination.scss';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { useRecordPagination } from '@/shared/firebase/use-record-pagination';
 
-export type RecordPaginationProps = ReturnType<typeof useRecordPagination> & { id: string; columns?: number; disabled?: boolean; matchingRows: number };
+export type RecordPaginationProps = ReturnType<typeof useRecordPagination> & { id: string; recordType: string; isFiltered: boolean; columns?: number; disabled?: boolean; matchingRows: number };
 
-const RecordPagination = ({ id, page, pages, columns, disabled, totalRows, nextCursor, canGoBack, matchingRows, goToPage, nextPage, previousPage }: RecordPaginationProps) => {
-  const pageInfo = `Rows ${matchingRows} / ${totalRows ?? `…`}`;
+const RecordPagination = ({ id, page, pages, columns, disabled, totalRows, recordType, isFiltered, nextCursor, canGoBack, matchingRows, goToPage, nextPage, previousPage }: RecordPaginationProps) => {
+  const totalLabel = `${totalRows ?? `…`} ${recordType}`;
+  const pageInfo = isFiltered ? `${matchingRows} / ${totalLabel}` : totalLabel;
   const firstVisiblePage = Math.max(1, Math.min(page - 1, pages.length - 2));
   const visiblePages = pages.filter((number, index) => index === 0 || index === pages.length - 1 || (number >= firstVisiblePage && number < firstVisiblePage + 3));
   const pagination = (

@@ -25,6 +25,7 @@ const AdminEventsContent = () => {
   const [filter, setFilter] = useState(`all`);
   const [editor, setEditor] = useState<EventRecord | `new` | null>(null);
   const query = search.trim().toLocaleLowerCase();
+  const isFiltered = Boolean(query) || filter !== `all`;
   const matchingRecords = records?.filter((record) => (filter === `all` || record.status === filter) && [record.number, record.title, record.description, record.date, record.time, record.location].join(` `).toLocaleLowerCase().includes(query)) ?? [];
   const busy = Boolean(savingId) || refreshing;
   const pageId = `bb-admin-events`;
@@ -69,9 +70,9 @@ const AdminEventsContent = () => {
                   <button type={`button`} disabled={busy} id={`${pageId}-add`} className={`bb-button bb-button-primary bb-admin-events-add`} onClick={() => setEditor(`new`)}><Plus size={14} aria-hidden={`true`} />Add Event</button>
                 </div>
               </div>
-              {matchingRecords.length ? <div id={`${pageId}-table-wrap`} className={`bb-owner-table-wrap`}><table id={`${pageId}-table`} className={`bb-owner-table bb-admin-events-table`}><caption id={`${pageId}-table-caption`} className={`bb-owner-table-caption`}>Studio Events</caption><thead id={`${pageId}-table-head`} className={`bb-owner-table-head`}><tr id={`${pageId}-column-row`} className={`bb-owner-table-column-row`}>{[`No.`, `Event`, `Schedule`, `Location`, `Status`, `Updated`, `Manage`].map((label, index) => <th key={label} scope={`col`} id={`${pageId}-column-${index}`} className={`bb-owner-table-column`}>{label}</th>)}</tr></thead><tbody id={`${pageId}-table-body`} className={`bb-owner-table-body`}>{matchingRecords.map((record) => <EventRow key={record.id} busy={busy} record={record} onEdit={setEditor} />)}</tbody><RecordPagination {...pagination} columns={7} id={`${pageId}-pagination`} disabled={busy} matchingRows={matchingRecords.length} /></table></div>
+              {matchingRecords.length ? <div id={`${pageId}-table-wrap`} className={`bb-owner-table-wrap`}><table id={`${pageId}-table`} className={`bb-owner-table bb-admin-events-table`}><caption id={`${pageId}-table-caption`} className={`bb-owner-table-caption`}>Studio Events</caption><thead id={`${pageId}-table-head`} className={`bb-owner-table-head`}><tr id={`${pageId}-column-row`} className={`bb-owner-table-column-row`}>{[`No.`, `Event`, `Schedule`, `Location`, `Status`, `Updated`, `Manage`].map((label, index) => <th key={label} scope={`col`} id={`${pageId}-column-${index}`} className={`bb-owner-table-column`}>{label}</th>)}</tr></thead><tbody id={`${pageId}-table-body`} className={`bb-owner-table-body`}>{matchingRecords.map((record) => <EventRow key={record.id} busy={busy} record={record} onEdit={setEditor} />)}</tbody><RecordPagination {...pagination} columns={7} id={`${pageId}-pagination`} disabled={busy} matchingRows={matchingRecords.length} isFiltered={isFiltered} recordType={siteRoutes.adminEvents.label} /></table></div>
                 : records && <p id={`${pageId}-empty`} className={`bb-owner-records-empty`}>{records.length ? `No events match these filters.` : `No events saved yet. Add an event to get started.`}</p>}
-              {records && !matchingRecords.length && <RecordPagination {...pagination} id={`${pageId}-pagination`} disabled={busy} matchingRows={matchingRecords.length} />}
+              {records && !matchingRecords.length && <RecordPagination {...pagination} id={`${pageId}-pagination`} disabled={busy} matchingRows={matchingRecords.length} isFiltered={isFiltered} recordType={siteRoutes.adminEvents.label} />}
             </section>
           )}
           {!loading && !records && error && <p id={`${pageId}-retry-note`} className={`bb-owner-dashboard-description`}>Reload the page to try loading records again.</p>}

@@ -33,7 +33,7 @@ const ReviewsPage = () => {
               Explore Services <WandSparkles size={16} aria-hidden={`true`} />
             </Link>
             <p id={`bb-reviews-preview-note`} className={`bb-reviews-preview-note`}>
-              Published reviews shared with the studio.
+              Active reviews shared with the studio.
             </p>
           </div>
           {portrait ? (
@@ -71,7 +71,7 @@ const ReviewsPage = () => {
             </div>
             <span id={`bb-reviews-stories-label`} className={`bb-reviews-stories-label`}>Client Beauty Stories</span>
           </div>
-          {reviews.loading || reviews.error || !reviews.records.length ? <CatalogStatus id={`bb-reviews-status`} loading={reviews.loading} error={reviews.error} empty={`Published reviews will appear here.`} /> : (
+          {reviews.loading || reviews.error || !reviews.records.length ? <CatalogStatus id={`bb-reviews-status`} loading={reviews.loading} error={reviews.error} empty={`Active reviews will appear here.`} /> : (
             <div id={`bb-reviews-grid`} className={`bb-reviews-grid`}>
               {reviews.records.map((review) => <ReviewCard key={review.id} review={review} />)}
             </div>

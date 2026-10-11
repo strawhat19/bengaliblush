@@ -49,6 +49,7 @@ export const commerceFields: Record<EditableCommerceSection, CommerceField[]> = 
 const getInitialValues = (section: EditableCommerceSection, record: EditableCommerceRecord | null) => {
   const values: Record<string, string> = { name: ``, slug: ``, description: ``, status: section === `reviews` ? `draft` : `active`, price: section === `services` ? `$0+` : `0`, category_id: `health`, category_name: `Health`, shade: `rose`, visual: `serum`, label: ``, duration: ``, image: ``, imageAlt: ``, service: ``, rating: `5`, type: `manual`, headingFirst: ``, headingAccent: ``, headingLast: `` };
   if (record) Object.entries(record).forEach(([key, value]) => { if (typeof value === `string` || typeof value === `number`) values[key] = String(value); });
+  if (section === `reviews` && values.status === `archived`) values.status = `draft`;
   if (record && `category_name` in record) values.visual = record.visual ?? ``;
   if (record && `heading` in record) {
     values.headingFirst = record.heading.first;

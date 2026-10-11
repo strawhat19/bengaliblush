@@ -19,6 +19,7 @@ type ShopContextValue = {
   catalogError: string;
   unavailableProductIds: string[];
   clearCart: () => void;
+  removeUnavailableProducts: () => void;
   openBag: () => void;
   removeProduct: (id: string) => void;
   decrementProduct: (id: string) => void;
@@ -28,13 +29,19 @@ type ShopContextValue = {
 
 const ShopContext = createContext<ShopContextValue | null>(null);
 
-export const getCartLines = (cart: Product[], catalog: Product[] = []): CartLine[] => Array.from(cart.reduce((lines, item) => {
-  const product = catalog.find((product) => product.id === item.id || product.slug === item.id) ?? item;
+export const getCartLines = (cart: Product[], catalog?: Product[]): CartLine[] => Array.from(cart.reduce((lines, item) => {
+  const product = catalog ? catalog.find((product) => product.id === item.id || product.slug === item.id) : item;
+  if (!product) return lines;
   const line = lines.get(product.id);
   if (line) line.quantity += 1;
   else lines.set(product.id, { product, quantity: 1 });
   return lines;
 }, new Map<string, CartLine>()).values());
+
+export const getUnavailableCartProductIds = (cart: Product[], catalog: Product[]) => Array.from(new Set(cart.filter((item) => !catalog.some((product) => product.id === item.id || product.slug === item.id)).map(({ id }) => id)));
+
+export const removeUnavailableCartProducts = (ids: readonly string[]) =>
+  writeStoredCart(getStoredCartSnapshot().filter((item) => !ids.includes(item.id)));
 
 export const decrementCartProduct = (id: string) => {
   const cart = getStoredCartSnapshot();
@@ -60,20 +67,23 @@ export const ShopProvider = ({ cart, onAdd, onOpenBag, children }: {
     if (JSON.stringify(refreshedCart) !== JSON.stringify(storedCart)) writeStoredCart(refreshedCart);
   }, [products]);
   const value = useMemo<ShopContextValue>(() => {
-    const lines = getCartLines(cart, products.records);
+    const catalogReady = !products.loading && !products.error;
+    const lines = getCartLines(cart, catalogReady ? products.records : []);
+    const unavailableProductIds = catalogReady ? getUnavailableCartProductIds(cart, products.records) : [];
     return {
       cart,
       lines,
-      count: cart.length,
+      count: lines.reduce((total, { quantity }) => total + quantity, 0),
       addProduct: onAdd,
       openBag: onOpenBag,
       catalogError: cart.length > 0 ? products.error : ``,
       catalogLoading: cart.length > 0 && products.loading,
       clearCart: () => writeStoredCart([]),
-      unavailableProductIds: lines.filter(({ product }) => !products.records.some((item) => item.id === product.id)).map(({ product }) => product.id),
+      unavailableProductIds,
       removeProduct: removeCartProduct,
       decrementProduct: decrementCartProduct,
       incrementProduct: (product) => onAdd(product),
+      removeUnavailableProducts: () => removeUnavailableCartProducts(unavailableProductIds),
       subtotal: lines.reduce((total, { product, quantity }) => total + product.price * quantity, 0),
     };
   }, [cart, onAdd, onOpenBag, products]);

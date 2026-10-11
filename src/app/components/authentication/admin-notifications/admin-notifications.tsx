@@ -15,6 +15,7 @@ import NotificationEditor from './notification-editor/notification-editor';
 import RecordPagination from '../record-pagination/record-pagination';
 import AdminEditorModal from '../admin-editor-modal/admin-editor-modal';
 import { Bell, Plus, Search, CircleCheck } from 'lucide-react';
+import { getVisibilityStatus } from '../status-cell/status-cell';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 
 const AdminNotificationsContent = () => {
@@ -24,10 +25,11 @@ const AdminNotificationsContent = () => {
   const [deletingId, setDeletingId] = useState(``);
   const [editor, setEditor] = useState<NotificationRecord | `new` | null>(null);
   const query = search.trim().toLocaleLowerCase();
-  const matchingRecords = records?.filter((record) => (filter === `all` || record.status === filter) && [record.number, record.title, record.body, record.slug, record.kind, record.suffix, record.link?.label, record.link?.href].join(` `).toLocaleLowerCase().includes(query)) ?? [];
+  const isFiltered = Boolean(query) || filter !== `all`;
+  const matchingRecords = records?.filter((record) => (filter === `all` || getVisibilityStatus(record.status) === filter) && [record.number, record.title, record.body, record.slug, record.kind, record.suffix, getVisibilityStatus(record.status), record.link?.label, record.link?.href].join(` `).toLocaleLowerCase().includes(query)) ?? [];
   const busy = Boolean(savingId) || refreshing;
   const pageId = `bb-admin-notifications`;
-  const published = records?.filter((record) => record.status === `published`).length ?? 0;
+  const active = records?.filter((record) => getVisibilityStatus(record.status) === `active`).length ?? 0;
   const edit = (record: NotificationRecord | `new`) => { setDeletingId(``); setEditor(record); };
   const requestDelete = (record: NotificationRecord) => { setEditor(null); setDeletingId(record.id); };
 
@@ -43,8 +45,8 @@ const AdminNotificationsContent = () => {
             </div>
             {!loading && records && <dl id={`${pageId}-summary`} className={`bb-admin-notifications-summary`}>{[
               { id: `total`, label: `Notifications On This Page`, value: records.length },
-              { id: `published`, label: `Published`, value: published },
-              { id: `drafts`, label: `Drafts`, value: records.length - published },
+              { id: `active`, label: `Active`, value: active },
+              { id: `inactive`, label: `Inactive`, value: records.length - active },
             ].map(({ id, label, value }) => <div key={id} id={`${pageId}-summary-${id}`} className={`bb-admin-notifications-summary-card`}><dt id={`${pageId}-summary-${id}-label`} className={`bb-admin-notifications-summary-label`}>{label}</dt><dd id={`${pageId}-summary-${id}-value`} className={`bb-admin-notifications-summary-value`}>{value}</dd></div>)}</dl>}
           </div>
           {error && <p id={`${pageId}-error`} className={`bb-owner-dashboard-error`} role={`alert`}>{error}</p>}
@@ -65,15 +67,15 @@ const AdminNotificationsContent = () => {
                 <div id={`${pageId}-filters`} className={`bb-owner-records-filters`}>
                   <label id={`${pageId}-search-label`} htmlFor={`${pageId}-search`} className={`bb-owner-records-search`}><Search size={15} aria-hidden={`true`} /><input id={`${pageId}-search`} type={`search`} value={search} className={`bb-owner-records-search-input`} aria-label={`Search Notifications`} placeholder={`Search notifications`} onChange={(event) => setSearch(event.currentTarget.value)} /></label>
                   <label id={`${pageId}-filter-label`} htmlFor={`${pageId}-filter`} className={`bb-owner-records-filter-label`}>Status</label>
-                  <select id={`${pageId}-filter`} value={filter} className={`bb-owner-records-filter`} onChange={(event) => setFilter(event.currentTarget.value)}><option id={`${pageId}-filter-all`} value={`all`}>All Statuses</option><option id={`${pageId}-filter-published`} value={`published`}>Published</option><option id={`${pageId}-filter-draft`} value={`draft`}>Draft</option></select>
+                  <select id={`${pageId}-filter`} value={filter} className={`bb-owner-records-filter`} onChange={(event) => setFilter(event.currentTarget.value)}><option id={`${pageId}-filter-all`} value={`all`}>All Statuses</option><option id={`${pageId}-filter-active`} value={`active`}>Active</option><option id={`${pageId}-filter-inactive`} value={`inactive`}>Inactive</option></select>
                   <div id={`${pageId}-filter-actions`} className={`bb-admin-notifications-filter-actions`}>
                     <button type={`button`} disabled={busy} id={`${pageId}-add`} className={`bb-button bb-button-primary bb-admin-notifications-add`} onClick={() => edit(`new`)}><Plus size={14} aria-hidden={`true`} />Add Notification</button>
                   </div>
                 </div>
-                {matchingRecords.length ? <div id={`${pageId}-table-wrap`} className={`bb-owner-table-wrap`}><table id={`${pageId}-table`} className={`bb-owner-table bb-admin-notifications-table`}><caption id={`${pageId}-table-caption`} className={`bb-owner-table-caption`}>Studio Notifications</caption><thead id={`${pageId}-table-head`} className={`bb-owner-table-head`}><tr id={`${pageId}-column-row`} className={`bb-owner-table-column-row`}>{[`No.`, `Title`, `Kind`, `Status`, `Updated`, `Actions`].map((label, index) => <th key={label} scope={`col`} id={`${pageId}-column-${index}`} className={`bb-owner-table-column`}>{label}</th>)}</tr></thead><tbody id={`${pageId}-table-body`} className={`bb-owner-table-body`}>{matchingRecords.map((record) => <NotificationRow key={record.id} busy={busy} record={record} onEdit={edit} onDelete={remove} onStatus={changeStatus} onRequestDelete={requestDelete} confirming={deletingId === record.id} onCancelDelete={() => setDeletingId(``)} />)}</tbody><RecordPagination {...pagination} columns={6} id={`${pageId}-pagination`} disabled={busy} matchingRows={matchingRecords.length} /></table></div>
-                  : <p id={`${pageId}-empty`} className={`bb-owner-records-empty`}>{records.length ? `No notifications match these filters.` : `No notifications saved yet. Add a draft to get started.`}</p>}
+                {matchingRecords.length ? <div id={`${pageId}-table-wrap`} className={`bb-owner-table-wrap`}><table id={`${pageId}-table`} className={`bb-owner-table bb-admin-notifications-table`}><caption id={`${pageId}-table-caption`} className={`bb-owner-table-caption`}>Studio Notifications</caption><thead id={`${pageId}-table-head`} className={`bb-owner-table-head`}><tr id={`${pageId}-column-row`} className={`bb-owner-table-column-row`}>{[`No.`, `Title`, `Kind`, `Status`, `Updated`, `Actions`].map((label, index) => <th key={label} scope={`col`} id={`${pageId}-column-${index}`} className={`bb-owner-table-column`}>{label}</th>)}</tr></thead><tbody id={`${pageId}-table-body`} className={`bb-owner-table-body`}>{matchingRecords.map((record) => <NotificationRow key={record.id} busy={busy} record={record} onEdit={edit} onDelete={remove} onStatus={changeStatus} onRequestDelete={requestDelete} confirming={deletingId === record.id} onCancelDelete={() => setDeletingId(``)} />)}</tbody><RecordPagination {...pagination} columns={6} id={`${pageId}-pagination`} disabled={busy} isFiltered={isFiltered} matchingRows={matchingRecords.length} recordType={siteRoutes.adminNotifications.label} /></table></div>
+                  : <p id={`${pageId}-empty`} className={`bb-owner-records-empty`}>{records.length ? `No notifications match these filters.` : `No notifications saved yet. Add a notification to get started.`}</p>}
               </section>
-              {!matchingRecords.length && <RecordPagination {...pagination} id={`${pageId}-pagination`} disabled={busy} matchingRows={matchingRecords.length} />}
+              {!matchingRecords.length && <RecordPagination {...pagination} id={`${pageId}-pagination`} disabled={busy} isFiltered={isFiltered} matchingRows={matchingRecords.length} recordType={siteRoutes.adminNotifications.label} />}
             </>
           )}
           {!loading && !records && error && <p id={`${pageId}-retry-note`} className={`bb-owner-dashboard-description`}>Reload the page to try loading records again.</p>}

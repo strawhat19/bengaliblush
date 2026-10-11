@@ -3,7 +3,7 @@ import { siteRoutes } from '@/shared/navigation/routes';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useRecordPagination } from '@/shared/firebase/use-record-pagination';
 import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
-import { subscribeAdminNotifications, saveNotification, deleteNotification } from '@/api/notifications';
+import { subscribeAdminNotifications, saveNotification, deleteNotification, updateNotificationStatus } from '@/api/notifications';
 import type { NotificationInput, NotificationRecord, NotificationStatus } from '@/shared/models/notifications/Notification';
 
 export const getNotificationInput = (record: NotificationRecord, status: NotificationStatus = record.status): NotificationInput => ({
@@ -84,9 +84,12 @@ export const useAdminNotifications = () => {
     }
   };
 
-  const save = (input: NotificationInput, id?: string) => runMutation(id ?? `new`, () => saveNotification(input, id), input.status === `published` ? `Notification Published` : `Draft Saved`);
+  const save = (input: NotificationInput, id?: string) => runMutation(id ?? `new`, () => saveNotification(input, id), `Notification Saved`);
   const remove = (record: NotificationRecord) => runMutation(record.id, () => deleteNotification(record.id), `Notification Deleted`);
-  const changeStatus = (record: NotificationRecord) => save(getNotificationInput(record, record.status === `published` ? `draft` : `published`), record.id);
+  const changeStatus = (record: NotificationRecord) => {
+    const status = record.status === `published` ? `draft` : `published`;
+    return runMutation(record.id, () => updateNotificationStatus(record.id, status), status === `published` ? `Notification Activated` : `Notification Deactivated`);
+  };
 
   return { save, error, notice, reload, remove, records, loading, savingId, refreshing, pagination, changeStatus };
 };

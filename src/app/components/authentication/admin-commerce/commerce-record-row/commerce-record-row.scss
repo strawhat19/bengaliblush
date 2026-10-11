@@ -16,6 +16,8 @@
 .bb-commerce-record-number { font-family: var(--app-font-mono); font-size: 10px; }
 .bb-commerce-record-detail { min-width: 120px; line-height: 1.6; }
 .bb-commerce-record-date { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; white-space: nowrap; }
+.bb-commerce-record-actions { text-align: right; }
+.bb-owner-dashboard .bb-commerce-record-actions > .actionsCell { justify-content: flex-end; }
 .bb-commerce-record-edit { display: inline-flex; width: 30px; height: 26px; flex: none; align-items: center; justify-content: center; border: 1px solid hsl(var(--primary)); border-radius: 5px; padding: 0; background: hsl(var(--primary)); color: var(--bb-brand-cream); cursor: pointer; transition: background-color .2s ease; }
 .bb-commerce-record-edit:hover:not(:disabled) { background: color-mix(in srgb, hsl(var(--primary)) 88%, var(--bb-brand-ink)); }
 .bb-commerce-record-edit:disabled { cursor: default; opacity: .5; }
@@ -23,10 +25,10 @@
 .bb-commerce-order-items { min-width: 165px; }
 .bb-commerce-order-item { display: block; margin-bottom: 7px; font-size: 10px; line-height: 1.6; }
 .bb-commerce-order-details { min-width: 30px; }
-.bb-commerce-order-summary { list-style: none; }
+.bb-commerce-order-summary { display: flex; margin-left: auto; list-style: none; }
 .bb-commerce-order-summary::-webkit-details-marker { display: none; }
 .bb-commerce-order-summary > svg { flex: none; }
-.bb-commerce-order-details-content { width: 230px; margin-top: 16px; animation: bb-commerce-details-in .24s ease both; }
+.bb-commerce-order-details-content { width: 230px; margin: 16px 0 0 auto; text-align: left; animation: bb-commerce-details-in .24s ease both; }
 .bb-commerce-order-details-record { display: grid; gap: 14px; margin: 0; }
 .bb-commerce-order-detail { display: grid; gap: 5px; }
 .bb-commerce-order-detail-label, .bb-commerce-order-status-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }

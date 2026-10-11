@@ -1,10 +1,10 @@
 'use client';
 
 import './notification-row.scss';
-import { X, Eye, Trash2, Settings } from 'lucide-react';
+import { X, Trash2, Settings } from 'lucide-react';
 import { formatRecordDate } from '../../owner-dashboard/dashboard-data';
-import StatusCell, { getStatusLabel } from '../../status-cell/status-cell';
 import { notificationIcons } from '@/shared/notifications/notification-icons';
+import StatusCell, { getStatusLabel, getVisibilityStatus } from '../../status-cell/status-cell';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 
 type NotificationRowProps = {
@@ -20,7 +20,6 @@ type NotificationRowProps = {
 
 const NotificationRow = ({ busy, record, confirming, onEdit, onDelete, onStatus, onRequestDelete, onCancelDelete }: NotificationRowProps) => {
   const rowId = `bb-admin-notification-${record.id}`;
-  const published = record.status === `published`;
   const Icon = notificationIcons[record.kind];
   return (
     <tr id={rowId} className={`bb-admin-notification-row`}>
@@ -38,12 +37,11 @@ const NotificationRow = ({ busy, record, confirming, onEdit, onDelete, onStatus,
         </div>
       </td>
       <td id={`${rowId}-kind`} className={`bb-admin-notification-kind`}>{getStatusLabel(record.kind)}</td>
-      <td id={`${rowId}-status-cell`} className={`bb-admin-notification-status`}><StatusCell id={rowId} status={record.status} /></td>
+      <td id={`${rowId}-status-cell`} className={`bb-admin-notification-status`}><StatusCell id={rowId} disabled={busy} label={record.title} status={getVisibilityStatus(record.status)} onToggle={() => { void onStatus(record); }} /></td>
       <td id={`${rowId}-updated`} className={`bb-admin-notification-updated`}>{formatRecordDate(record.updated_at)}</td>
       <td id={`${rowId}-actions-cell`} className={`bb-admin-notification-actions-cell`}>
         <div id={`${rowId}-actions`} className={`actionsCell`}>
           <button type={`button`} disabled={busy} id={`${rowId}-edit`} className={`bb-admin-notification-action`} onClick={() => onEdit(record)} title={`Edit ${record.title}`} aria-label={`Edit ${record.title}`}><Settings size={14} aria-hidden={`true`} /></button>
-          {!published && <button type={`button`} disabled={busy} id={`${rowId}-publication`} className={`bb-admin-notification-action`} onClick={() => { void onStatus(record); }} title={`Publish ${record.title}`} aria-label={`Publish ${record.title}`}><Eye size={14} aria-hidden={`true`} /></button>}
           <button type={`button`} disabled={busy} id={`${rowId}-delete`} className={`bb-admin-notification-action is-danger`} aria-expanded={confirming} aria-controls={`${rowId}-delete-confirmation`} onClick={() => onRequestDelete(record)} title={`Delete ${record.title}`} aria-label={`Delete ${record.title}`}><Trash2 size={14} aria-hidden={`true`} /></button>
         </div>
         {confirming && <div id={`${rowId}-delete-confirmation`} className={`bb-admin-notification-delete-confirmation`} role={`group`} aria-labelledby={`${rowId}-delete-title`}>

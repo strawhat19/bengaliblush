@@ -8,7 +8,7 @@ import { useAdminCommerce } from './use-admin-commerce';
 import { useAuth } from '@/shared/authContext/useAuth';
 import AccountAccess from '../account-access/account-access';
 import CommerceEditor from './commerce-editor/commerce-editor';
-import { getStatusLabel } from '../status-cell/status-cell';
+import { getStatusLabel, getVisibilityStatus } from '../status-cell/status-cell';
 import AccountNavigation from '../account-navigation/account-navigation';
 import CommerceRecordRow from './commerce-record-row/commerce-record-row';
 import RecordPagination from '../record-pagination/record-pagination';
@@ -19,7 +19,7 @@ import { getCommerceRecords, getCommerceSearchText, formatCommerceAmount, commer
 const commerceIcons = { reviews: Quote, products: Package, orders: ReceiptText, services: WandSparkles, paymentMethods: CreditCard };
 
 const CommerceContent = ({ section }: { section: CommerceSection }) => {
-  const { error, notice, loading, overview, savingId, refreshing, pagination, saveRecord, saveOrderStatus } = useAdminCommerce(section);
+  const { error, notice, loading, overview, savingId, refreshing, pagination, saveRecord, saveOrderStatus, saveRecordStatus } = useAdminCommerce(section);
   const [search, setSearch] = useState(``);
   const [filter, setFilter] = useState(`all`);
   const [editor, setEditor] = useState<EditableCommerceRecord | `new` | null>(null);
@@ -27,7 +27,8 @@ const CommerceContent = ({ section }: { section: CommerceSection }) => {
   const Icon = commerceIcons[section];
   const records = overview ? getCommerceRecords(overview, section) : [];
   const query = search.trim().toLocaleLowerCase();
-  const matches = records.filter((record) => (filter === `all` || filter === record.status) && getCommerceSearchText(record).includes(query));
+  const isFiltered = Boolean(query) || filter !== `all`;
+  const matches = records.filter((record) => (filter === `all` || (section === `orders` ? filter === record.status : getVisibilityStatus(filter) === getVisibilityStatus(record.status))) && getCommerceSearchText(record).includes(query));
   const busy = Boolean(savingId) || refreshing;
   const canEdit = section !== `orders`;
   const pageId = `bb-admin-commerce-${section}`;
@@ -39,8 +40,8 @@ const CommerceContent = ({ section }: { section: CommerceSection }) => {
     { label: `Requested Value`, value: formatCommerceAmount(overview?.orders.filter((record) => record.status !== `cancelled`).reduce((sum, record) => sum + record.subtotal, 0) ?? 0) },
   ] : [
     { label: `${route.label} On This Page`, value: records.length },
-    { label: section === `reviews` ? `Published` : `Active`, value: records.filter((record) => record.status === (section === `reviews` ? `published` : `active`)).length },
-    { label: section === `paymentMethods` ? `Disabled` : section === `reviews` ? `Drafts` : `Archived`, value: records.filter((record) => record.status === (section === `paymentMethods` ? `disabled` : section === `reviews` ? `draft` : `archived`)).length },
+    { label: `Active`, value: records.filter((record) => getVisibilityStatus(record.status) === `active`).length },
+    { label: `Inactive`, value: records.filter((record) => getVisibilityStatus(record.status) === `inactive`).length },
   ];
 
   return (
@@ -72,7 +73,7 @@ const CommerceContent = ({ section }: { section: CommerceSection }) => {
               <div id={`${pageId}-filters`} className={`bb-commerce-filters`}>
                 <label id={`${pageId}-search-label`} htmlFor={`${pageId}-search`} className={`bb-commerce-search`}><Search size={15} aria-hidden={`true`} /><input id={`${pageId}-search`} type={`search`} value={search} className={`bb-commerce-search-input`} aria-label={`Search ${route.label}`} placeholder={`Search ${route.label.toLocaleLowerCase()}`} onChange={(event) => setSearch(event.currentTarget.value)} /></label>
                 <label id={`${pageId}-filter-label`} htmlFor={`${pageId}-filter`} className={`bb-commerce-filter-label`}>Status</label>
-                <select id={`${pageId}-filter`} value={filter} className={`bb-commerce-filter`} onChange={(event) => setFilter(event.currentTarget.value)}><option id={`${pageId}-filter-all`} value={`all`}>All Statuses</option>{sectionStatuses[section].map((status) => <option key={status} id={`${pageId}-filter-${status}`} value={status}>{getStatusLabel(status)}</option>)}</select>
+                <select id={`${pageId}-filter`} value={filter} className={`bb-commerce-filter`} onChange={(event) => setFilter(event.currentTarget.value)}><option id={`${pageId}-filter-all`} value={`all`}>All Statuses</option>{sectionStatuses[section].map((status) => <option key={status} id={`${pageId}-filter-${status}`} value={status}>{getStatusLabel(section === `orders` ? status : getVisibilityStatus(status))}</option>)}</select>
                 <div id={`${pageId}-filter-actions`} className={`bb-commerce-filter-actions`}>
                   {canEdit && <button type={`button`} disabled={busy} id={`${pageId}-add`} className={`bb-button bb-button-primary bb-commerce-add`} onClick={() => setEditor(`new`)}><Plus size={14} aria-hidden={`true`} />Add {singular}</button>}
                 </div>
@@ -81,12 +82,12 @@ const CommerceContent = ({ section }: { section: CommerceSection }) => {
                 <table id={`${pageId}-table`} className={`bb-commerce-table`}>
                   <caption id={`${pageId}-table-caption`} className={`bb-commerce-sr-only`}>{route.label}</caption>
                   <thead id={`${pageId}-table-head`} className={`bb-commerce-table-head`}><tr id={`${pageId}-column-row`} className={`bb-commerce-table-column-row`}>{columns.map((label, index) => <th key={label} scope={`col`} id={`${pageId}-column-${index}`} className={`bb-commerce-table-column`}>{label}</th>)}</tr></thead>
-                  <tbody id={`${pageId}-table-body`} className={`bb-commerce-table-body`}>{matches.map((record) => <CommerceRecordRow busy={busy} record={record} key={record.id} onEdit={setEditor} onOrderStatus={saveOrderStatus} paymentMethods={overview.paymentMethods} />)}</tbody>
-                  <RecordPagination {...pagination} id={`${pageId}-pagination`} disabled={busy} matchingRows={matches.length} columns={columns.length} />
+                  <tbody id={`${pageId}-table-body`} className={`bb-commerce-table-body`}>{matches.map((record) => <CommerceRecordRow busy={busy} record={record} key={record.id} onEdit={setEditor} onOrderStatus={saveOrderStatus} onStatus={saveRecordStatus} paymentMethods={overview.paymentMethods} />)}</tbody>
+                  <RecordPagination {...pagination} recordType={route.label} isFiltered={isFiltered} id={`${pageId}-pagination`} disabled={busy} matchingRows={matches.length} columns={columns.length} />
                 </table>
               </div> : <>
                 <p id={`${pageId}-empty`} className={`bb-commerce-empty`}>{records.length ? `No records match these filters.` : empty}</p>
-                <RecordPagination {...pagination} id={`${pageId}-pagination`} disabled={busy} matchingRows={matches.length} />
+                <RecordPagination {...pagination} recordType={route.label} isFiltered={isFiltered} id={`${pageId}-pagination`} disabled={busy} matchingRows={matches.length} />
               </>}
             </>
           )}

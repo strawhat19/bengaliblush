@@ -20,7 +20,7 @@ import BookingForm from '@/app/components/booking/booking-form/booking-form';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import LandingServices from '@/app/components/services/landing-services/landing-services';
-import { ShopProvider, getCartLines, removeCartProduct, decrementCartProduct } from '@/shared/shop/shop-context';
+import { ShopProvider, getCartLines, removeCartProduct, decrementCartProduct, getUnavailableCartProductIds, removeUnavailableCartProducts } from '@/shared/shop/shop-context';
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { getStoredCartNotice, getStoredCartSnapshot, subscribeStoredCart, writeStoredCart, getStoredCartServerNotice, getStoredCartServerSnapshot } from '@/shared/storage/storefront-storage';
 import {
@@ -474,7 +474,7 @@ function Reviews() {
       onFocusCapture={(event) => { if (event.target instanceof HTMLElement && event.target.matches(`:focus-visible`)) setIsKeyboardActive(true); }}
       onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsKeyboardActive(false); }}
     >
-      {reviews.loading || reviews.error || !testimonials.length ? <div id={`bb-landing-reviews-empty`} className={`bb-container`}><SectionMarker icon={Quote} index={`05`} title={`Reviews`} inverse /><h2 id={`bb-landing-reviews-empty-title`}>A feeling worth sharing.</h2><CatalogStatus id={`bb-landing-reviews-status`} loading={reviews.loading} error={reviews.error} empty={`Published reviews will appear here.`} /><Link id={`bb-landing-reviews-empty-link`} className={`bb-landing-page-link`} href={siteRoutes.reviews.href}>Explore Reviews <ArrowUpRight size={15} aria-hidden={`true`} /></Link></div> : <div className="bb-container bb-story-grid">
+      {reviews.loading || reviews.error || !testimonials.length ? <div id={`bb-landing-reviews-empty`} className={`bb-container`}><SectionMarker icon={Quote} index={`05`} title={`Reviews`} inverse /><h2 id={`bb-landing-reviews-empty-title`}>A feeling worth sharing.</h2><CatalogStatus id={`bb-landing-reviews-status`} loading={reviews.loading} error={reviews.error} empty={`Active reviews will appear here.`} /><Link id={`bb-landing-reviews-empty-link`} className={`bb-landing-page-link`} href={siteRoutes.reviews.href}>Explore Reviews <ArrowUpRight size={15} aria-hidden={`true`} /></Link></div> : <div className="bb-container bb-story-grid">
         <div className="bb-story-image" id="review-portraits" data-reveal {...dragHandlers}>
           <div className={`bb-story-image-track${isDragging ? ` is-dragging` : ``}`} style={trackStyle}>
             {testimonials.map((testimonial, index) => (
@@ -692,7 +692,9 @@ function Footer({ onBook }: { onBook: () => void }) {
 function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, onCheckout }: { cart: Product[]; isOpen: boolean; onClose: () => void; onRemove: (id: string) => void; onIncrement: (product: Product) => void; onDecrement: (id: string) => void; onCheckout: () => void }) {
   const { products } = useCatalog(`products`);
   const drawerRef = useRef<HTMLElement>(null);
-  const cartLines = getCartLines(cart, products.records);
+  const catalogReady = !products.loading && !products.error;
+  const cartLines = getCartLines(cart, catalogReady ? products.records : []);
+  const unavailableProductIds = catalogReady ? getUnavailableCartProductIds(cart, products.records) : [];
   const subtotal = cartLines.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0);
   useEffect(() => {
     if (isOpen) drawerRef.current?.focus({ preventScroll: true });
@@ -703,7 +705,13 @@ function BagDrawer({ cart, isOpen, onClose, onRemove, onIncrement, onDecrement, 
       <aside ref={drawerRef} className={`bb-drawer${isOpen ? ` is-open` : ``}`} role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden={!isOpen} inert={!isOpen} tabIndex={-1} data-testid="drawer-bag">
         <LiquidPanelEdge expanded={isOpen} id="bb-cart-liquid-edge" />
         <div className="bb-drawer-header"><div><span className="bb-eyebrow">Your edit</span><h2>Shopping cart</h2></div><button className="bb-close" onClick={onClose} aria-label="Close shopping cart" data-testid="button-close-bag"><X size={18} /></button></div>
-        {cartLines.length === 0 ? (
+        {Boolean(unavailableProductIds.length) && <div id={`bb-cart-unavailable`} className={`bb-cart-footer bb-cart-unavailable`} role={`status`}>
+          <p id={`bb-cart-unavailable-copy`} className={`bb-cart-unavailable-copy`}>Some items in your bag are no longer available.</p>
+          <button type={`button`} id={`bb-cart-remove-unavailable`} className={`bb-cart-continue`} onClick={() => removeUnavailableCartProducts(unavailableProductIds)} aria-label={`Remove Unavailable Items From Your Bag`}><Trash2 size={14} aria-hidden={`true`} />Remove Unavailable</button>
+        </div>}
+        {cart.length > 0 && !catalogReady ? (
+          <div id={`bb-cart-catalog-state`} className={`bb-empty`}><CatalogStatus id={`bb-cart-catalog-status`} loading={products.loading} error={products.error} empty={`Your bag is empty.`} /></div>
+        ) : cartLines.length === 0 ? (
           <div className="bb-empty" id="bb-cart-empty">
             <div className="bb-empty-content" id="bb-cart-empty-content">
               <Heart size={28} />
@@ -771,6 +779,7 @@ function BengaliBlushContent({ children, onboarding = false }: { children?: Reac
   const pathname = usePathname();
   const accountShell = isProfileOrAdminPage(pathname);
   const cart = useSyncExternalStore(subscribeStoredCart, getStoredCartSnapshot, getStoredCartServerSnapshot);
+  const { products } = useCatalog(`products`, cart.length > 0);
   const storageNotice = useSyncExternalStore(subscribeStoredCart, getStoredCartNotice, getStoredCartServerNotice);
   const [bagPhase, setBagPhase] = useState<`closed` | `opening` | `open` | `closing`>(`closed`);
   const bagOpenerRef = useRef<HTMLElement | null>(null);
@@ -779,7 +788,7 @@ function BengaliBlushContent({ children, onboarding = false }: { children?: Reac
   const bookingOpenerRef = useRef<HTMLElement | null>(null);
   const [toast, setToast] = useState('');
   const [confirmation, setConfirmation] = useState<{ name: string; service: string } | null>(null);
-  const bagCount = cart.length;
+  const bagCount = getCartLines(cart, !products.loading && !products.error ? products.records : []).reduce((total, { quantity }) => total + quantity, 0);
 
   useEffect(() => {
     if (!toast) return;

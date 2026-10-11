@@ -12,7 +12,7 @@ import { Minus, Plus, Trash2, ArrowLeft, ArrowUpRight, ChevronRight, ShoppingBag
 
 export default function CartSummary() {
   const cartReady = useShopReady();
-  const { count, lines, catalogError, catalogLoading, unavailableProductIds, removeProduct, incrementProduct, decrementProduct } = useShop();
+  const { count, lines, catalogError, catalogLoading, unavailableProductIds, removeProduct, incrementProduct, decrementProduct, removeUnavailableProducts } = useShop();
   const isReady = cartReady && !catalogLoading;
 
   return (
@@ -25,7 +25,10 @@ export default function CartSummary() {
           <p id={`bb-cart-summary-description`} className={`bb-cart-summary-description`}>A few things you love, all in one place. Make your selection just right before the finishing touches.</p>
         </div>
         {catalogError && <p id={`bb-cart-summary-catalog-error`} className={`bb-cart-summary-error`} role={`alert`}>{catalogError}</p>}
-        {isReady && !catalogError && Boolean(unavailableProductIds.length) && <p id={`bb-cart-summary-unavailable`} className={`bb-cart-summary-error`} role={`alert`}>Some products in your bag are no longer available. Remove them before saving a request.</p>}
+        {isReady && !catalogError && Boolean(unavailableProductIds.length) && <div id={`bb-cart-summary-unavailable`} className={`bb-cart-summary-error`} role={`status`}>
+          <p id={`bb-cart-summary-unavailable-copy`} className={`bb-cart-summary-unavailable-copy`}>Some items in your bag are no longer available.</p>
+          <button type={`button`} id={`bb-cart-summary-remove-unavailable`} className={`bb-cart-summary-remove`} onClick={removeUnavailableProducts} aria-label={`Remove Unavailable Items From Your Bag`}><Trash2 size={12} aria-hidden={`true`} />Remove Unavailable</button>
+        </div>}
         {!isReady ? (
           <div id={`bb-cart-summary-loading`} className={`bb-cart-summary-loading`} role={`status`}>
             <ShoppingBag size={25} strokeWidth={1.3} aria-hidden={`true`} />

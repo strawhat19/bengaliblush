@@ -10,7 +10,8 @@
 .bb-event-row-time { margin-top: 5px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
 .bb-event-row-location { min-width: 110px; max-width: 220px; font-size: 10px; overflow-wrap: anywhere; }
 .bb-event-row-updated { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
-.bb-event-row-manage { min-width: 70px; }
+.bb-event-row-manage { min-width: 70px; text-align: right; }
+.bb-owner-dashboard .bb-event-row-manage .actionsCell { justify-content: flex-end; }
 .bb-event-row-edit { display: inline-flex; width: 30px; height: 26px; flex: none; align-items: center; justify-content: center; border: 1px solid hsl(var(--primary)); border-radius: 5px; padding: 0; background: hsl(var(--primary)); color: var(--bb-brand-cream); cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
 .bb-event-row-edit:hover:not(:disabled) { background: color-mix(in srgb, hsl(var(--primary)) 88%, var(--bb-brand-ink)); }
 .bb-event-row-edit:disabled { cursor: default; opacity: .5; }

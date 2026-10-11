@@ -3,6 +3,7 @@
 .bb-admin-events-summary-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
 .bb-admin-events-summary-value { margin: 0; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 30px; line-height: 1.1; }
 .bb-admin-events .bb-owner-records { margin-top: 0; }
+.bb-admin-events-table thead th:last-child { text-align: right; }
 .bb-admin-events-filter-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; margin-left: auto; }
 .bb-admin-events-filter-actions .bb-owner-records-results { width: auto; margin: 0; white-space: nowrap; }
 .bb-admin-events-add { min-height: 38px; padding: 10px 14px; font-size: 10px; }

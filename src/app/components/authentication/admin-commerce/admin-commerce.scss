@@ -19,6 +19,7 @@
 .bb-commerce-table { width: 100%; border-collapse: collapse; color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 11px; text-align: left; }
 .bb-commerce-table th, .bb-commerce-table td { border-bottom: 1px solid hsl(var(--primary) / .1); padding: 15px 18px; vertical-align: top; }
 .bb-commerce-table th { padding-block: 13px; background: hsl(var(--primary)); color: var(--bb-brand-cream); font-size: 9px; font-weight: 600; white-space: nowrap; }
+.bb-commerce-table thead th:last-child { text-align: right; }
 .bb-commerce-table tr:last-child td { border-bottom: 0; }
 .bb-commerce-table tbody tr { transition: background-color .2s ease; }
 .bb-commerce-table tbody tr:hover { background: hsl(var(--primary) / .025); }

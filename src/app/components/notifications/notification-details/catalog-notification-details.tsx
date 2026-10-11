@@ -27,7 +27,7 @@ const CatalogNotificationDetails = ({ slug }: { slug: string }) => {
           <div id={`bb-notification-${slug}-state-content`} className={`bb-notification-details-state`} role={!waiting && error ? `alert` : `status`} aria-busy={waiting}>
             <Bell size={34} aria-hidden={`true`} />
             <h1 id={`bb-notification-${slug}-state-title`} className={`bb-notification-details-heading`}>{waiting ? `Loading Notification…` : error ? `Unable To Load This Notification` : `Notification Unavailable`}</h1>
-            <p id={`bb-notification-${slug}-state-copy`} className={`bb-notification-details-body`}>{waiting ? `Gathering the latest studio update.` : error || `This notification is not currently published. Explore the studio’s other updates.`}</p>
+            <p id={`bb-notification-${slug}-state-copy`} className={`bb-notification-details-body`}>{waiting ? `Gathering the latest studio update.` : error || `This notification is not currently active. Explore the studio’s other updates.`}</p>
             {!waiting && error && <button type={`button`} id={`bb-notification-${slug}-state-retry`} className={`bb-notification-details-retry`} onClick={() => { void reload(); }}><RotateCcw size={14} aria-hidden={`true`} />Try Again</button>}
           </div>
         </div>
