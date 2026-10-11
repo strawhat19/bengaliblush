@@ -20,7 +20,7 @@ export const useAdminEvents = () => {
   const [pageIndex, setPageIndex] = useState<{ accountId: string; index: RecordPaginationIndex } | null>(null);
   const [snapshot, setSnapshot] = useState<{ accountId: string; records: EventRecord[] } | null>(null);
   const index = isAdmin && pageIndex?.accountId === accountId ? pageIndex?.index : undefined;
-  const pagination = useRecordPagination(JSON.stringify([accountId, `events`]), index);
+  const pagination = useRecordPagination(JSON.stringify([accountId, `events`]), index, indexFailure?.accountId === accountId ? indexFailure.message : ``);
   const { cursor, setNextCursor } = pagination;
   const records = isAdmin && snapshot?.accountId === accountId ? snapshot?.records ?? null : null;
   const loadError = failure?.accountId === accountId ? failure?.message ?? `` : ``;

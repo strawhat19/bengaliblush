@@ -8,6 +8,7 @@ import { useMemo, useState, useCallback, createContext, useSyncExternalStore, ty
 type AccountNavigationContextValue = {
   badgeError: string;
   collapsed: boolean;
+  badgeLoading: boolean;
   toggleCollapsed: () => void;
   expandedRoutes: readonly string[];
   toggleSubmenu: (href: string) => void;
@@ -27,7 +28,7 @@ const subscribeToDesktopLayout = (onChange: () => void) => {
 export const AccountNavigationContext = createContext<AccountNavigationContextValue | undefined>(undefined);
 
 export const AccountNavigationProvider = ({ children }: { children: ReactNode }) => {
-  const { badgeError, badgeCounts, tablePagination } = useAccountNavigationCounts();
+  const { badgeError, badgeCounts, badgeLoading, tablePagination } = useAccountNavigationCounts();
   const [collapsed, setCollapsed] = useState(false);
   const desktopLayout = useSyncExternalStore(subscribeToDesktopLayout, getDesktopLayout, getServerDesktopLayout);
   const [expandedMenus, setExpandedMenus] = useState(() => ({
@@ -42,7 +43,7 @@ export const AccountNavigationProvider = ({ children }: { children: ReactNode })
     const expanded = routes.includes(href) ? routes.filter((route) => route !== href) : [...routes, href];
     return { ...current, [submenuLayout]: submenuLayout === `singleColumn` ? expanded.slice(-maxExpandedSubmenus) : expanded };
   }), [submenuLayout]);
-  const value = useMemo(() => ({ badgeError, collapsed, badgeCounts, toggleCollapsed, expandedRoutes, toggleSubmenu, tablePagination }), [badgeError, collapsed, badgeCounts, toggleCollapsed, expandedRoutes, toggleSubmenu, tablePagination]);
+  const value = useMemo(() => ({ badgeError, collapsed, badgeCounts, badgeLoading, toggleCollapsed, expandedRoutes, toggleSubmenu, tablePagination }), [badgeError, collapsed, badgeCounts, badgeLoading, toggleCollapsed, expandedRoutes, toggleSubmenu, tablePagination]);
 
   return <AccountNavigationContext.Provider value={value}>{children}</AccountNavigationContext.Provider>;
 };

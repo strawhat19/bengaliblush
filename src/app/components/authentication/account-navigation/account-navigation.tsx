@@ -12,7 +12,7 @@ import NavigationBadge from '@/app/components/navigation/navigation-badge/naviga
 
 const AccountNavigation = () => {
   const { tooltip, tooltipEvents, keepTooltip, leaveTooltip, getTooltipProps } = useTooltip();
-  const { initial, isAdmin, pathname, photoUrl, collapsed, adminLinks, badgeError, badgeCounts, accountLinks, profileRoute, toggleSubmenu, expandedRoutes, handlePhotoError, toggleCollapsed } = useAccountNavigation();
+  const { initial, isAdmin, pathname, photoUrl, collapsed, adminLinks, badgeError, badgeCounts, badgeLoading, accountLinks, profileRoute, toggleSubmenu, expandedRoutes, isBadgeLoading, handlePhotoError, toggleCollapsed } = useAccountNavigation();
   const accountMenuLinks = collapsed ? accountLinks : accountLinks.filter(({ route }) => route.href !== profileRoute.href);
   const groups = [
     ...(accountMenuLinks.length ? [{ id: `account`, title: `ACCOUNT`, links: accountMenuLinks }] : []),
@@ -22,6 +22,7 @@ const AccountNavigation = () => {
   return (
     <nav
       {...tooltipEvents}
+      aria-busy={badgeLoading}
       id={`bb-account-navigation`}
       aria-label={`Account Navigation`}
       className={`bb-account-navigation${collapsed ? ` is-collapsed` : ``}`}
@@ -41,8 +42,9 @@ const AccountNavigation = () => {
             const hasChildren = Boolean(children?.length);
             const expanded = collapsed || expandedRoutes.includes(navigationKey);
             const count = badgeCounts[navigationKey] ?? 0;
-            const countLabel = getNavigationCountLabel(label, count);
-            const submenuLabel = getNavigationCountLabel(`${expanded ? `Collapse` : `Expand`} ${label} Submenu`, count);
+            const countLoading = isBadgeLoading(navigationKey);
+            const countLabel = countLoading ? `${label}, Loading Item Count` : getNavigationCountLabel(label, count);
+            const submenuLabel = countLoading ? `${expanded ? `Collapse` : `Expand`} ${label} Submenu, Loading Item Count` : getNavigationCountLabel(`${expanded ? `Collapse` : `Expand`} ${label} Submenu`, count);
             const active = pathname === route?.href || Boolean(children?.some(({ route }) => pathname === route.href));
             return (
               <div key={navigationKey} id={itemId} className={`bb-account-navigation-item`}>
@@ -58,7 +60,7 @@ const AccountNavigation = () => {
                   >
                     <Icon size={17} aria-hidden={`true`} />
                     <span id={`${linkId}-label`} className={`bb-account-navigation-link-label`}>{route.label}</span>
-                    <NavigationBadge count={count} id={`${linkId}-count`} />
+                    {countLoading ? <span aria-hidden={`true`} id={`${linkId}-count`} className={`bb-navigation-badge bb-account-navigation-count-skeleton`} /> : <NavigationBadge count={count} id={`${linkId}-count`} />}
                   </Link>
                   ) : (
                     <button
@@ -76,7 +78,7 @@ const AccountNavigation = () => {
                     >
                       <Icon size={17} aria-hidden={`true`} />
                       <span id={`${linkId}-label`} className={`bb-account-navigation-link-label`}>{label}</span>
-                      <NavigationBadge count={count} id={`${linkId}-count`} />
+                      {countLoading ? <span aria-hidden={`true`} id={`${linkId}-count`} className={`bb-navigation-badge bb-account-navigation-count-skeleton`} /> : <NavigationBadge count={count} id={`${linkId}-count`} />}
                       <ChevronDown size={16} aria-hidden={`true`} id={`${linkId}-chevron`} className={`bb-account-navigation-submenu-icon`} />
                     </button>
                   )}
@@ -108,7 +110,8 @@ const AccountNavigation = () => {
                       <div id={`${itemId}-submenu-links`} className={`bb-account-navigation-submenu-links`}>
                         {children?.map(({ route: childRoute, Icon: ChildIcon }, childIndex) => {
                           const childCount = badgeCounts[childRoute.href] ?? 0;
-                          const childLabel = getNavigationCountLabel(childRoute.label, childCount);
+                          const childCountLoading = isBadgeLoading(childRoute.href);
+                          const childLabel = childCountLoading ? `${childRoute.label}, Loading Item Count` : getNavigationCountLabel(childRoute.label, childCount);
                           return (
                           <Link
                             key={childRoute.href}
@@ -121,7 +124,7 @@ const AccountNavigation = () => {
                           >
                             <ChildIcon size={15} aria-hidden={`true`} />
                             <span id={`${itemId}-submenu-link-${childIndex}-label`} className={`bb-account-navigation-link-label`}>{childRoute.label}</span>
-                            <NavigationBadge count={childCount} id={`${itemId}-submenu-link-${childIndex}-count`} />
+                            {childCountLoading ? <span aria-hidden={`true`} id={`${itemId}-submenu-link-${childIndex}-count`} className={`bb-navigation-badge bb-account-navigation-count-skeleton`} /> : <NavigationBadge count={childCount} id={`${itemId}-submenu-link-${childIndex}-count`} />}
                           </Link>
                           );
                         })}

@@ -2,17 +2,21 @@ import { Fragment } from 'react';
 import './record-pagination.scss';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { useRecordPagination } from '@/shared/firebase/use-record-pagination';
+import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
 
 export type RecordPaginationProps = ReturnType<typeof useRecordPagination> & { id: string; recordType: string; isFiltered: boolean; columns?: number; disabled?: boolean; matchingRows: number };
 
-const RecordPagination = ({ id, page, pages, columns, disabled, totalRows, recordType, isFiltered, nextCursor, canGoBack, matchingRows, goToPage, nextPage, previousPage }: RecordPaginationProps) => {
-  const totalLabel = `${totalRows ?? `…`} ${recordType}`;
+const RecordPagination = ({ id, page, pages, columns, disabled, totalRows, totalError, recordType, isFiltered, nextCursor, canGoBack, matchingRows, goToPage, nextPage, previousPage }: RecordPaginationProps) => {
+  const { badgeError } = useAccountNavigationState();
+  const countError = totalError ?? badgeError;
+  const countLoading = totalRows === undefined && !countError;
+  const totalLabel = totalRows === undefined ? countError ? `${recordType} Count Unavailable` : `Loading ${recordType} Count` : `${totalRows} ${recordType}`;
   const pageInfo = isFiltered ? `${matchingRows} / ${totalLabel}` : totalLabel;
   const firstVisiblePage = Math.max(1, Math.min(page - 1, pages.length - 2));
   const visiblePages = pages.filter((number, index) => index === 0 || index === pages.length - 1 || (number >= firstVisiblePage && number < firstVisiblePage + 3));
   const pagination = (
     <nav id={id} className={`bb-record-pagination`} aria-label={`Record Pages`}>
-      <span role={`status`} id={`${id}-label`} className={`bb-record-pagination-label`} title={pageInfo}>{pageInfo}</span>
+      <span role={`status`} id={`${id}-label`} className={`bb-record-pagination-label`} title={countError || pageInfo} aria-label={pageInfo}>{isFiltered && `${matchingRows} / `}{countLoading ? <><span aria-hidden={`true`} id={`${id}-total-loading`} className={`bb-record-pagination-total-skeleton`} /> {recordType}</> : totalLabel}</span>
       {pages.length > 1 && <div id={`${id}-controls`} className={`bb-record-pagination-controls`}>
         <button type={`button`} title={`Previous Page`} aria-label={`Previous Page`} id={`${id}-previous`} disabled={disabled || !canGoBack} onClick={previousPage} className={`bb-record-pagination-button is-arrow`}><ChevronLeft size={14} aria-hidden={`true`} /></button>
         {visiblePages.map((number, index) => <Fragment key={number}>

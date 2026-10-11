@@ -1,25 +1,26 @@
 import type { OwnerOverview } from '@/api/owner';
 import type { CommerceOverview } from '@/api/commerce';
+import { siteRoutes } from '@/shared/navigation/routes';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 
 export type DashboardSection = `overview` | `users` | `contacts` | `appointments`;
 export type DashboardView = `overview` | `reports` | `analytics`;
 
 export const dashboardSections = {
-  overview: { title: `Your Studio, At A Glance`, description: `Accounts, catalog, reviews, notifications, and requests from your studio database.` },
-  users: { title: `Studio Accounts`, description: `Registered accounts, roles, and account status.` },
-  contacts: { title: `Requests`, description: `Messages from guests and account holders, ready for your review.` },
-  appointments: { title: `Appointment Requests`, description: `Requested services, preferred dates, and booking details.` },
+  overview: { route: siteRoutes.dashboard, title: siteRoutes.dashboard.label, description: `Accounts, catalog, reviews, notifications, and requests from your studio database.` },
+  users: { route: siteRoutes.adminUsers, title: siteRoutes.adminUsers.label, description: `Registered accounts, roles, and account status.` },
+  contacts: { route: siteRoutes.adminRequests, title: siteRoutes.adminRequests.label, description: `Messages from guests and account holders, ready for your review.` },
+  appointments: { route: siteRoutes.adminAppointments, title: siteRoutes.adminAppointments.label, description: `Requested services, preferred dates, and booking details.` },
 };
 
 export const dashboardViews = {
-  reports: { title: `Studio Reports`, description: `Recent requests, appointment requests, and registered accounts from your studio database.` },
-  analytics: { title: `Studio Analytics`, description: `Studio activity trends, request statuses, and counts from your recent database records.` },
+  reports: { route: siteRoutes.adminReports, title: siteRoutes.adminReports.label, description: `Recent contact and appointment requests from your studio database.` },
+  analytics: { route: siteRoutes.adminAnalytics, title: siteRoutes.adminAnalytics.label, description: `Explore website traffic, discover where visitors come from, and connect traffic trends with studio activity.` },
 };
 
 export const getDashboardTableSummary = (overview: OwnerOverview, section: Exclude<DashboardSection, `overview`>) => {
   if (section === `users`) return [
-    { id: `total`, label: `Accounts On This Page`, value: overview.users.length },
+    { id: `total`, label: `${siteRoutes.adminUsers.label} On This Page`, value: overview.users.length },
     { id: `active`, label: `Active`, value: overview.users.filter((record) => (record.account_status ?? `active`) === `active`).length },
     { id: `inactive`, label: `Inactive`, value: overview.users.filter((record) => [`deactivated`, `deleting`].includes(record.account_status ?? `active`)).length },
   ];

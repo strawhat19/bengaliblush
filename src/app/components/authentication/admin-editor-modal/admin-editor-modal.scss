@@ -20,7 +20,7 @@ dialog.bb-admin-editor-modal .bb-admin-editor-modal-panel > .bb-liquid-edge { fi
   :is(.bb-notification-editor-field > span, .bb-commerce-editor-field-label) { color: var(--bb-panel-text); font-weight: 500; }
   :is(.bb-notification-editor-input, .bb-commerce-editor-input) {
     border-color: color-mix(in srgb, var(--bb-highlight) 24%, var(--bb-panel-border));
-    background: var(--bb-editor-field-surface);
+    background-color: var(--bb-editor-field-surface);
     color: var(--bb-panel-text);
     caret-color: var(--bb-highlight);
     box-shadow: inset 0 1px 3px hsl(var(--background) / .25);
@@ -28,7 +28,7 @@ dialog.bb-admin-editor-modal .bb-admin-editor-modal-panel > .bb-liquid-edge { fi
 
     &::placeholder { color: var(--bb-panel-muted); opacity: .8; }
     &:hover:not(:disabled):not(:focus) { border-color: hsl(var(--secondary) / .5); }
-    &:focus { border-color: var(--bb-highlight); background: color-mix(in srgb, var(--bb-highlight) 5%, var(--bb-editor-field-surface)); box-shadow: 0 0 0 3px hsl(var(--secondary) / .18); }
+    &:focus { border-color: var(--bb-highlight); background-color: color-mix(in srgb, var(--bb-highlight) 5%, var(--bb-editor-field-surface)); box-shadow: 0 0 0 3px hsl(var(--secondary) / .18); }
     &:disabled { cursor: not-allowed; opacity: .5; }
     option { background: var(--bb-editor-field-surface); color: var(--bb-panel-text); }
     &:is(:autofill, :-webkit-autofill) { -webkit-text-fill-color: var(--bb-panel-text); box-shadow: 0 0 0 1000px var(--bb-editor-field-surface) inset; }

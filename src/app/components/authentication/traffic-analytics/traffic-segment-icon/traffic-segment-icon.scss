@@ -1,0 +1,5 @@
+.bb-traffic-segment-icon { display: inline-flex; width: 20px; height: 20px; flex: none; align-items: center; justify-content: center; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
+.bb-traffic-segment-icon.is-flag { width: 24px; height: 18px; overflow: hidden; border: 1px solid hsl(var(--foreground) / .12); border-radius: 2px; }
+.bb-traffic-segment-flag { display: block; width: 100%; height: 100%; object-fit: cover; }
+.bb-traffic-segment-brand { display: block; width: 18px; height: 18px; background-color: var(--bb-traffic-brand-color, currentColor); -webkit-mask: var(--bb-traffic-brand-image) center / contain no-repeat; mask: var(--bb-traffic-brand-image) center / contain no-repeat; }
+@media (forced-colors: active) { .bb-traffic-segment-brand { forced-color-adjust: none; background-color: CanvasText; } }

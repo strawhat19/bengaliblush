@@ -9,6 +9,7 @@ import { useAuth } from '@/shared/authContext/useAuth';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { useAdminNotifications } from './use-admin-notifications';
 import AccountAccess from '../account-access/account-access';
+import AdminSkeleton from '../admin-skeleton/admin-skeleton';
 import NotificationRow from './notification-row/notification-row';
 import AccountNavigation from '../account-navigation/account-navigation';
 import NotificationEditor from './notification-editor/notification-editor';
@@ -16,6 +17,7 @@ import RecordPagination from '../record-pagination/record-pagination';
 import AdminEditorModal from '../admin-editor-modal/admin-editor-modal';
 import { Bell, Plus, Search, CircleCheck } from 'lucide-react';
 import { getVisibilityStatus } from '../status-cell/status-cell';
+import { getAdminParentMenuLabel } from '@/shared/navigation/account-navigation';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 
 const AdminNotificationsContent = () => {
@@ -40,10 +42,10 @@ const AdminNotificationsContent = () => {
         <div id={`${pageId}-content`} className={`bb-owner-dashboard-content`} aria-busy={loading || busy}>
           <div id={`${pageId}-heading`} className={`bb-owner-dashboard-heading has-table-stats`}>
             <div id={`${pageId}-heading-copy`} className={`bb-owner-dashboard-heading-copy`}>
-              <span id={`${pageId}-eyebrow`} className={`bb-eyebrow`}><span id={`${pageId}-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`${pageId}-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> Studio Updates</span></span>
+              <span id={`${pageId}-eyebrow`} className={`bb-eyebrow`}><span id={`${pageId}-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`${pageId}-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> {getAdminParentMenuLabel(siteRoutes.adminNotifications)}</span></span>
               <h1 id={`${pageId}-title`} className={`bb-owner-dashboard-title has-table-icon`}><Bell size={28} aria-hidden={`true`} id={`${pageId}-title-icon`} className={`bb-owner-dashboard-title-icon`} />{siteRoutes.adminNotifications.label}</h1>
             </div>
-            {!loading && records && <dl id={`${pageId}-summary`} className={`bb-admin-notifications-summary`}>{[
+            {loading ? <AdminSkeleton variant={`summary`} id={`${pageId}-summary-loading`} label={`Loading Notifications Summary`} /> : records && <dl id={`${pageId}-summary`} className={`bb-admin-notifications-summary`}>{[
               { id: `total`, label: `Notifications On This Page`, value: records.length },
               { id: `active`, label: `Active`, value: active },
               { id: `inactive`, label: `Inactive`, value: records.length - active },
@@ -51,7 +53,7 @@ const AdminNotificationsContent = () => {
           </div>
           {error && <p id={`${pageId}-error`} className={`bb-owner-dashboard-error`} role={`alert`}>{error}</p>}
           {notice && <p id={`${pageId}-notice`} className={`bb-owner-dashboard-notice`} role={`status`}><CircleCheck size={14} aria-hidden={`true`} />{notice}</p>}
-          {loading ? <div id={`${pageId}-loading`} className={`bb-owner-dashboard-loading`} role={`status`} aria-label={`Loading Notifications`}>{[0, 1].map((index) => <div key={index} id={`${pageId}-skeleton-${index}`} className={`bb-owner-dashboard-skeleton`} aria-hidden={`true`}>{[0, 1, 2].map((line) => <span key={line} id={`${pageId}-skeleton-${index}-line-${line}`} className={`bb-owner-dashboard-skeleton-line`} />)}</div>)}</div> : records && (
+          {loading ? <AdminSkeleton columns={6} id={`${pageId}-loading`} label={`Loading Notifications`} /> : records && (
             <>
               {editor && <AdminEditorModal
                 busy={busy}

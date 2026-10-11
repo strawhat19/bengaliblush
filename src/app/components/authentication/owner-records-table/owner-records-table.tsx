@@ -24,9 +24,9 @@ type OwnerRecordsTableProps = {
 };
 
 const tableLabels = {
-  users: { Icon: Users, title: `Accounts`, empty: `No registered accounts yet.`, columns: [`No.`, `Account`, `Role`, `Sign In`, `Status`, `Joined`] },
-  contacts: { Icon: MessageCircle, title: `Requests`, empty: `No requests yet.`, columns: [`No.`, `Request`, `Submitted By`, `Received`, `Status`] },
-  appointments: { Icon: CalendarDays, title: `Appointment Requests`, empty: `No appointment requests yet.`, columns: [`No.`, `Request`, `Submitted By`, `Preferred Time`, `Received`, `Status`] },
+  users: { Icon: Users, title: siteRoutes.adminUsers.label, empty: `No registered accounts yet.`, columns: [`No.`, `Account`, `Role`, `Sign In`, `Status`, `Joined`] },
+  contacts: { Icon: MessageCircle, title: siteRoutes.adminRequests.label, empty: `No requests yet.`, columns: [`No.`, `Request`, `Submitted By`, `Received`, `Status`] },
+  appointments: { Icon: CalendarDays, title: siteRoutes.adminAppointments.label, empty: `No appointment requests yet.`, columns: [`No.`, `Request`, `Submitted By`, `Preferred Time`, `Received`, `Status`] },
 };
 
 const compareRecordNumbers = (first: { number: number }, second: { number: number }) => first.number - second.number;

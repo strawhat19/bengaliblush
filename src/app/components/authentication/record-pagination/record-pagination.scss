@@ -1,6 +1,8 @@
 .bb-record-pagination { display: flex; min-height: 36px; align-items: center; justify-content: space-between; gap: 14px; margin: 0; border-radius: 0 0 11px 11px; padding: 6px 18px; background: hsl(var(--primary)); color: var(--bb-brand-cream); }
 .bb-record-pagination-footer .bb-record-pagination-cell { border: 0; padding: 0; background: hsl(var(--primary)); color: var(--bb-brand-cream); }
 .bb-record-pagination-label { min-width: 0; flex: 1; overflow: hidden; color: inherit; font-size: 9px; line-height: 1.5; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.bb-record-pagination-total-skeleton { display: inline-block; width: 24px; height: 9px; border-radius: 3px; background: color-mix(in srgb, currentColor 22%, transparent); vertical-align: middle; animation: bb-record-pagination-total-pulse 1.2s ease-in-out infinite alternate; }
+@keyframes bb-record-pagination-total-pulse { to { opacity: .4; } }
 .bb-record-pagination-controls { display: flex; flex: none; align-items: center; gap: 6px; margin-left: auto; }
 .bb-record-pagination-ellipsis { display: grid; min-width: 10px; height: 24px; flex: none; place-items: center; font-size: 9px; opacity: .7; }
 .bb-record-pagination-button { display: inline-flex; min-width: 24px; min-height: 24px; flex: none; align-items: center; justify-content: center; border: 1px solid color-mix(in srgb, var(--bb-brand-cream) 30%, transparent); border-radius: 5px; padding: 3px 6px; background: transparent; color: inherit; font-size: 9px; line-height: 1.2; cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
@@ -11,4 +13,4 @@
 .bb-record-pagination-button:focus-visible { outline: 2px solid hsl(var(--secondary)); outline-offset: 2px; }
 .bb-record-pagination-button:disabled { opacity: .5; cursor: default; }
 @media (max-width: 480px) { .bb-record-pagination { gap: 8px; padding-inline: 13px; } }
-@media (prefers-reduced-motion: reduce) { .bb-record-pagination-button { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .bb-record-pagination-total-skeleton { animation: none; } .bb-record-pagination-button { transition: none; } }

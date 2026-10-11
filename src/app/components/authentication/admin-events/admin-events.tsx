@@ -13,11 +13,13 @@ import { siteRoutes } from '@/shared/navigation/routes';
 import EventEditor from './event-editor/event-editor';
 import { getStatusLabel } from '../status-cell/status-cell';
 import AccountAccess from '../account-access/account-access';
+import AdminSkeleton from '../admin-skeleton/admin-skeleton';
 import '../owner-records-table/owner-records-table.scss';
 import { Plus, Search, CircleCheck, CalendarDays } from 'lucide-react';
 import RecordPagination from '../record-pagination/record-pagination';
 import AdminEditorModal from '../admin-editor-modal/admin-editor-modal';
 import AccountNavigation from '../account-navigation/account-navigation';
+import { getAdminParentMenuLabel } from '@/shared/navigation/account-navigation';
 
 const AdminEventsContent = () => {
   const { save, error, notice, records, loading, savingId, refreshing, pagination } = useAdminEvents();
@@ -39,10 +41,10 @@ const AdminEventsContent = () => {
         <div id={`${pageId}-content`} className={`bb-owner-dashboard-content`} aria-busy={loading || busy}>
           <div id={`${pageId}-heading`} className={`bb-owner-dashboard-heading has-table-stats`}>
             <div id={`${pageId}-heading-copy`} className={`bb-owner-dashboard-heading-copy`}>
-              <span id={`${pageId}-eyebrow`} className={`bb-eyebrow`}><span id={`${pageId}-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`${pageId}-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> Studio Events</span></span>
+              <span id={`${pageId}-eyebrow`} className={`bb-eyebrow`}><span id={`${pageId}-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`${pageId}-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> {getAdminParentMenuLabel(siteRoutes.adminEvents)}</span></span>
               <h1 id={`${pageId}-title`} className={`bb-owner-dashboard-title has-table-icon`}><CalendarDays size={28} aria-hidden={`true`} id={`${pageId}-title-icon`} className={`bb-owner-dashboard-title-icon`} />{siteRoutes.adminEvents.label}</h1>
             </div>
-            {!loading && records && <dl id={`${pageId}-summary`} className={`bb-admin-events-summary`}>{[
+            {loading ? <AdminSkeleton variant={`summary`} id={`${pageId}-summary-loading`} label={`Loading Events Summary`} /> : records && <dl id={`${pageId}-summary`} className={`bb-admin-events-summary`}>{[
               { id: `total`, label: `Events On This Page`, value: records.length },
               { id: `scheduled`, label: `Scheduled`, value: scheduled },
               { id: `drafts`, label: `Drafts`, value: drafts },
@@ -60,7 +62,7 @@ const AdminEventsContent = () => {
           >
             {(dismiss) => <EventEditor busy={busy} record={typeof editor === `string` ? null : editor} onSave={save} onClose={dismiss} />}
           </AdminEditorModal>}
-          {loading ? <div id={`${pageId}-loading`} className={`bb-owner-dashboard-loading`} role={`status`} aria-label={`Loading Events`}>{[0, 1].map((index) => <div key={index} id={`${pageId}-skeleton-${index}`} className={`bb-owner-dashboard-skeleton`} aria-hidden={`true`}>{[0, 1, 2].map((line) => <span key={line} id={`${pageId}-skeleton-${index}-line-${line}`} className={`bb-owner-dashboard-skeleton-line`} />)}</div>)}</div> : (
+          {loading ? <AdminSkeleton columns={7} id={`${pageId}-loading`} label={`Loading Events`} /> : (
             <section id={`${pageId}-records`} className={`bb-owner-records`} aria-labelledby={`${pageId}-title`}>
               <div id={`${pageId}-filters`} className={`bb-owner-records-filters`}>
                 <label id={`${pageId}-search-label`} htmlFor={`${pageId}-search`} className={`bb-owner-records-search`}><Search size={15} aria-hidden={`true`} /><input id={`${pageId}-search`} type={`search`} value={search} className={`bb-owner-records-search-input`} aria-label={`Search Events`} placeholder={`Search events`} onChange={(event) => setSearch(event.currentTarget.value)} /></label>

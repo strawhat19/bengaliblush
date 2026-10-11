@@ -7,12 +7,14 @@ import { useState } from 'react';
 import { useAdminCommerce } from './use-admin-commerce';
 import { useAuth } from '@/shared/authContext/useAuth';
 import AccountAccess from '../account-access/account-access';
+import AdminSkeleton from '../admin-skeleton/admin-skeleton';
 import CommerceEditor from './commerce-editor/commerce-editor';
 import { getStatusLabel, getVisibilityStatus } from '../status-cell/status-cell';
 import AccountNavigation from '../account-navigation/account-navigation';
 import CommerceRecordRow from './commerce-record-row/commerce-record-row';
 import RecordPagination from '../record-pagination/record-pagination';
 import AdminEditorModal from '../admin-editor-modal/admin-editor-modal';
+import { getAdminParentMenuLabel } from '@/shared/navigation/account-navigation';
 import { Plus, Quote, Search, Package, CreditCard, CircleCheck, ReceiptText, WandSparkles } from 'lucide-react';
 import { getCommerceRecords, getCommerceSearchText, formatCommerceAmount, commerceSections, sectionStatuses, type CommerceSection, type EditableCommerceRecord } from './commerce-data';
 
@@ -51,14 +53,14 @@ const CommerceContent = ({ section }: { section: CommerceSection }) => {
         <div id={`${pageId}-content`} className={`bb-owner-dashboard-content`} aria-busy={loading || busy}>
           <div id={`${pageId}-heading`} className={`bb-owner-dashboard-heading has-table-stats`}>
             <div id={`${pageId}-heading-copy`} className={`bb-owner-dashboard-heading-copy`}>
-              <span id={`${pageId}-eyebrow`} className={`bb-eyebrow`}><span id={`${pageId}-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`${pageId}-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> Bengali Blush</span></span>
+              <span id={`${pageId}-eyebrow`} className={`bb-eyebrow`}><span id={`${pageId}-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`${pageId}-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> {getAdminParentMenuLabel(route)}</span></span>
               <h1 id={`${pageId}-title`} className={`bb-owner-dashboard-title has-table-icon`}><Icon size={28} aria-hidden={`true`} id={`${pageId}-title-icon`} className={`bb-owner-dashboard-title-icon`} />{route.label}</h1>
             </div>
-            {!loading && overview && <dl id={`${pageId}-summary`} className={`bb-commerce-summary`}>{summaries.map(({ label, value }, index) => <div key={label} id={`${pageId}-summary-${index}`} className={`bb-commerce-summary-card`}><dt id={`${pageId}-summary-${index}-label`} className={`bb-commerce-summary-label`}>{label}</dt><dd id={`${pageId}-summary-${index}-value`} className={`bb-commerce-summary-value`}>{value}</dd></div>)}</dl>}
+            {loading ? <AdminSkeleton variant={`summary`} id={`${pageId}-summary-loading`} label={`Loading ${route.label} Summary`} /> : overview && <dl id={`${pageId}-summary`} className={`bb-commerce-summary`}>{summaries.map(({ label, value }, index) => <div key={label} id={`${pageId}-summary-${index}`} className={`bb-commerce-summary-card`}><dt id={`${pageId}-summary-${index}-label`} className={`bb-commerce-summary-label`}>{label}</dt><dd id={`${pageId}-summary-${index}-value`} className={`bb-commerce-summary-value`}>{value}</dd></div>)}</dl>}
           </div>
           {error && <p id={`${pageId}-error`} className={`bb-owner-dashboard-error`} role={`alert`}>{error}</p>}
           {notice && <p id={`${pageId}-notice`} className={`bb-owner-dashboard-notice`} role={`status`}><CircleCheck size={14} aria-hidden={`true`} />{notice}</p>}
-          {loading ? <div id={`${pageId}-loading`} className={`bb-owner-dashboard-loading`} role={`status`} aria-label={`Loading ${route.label}`}>{[0, 1].map((index) => <div key={index} id={`${pageId}-skeleton-${index}`} className={`bb-owner-dashboard-skeleton`} aria-hidden={`true`}>{[0, 1, 2].map((line) => <span key={line} id={`${pageId}-skeleton-${index}-line-${line}`} className={`bb-owner-dashboard-skeleton-line`} />)}</div>)}</div> : overview && (
+          {loading ? <AdminSkeleton columns={columns.length} id={`${pageId}-loading`} label={`Loading ${route.label}`} /> : overview && (
             <>
               {editor && section !== `orders` && <AdminEditorModal
                 busy={busy}

@@ -1,6 +1,6 @@
 # Firebase Scaling And Cost
 
-The latest baseline is `0ee2aa6` (`v0.0.1.3-BengaliBlushDashboards`). The changes in this working tree are prepared for review; they have not been tested, deployed, or committed.
+The latest baseline is `0ee2aa6` (`v0.0.1.3-BengaliBlushDashboards`). The broader scaling changes are prepared for review; their validation and rollout remain pending. The targeted Events rules deployment is recorded below.
 
 ## Read And Listener Behavior
 
@@ -18,9 +18,9 @@ The latest baseline is `0ee2aa6` (`v0.0.1.3-BengaliBlushDashboards`). The change
 
 Private list rules require a query limit: 51 for users/slug records and 100 for private submissions/orders and infrastructure lists. The 100-record allowance preserves account-deletion batches. Public catalog rules keep their existing visibility boundaries, evaluating public status before private role lookups. The app uses the default in-memory Firestore cache, avoiding persistent private dashboard data on shared devices.
 
-Deploy the reviewed index overrides first and wait for index readiness. Then deploy the updated web app, so its private queries already include limits, before tightening list rules. This is a deployment dependency; no cloud state was changed here.
+Deploy the reviewed index overrides first and wait for index readiness. Then deploy the updated web app, so its private queries already include limits, before tightening list rules. The broader index overrides and list-rule changes have not been deployed as part of the Events fix.
 
-Events is a private admin collection with draft, scheduled, and cancelled states. Its editor uses the shared numbered ID/counter scheme and skips unchanged edits. Deploy the prepared Events rules, counter permissions, and ascending `number` index before using Events list/save operations. Events are not published to a public calendar.
+Events is a private admin collection with draft, scheduled, and cancelled states. Its editor uses the shared numbered ID/counter scheme and skips unchanged edits. On October 10, 2026, the Events rules and counter permissions were deployed to `bengaliblush-9ac28`, preserving all unrelated live rules. The active ruleset is `4d91bb8f-8ab0-4941-b635-82f5155edea3`. The existing default ascending `number` index supports Events queries; no index changes were deployed. Events are not published to a public calendar. The deployment was confirmed through the rules release; the page and save flow have not been tested.
 
 ```bash
 firebase deploy --only firestore:indexes --project bengaliblush-9ac28

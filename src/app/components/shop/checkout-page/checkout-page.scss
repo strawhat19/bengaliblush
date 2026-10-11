@@ -22,9 +22,9 @@
   .bb-checkout-field { display: grid; min-width: 0; gap: 9px; }
   .bb-checkout-field-full { grid-column: 1 / -1; }
   .bb-checkout-label { color: hsl(var(--foreground)); font-size: 10px; }
-  .bb-checkout-input { width: 100%; min-width: 0; min-height: 50px; border: 1px solid hsl(var(--primary) / .21); border-radius: 3px; padding: 12px 14px; background: hsl(var(--card) / .6); color: hsl(var(--foreground)); font-size: 13px; line-height: 1.5; transition: border-color .25s ease, background-color .25s ease, box-shadow .25s ease; }
+  .bb-checkout-input { width: 100%; min-width: 0; min-height: 50px; border: 1px solid hsl(var(--primary) / .21); border-radius: 3px; padding: 12px 14px; background-color: hsl(var(--card) / .6); color: hsl(var(--foreground)); font-size: 13px; line-height: 1.5; transition: border-color .25s ease, background-color .25s ease, box-shadow .25s ease; }
   .bb-checkout-input:hover { border-color: hsl(var(--primary) / .5); }
-  .bb-checkout-input:focus { outline: 0; border-color: hsl(var(--primary)); background: hsl(var(--card)); box-shadow: 0 0 0 3px hsl(var(--primary) / .09); }
+  .bb-checkout-input:focus { outline: 0; border-color: hsl(var(--primary)); background-color: hsl(var(--card)); box-shadow: 0 0 0 3px hsl(var(--primary) / .09); }
   .bb-checkout-input:user-invalid { border-color: hsl(var(--destructive)); }
   .bb-checkout-guest-note { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 18px 0 0; color: hsl(var(--muted-foreground)); font-size: 11px; }
   .bb-checkout-signin { display: inline-flex; align-items: center; gap: 5px; color: hsl(var(--primary)); }

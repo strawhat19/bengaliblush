@@ -32,7 +32,8 @@ export const useAccountNavigationCounts = () => {
   const counts = enabled && state?.source === source ? state.counts : null;
   const pagination = enabled && state?.source === source ? state.pagination : null;
   const badgeError = enabled && state?.source === source ? state.error : ``;
+  const badgeLoading = enabled && state?.source !== source;
   const badgeCounts = useMemo(() => getNavigationBadgeCounts(counts, hasProfile), [counts, hasProfile]);
   const tablePagination = useMemo(() => getNavigationTablePagination(pagination), [pagination]);
-  return { badgeError, badgeCounts, tablePagination };
+  return { badgeError, badgeCounts, badgeLoading, tablePagination };
 };

@@ -1,0 +1,26 @@
+.bb-observability-trend { min-width: 0; }
+.bb-observability-trend-reading { display: flex; min-width: 0; min-height: 36px; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; margin-bottom: 4px; }
+.bb-observability-trend-timestamp { display: inline-flex; min-width: 0; align-items: center; gap: 6px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-observability-trend-timestamp > svg { flex: none; }
+.bb-observability-trend-value { display: inline-flex; min-width: 0; flex-wrap: wrap; align-items: baseline; gap: 7px; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 25px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.bb-observability-trend-caption { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-family: var(--app-font-sans); font-size: 9px; font-weight: 400; line-height: 1.6; }
+.bb-observability-trend-plot { position: relative; min-width: 0; }
+.bb-observability-trend-chart { display: block; width: 100%; min-width: 0; height: 220px; overflow: visible; color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-observability-trend-grid line { stroke: hsl(var(--primary) / .1); stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+.bb-observability-trend-grid text, .bb-observability-trend-label { fill: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-family: var(--app-font-sans); font-size: 11px; }
+.bb-observability-trend-area { animation: bb-observability-area-reveal .8s ease backwards; }
+.bb-observability-trend-line { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; vector-effect: non-scaling-stroke; animation: bb-observability-line-draw 1.2s cubic-bezier(.22, 1, .36, 1) backwards; }
+.bb-observability-trend-point { fill: currentColor; animation: bb-observability-area-reveal .8s ease backwards; }
+.bb-observability-trend-active line { stroke: currentColor; stroke-opacity: .2; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+.bb-observability-trend-active circle { fill: var(--bb-panel-surface, hsl(var(--card))); stroke: currentColor; stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.bb-observability-trend-empty { position: absolute; inset: 20px 12px 38px; display: grid; align-content: center; margin: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; line-height: 1.7; text-align: center; }
+.bb-observability-trend-slider-label { display: flex; min-width: 0; align-items: center; gap: 12px; padding-left: 9.5%; }
+.bb-observability-trend-slider-label > span { flex: none; }
+.bb-observability-trend-slider { width: 100%; min-width: 0; height: 18px; accent-color: hsl(var(--primary)); cursor: pointer; }
+.bb-observability-trend-slider:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.bb-observability-panel.is-compact .bb-observability-trend-chart { height: 132px; }
+.bb-observability-panel.is-compact .bb-observability-trend-value { font-size: 22px; }
+.bb-observability-panel.is-compact .bb-observability-trend-reading { gap: 4px 9px; }
+@keyframes bb-observability-line-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes bb-observability-area-reveal { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .bb-observability-trend-line, .bb-observability-trend-area, .bb-observability-trend-point { animation: none; transition: none; } }

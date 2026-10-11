@@ -1,0 +1,84 @@
+.bb-traffic-analytics { display: grid; min-width: 0; container: bb-traffic-analytics / inline-size; gap: 18px; margin-bottom: 30px; }
+.bb-traffic-description { margin: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; line-height: 1.7; }
+.bb-traffic-heading-actions { display: flex; flex: none; flex-wrap: wrap; gap: 6px; }
+.bb-traffic-button, .bb-traffic-toggle-button, .bb-traffic-text-button, .bb-traffic-filter-chip, .bb-traffic-journey-button { display: inline-flex; min-height: 34px; align-items: center; justify-content: center; gap: 6px; border: 1px solid hsl(var(--primary) / .16); border-radius: 8px; padding: 8px 11px; color: var(--bb-highlight, hsl(var(--primary))); background: var(--bb-panel-surface, hsl(var(--card))); font-family: inherit; font-size: 10px; cursor: pointer; transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+.bb-traffic-button:hover, .bb-traffic-journey-button:hover, .bb-traffic-filter-chip:hover { border-color: hsl(var(--primary) / .4); background: hsl(var(--primary) / .05); }
+.bb-traffic-heading-actions > button:disabled, .bb-traffic-analytics button:disabled, .bb-traffic-analytics input:disabled, .bb-traffic-analytics select:disabled { opacity: .55; cursor: default; }
+.bb-traffic-heading-actions > button:focus-visible, .bb-traffic-analytics button:focus-visible, .bb-traffic-analytics input:focus-visible, .bb-traffic-analytics select:focus-visible, .bb-traffic-outcome:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.bb-traffic-summary { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 18px; }
+.bb-traffic-summary.is-filters-only { grid-template-columns: minmax(0, 1fr); }
+.bb-traffic-summary-stats { display: flex; min-width: 0; flex-direction: column; gap: 8px; transition: opacity .2s ease; }
+.bb-traffic-summary-stats > .bb-traffic-metrics, .bb-traffic-summary-stats > .bb-traffic-skeleton-cards { flex: 1; }
+.bb-traffic-summary-stats.is-loading { opacity: .6; }
+.bb-traffic-filters { display: grid; min-width: 0; gap: 14px; border: 1px solid hsl(var(--primary) / .12); border-radius: 12px; padding: 16px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-traffic-range-controls { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.bb-traffic-toggle { display: inline-flex; flex: none; gap: 2px; border: 1px solid hsl(var(--primary) / .12); border-radius: 8px; padding: 3px; background: hsl(var(--primary) / .035); }
+.bb-traffic-toggle-button { min-height: 28px; border-color: transparent; border-radius: 5px; padding: 6px 9px; background: transparent; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
+.bb-traffic-toggle-button.is-active { border-color: hsl(var(--primary) / .08); background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-highlight, hsl(var(--primary))); box-shadow: 0 1px 4px hsl(var(--primary) / .06); }
+.bb-traffic-date-form { display: flex; min-width: 0; flex-wrap: wrap; align-items: flex-end; gap: 8px; }
+.bb-traffic-date-label, .bb-traffic-select-label { display: grid; min-width: 0; gap: 5px; }
+.bb-traffic-input { width: 100%; min-width: 0; min-height: 34px; border: 1px solid hsl(var(--primary) / .14); border-radius: 7px; padding: 7px 9px; background: var(--bb-panel-surface, hsl(var(--card))); color: inherit; font-family: inherit; font-size: 10px; }
+.bb-traffic-date-label > input { width: 128px; }
+.bb-traffic-caption { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-family: var(--app-font-sans); font-size: 9px; font-weight: 400; line-height: 1.6; }
+.bb-traffic-select-label > span { display: flex; align-items: center; gap: 5px; }
+.bb-traffic-segment-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.bb-traffic-select { text-overflow: ellipsis; cursor: pointer; }
+.bb-traffic-date-error { margin: 0; color: #be123c; font-size: 11px; }
+.bb-traffic-active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.bb-traffic-filter-chip { min-height: 27px; border-radius: 999px; padding: 5px 9px; background: hsl(var(--primary) / .035); overflow-wrap: anywhere; }
+.bb-traffic-filter-chip > svg { flex: none; }
+.bb-traffic-text-button { min-height: 27px; border: 0; padding: 5px 0; background: transparent; font-size: 9px; }
+.bb-traffic-text-button:hover { color: inherit; }
+.bb-traffic-report { display: grid; min-width: 0; gap: 18px; transition: opacity .2s ease; }
+.bb-traffic-analytics.is-loading .bb-traffic-report { opacity: .6; pointer-events: none; }
+.bb-traffic-metrics { display: grid; min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.bb-traffic-kpi { display: grid; min-width: 0; align-content: start; gap: 9px; overflow: hidden; border: 1px solid hsl(var(--primary) / .14); border-radius: 12px; padding: 18px; background: linear-gradient(140deg, hsl(var(--primary) / .035), transparent 65%), var(--bb-panel-surface, hsl(var(--card))); animation: bb-traffic-reveal .55s ease backwards; }
+.bb-traffic-kpi-label { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
+.bb-traffic-kpi-value { min-width: 0; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: clamp(28px, 4vw, 39px); font-weight: 500; line-height: 1.1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.bb-traffic-kpi-change { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 10px; }
+.bb-traffic-kpi-change.is-up { color: #16814a; }
+.bb-traffic-kpi-change.is-down { color: #bf5d4b; }
+.bb-traffic-kpi-change.is-flat { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
+.bb-traffic-kpi-period { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; }
+.bb-traffic-panel { min-width: 0; border: 1px solid hsl(var(--primary) / .14); border-radius: 12px; padding: 20px; background: var(--bb-panel-surface, hsl(var(--card))); animation: bb-traffic-reveal .55s ease backwards; }
+.bb-traffic-panel-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 18px; }
+.bb-traffic-panel-copy { display: grid; gap: 3px; }
+.bb-traffic-panel-copy > p { margin: 0; }
+.bb-traffic-panel-title { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 21px; font-weight: 500; line-height: 1.25; }
+.bb-traffic-panel-title > svg { flex: none; opacity: .75; }
+.bb-traffic-breakdowns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 18px; }
+.bb-traffic-journey-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.bb-traffic-journey-button.is-selected { background: hsl(var(--primary) / .08); border-color: hsl(var(--primary) / .4); }
+.bb-traffic-outcomes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 16px; }
+.bb-traffic-journeys > .bb-admin-skeleton.is-summary { max-width: none; margin-top: 16px; }
+.bb-traffic-journeys > .bb-admin-skeleton.is-summary > .bb-admin-skeleton-content { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+.bb-traffic-journeys > .bb-admin-skeleton.is-summary .bb-admin-skeleton-card { grid-template-columns: minmax(0, 1fr); gap: 10px; border-color: hsl(var(--primary) / .1); border-radius: 9px; padding: 12px; }
+.bb-traffic-journeys > .bb-admin-skeleton.is-summary .bb-admin-skeleton-card > .bb-admin-skeleton-block:last-child { width: 40%; height: 25px; }
+.bb-traffic-outcome { position: relative; display: grid; min-width: 0; gap: 10px; border: 1px solid hsl(var(--primary) / .1); border-radius: 9px; padding: 12px; transition: background-color .2s ease, border-color .2s ease; }
+.bb-traffic-outcome:hover { border-color: hsl(var(--primary) / .3); background: hsl(var(--primary) / .035); }
+.bb-traffic-outcome-label { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; }
+.bb-traffic-outcome-count { color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 25px; font-weight: 500; line-height: 1; }
+.bb-traffic-outcome-arrow { position: absolute; right: 12px; bottom: 13px; color: var(--bb-highlight, hsl(var(--primary))); opacity: .6; }
+.bb-traffic-feedback { display: flex; align-items: flex-start; gap: 12px; border: 1px solid hsl(var(--primary) / .13); border-radius: 12px; padding: 20px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-traffic-feedback > svg { flex: none; margin-top: 3px; color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-traffic-feedback-title { margin: 0 0 5px; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 23px; font-weight: 500; }
+.bb-traffic-feedback.is-error { border-color: #be123c30; background: #be123c05; }
+.bb-traffic-feedback.is-error > svg { color: #be123c; }
+.bb-traffic-feedback-copy > .bb-traffic-caption { margin: 9px 0 0; }
+.bb-traffic-empty-caption { margin: 20px 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; }
+.bb-traffic-skeleton { display: grid; gap: 16px; }
+.bb-traffic-skeleton-card, .bb-traffic-skeleton-chart { display: block; border-radius: 10px; background: hsl(var(--primary) / .06); animation: bb-traffic-skeleton-pulse 1.5s ease-in-out infinite alternate; }
+.bb-traffic-skeleton-cards { display: grid; min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.bb-traffic-skeleton-card { min-width: 0; min-height: 150px; }
+.bb-traffic-skeleton-chart { height: 255px; }
+.bb-traffic-button > .is-spinning { animation: bb-traffic-spin 1s linear infinite; }
+@keyframes bb-traffic-reveal { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+@keyframes bb-traffic-skeleton-pulse { to { opacity: .4; } }
+@keyframes bb-traffic-spin { to { transform: rotate(360deg); } }
+@media (max-width: 850px) { .bb-traffic-outcomes, .bb-traffic-journeys > .bb-admin-skeleton.is-summary > .bb-admin-skeleton-content { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .bb-traffic-segment-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bb-traffic-breakdowns { grid-template-columns: minmax(0, 1fr); } .bb-traffic-kpi { padding: 13px; } .bb-traffic-kpi-change { font-size: 9px; } .bb-traffic-kpi-period { display: block; width: 100%; } .bb-traffic-kpi-label { flex-wrap: wrap; font-size: 9px; } .bb-traffic-panel { padding: 16px; } }
+@media (max-width: 420px) { .bb-traffic-metrics, .bb-traffic-skeleton-cards { grid-template-columns: minmax(0, 1fr); } .bb-traffic-kpi { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 12px; } .bb-traffic-kpi-value { grid-column: 2; grid-row: 1 / 4; } .bb-traffic-date-form { width: 100%; } .bb-traffic-date-label { flex: 1 1 100px; } .bb-traffic-date-label > input { width: 100%; } .bb-traffic-date-form > button { flex: 1 1 100%; } }
+@container bb-traffic-analytics (max-width: 840px) { .bb-traffic-summary { grid-template-columns: minmax(0, 1fr); } }
+@container bb-traffic-analytics (max-width: 560px) { .bb-traffic-summary .bb-traffic-segment-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container bb-traffic-analytics (max-width: 420px) { .bb-traffic-summary .bb-traffic-metrics, .bb-traffic-summary .bb-traffic-skeleton-cards { grid-template-columns: minmax(0, 1fr); } .bb-traffic-summary .bb-traffic-kpi { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 12px; } .bb-traffic-summary .bb-traffic-kpi-value { grid-column: 2; grid-row: 1 / 4; } .bb-traffic-summary .bb-traffic-date-form { width: 100%; } .bb-traffic-summary .bb-traffic-date-label { flex: 1 1 100px; } .bb-traffic-summary .bb-traffic-date-label > input { width: 100%; } .bb-traffic-summary .bb-traffic-date-form > button { flex: 1 1 100%; } }
+@media (prefers-reduced-motion: reduce) { .bb-traffic-kpi, .bb-traffic-panel, .bb-traffic-button > .is-spinning, .bb-traffic-skeleton-card, .bb-traffic-skeleton-chart { animation: none; } .bb-traffic-button, .bb-traffic-toggle-button, .bb-traffic-text-button, .bb-traffic-filter-chip, .bb-traffic-journey-button, .bb-traffic-outcome, .bb-traffic-report, .bb-traffic-summary-stats { transition: none; } }

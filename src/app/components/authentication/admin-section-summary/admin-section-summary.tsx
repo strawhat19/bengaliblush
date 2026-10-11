@@ -6,9 +6,9 @@ import '../owner-dashboard/owner-dashboard.scss';
 import { siteRoutes } from '@/shared/navigation/routes';
 import { Palette, ArrowUpRight, MessageSquareText } from 'lucide-react';
 import AccountAccess from '../account-access/account-access';
-import { adminLinks } from '@/shared/navigation/account-navigation';
 import Link from '@/app/components/navigation/page-link/page-link';
 import AccountNavigation from '../account-navigation/account-navigation';
+import { adminLinks, getAdminParentMenuLabel } from '@/shared/navigation/account-navigation';
 
 const AdminSectionSummary = ({ section }: { section: `studio` | `feedback` }) => {
   const id = `bb-admin-${section}-summary`;
@@ -24,7 +24,7 @@ const AdminSectionSummary = ({ section }: { section: `studio` | `feedback` }) =>
           <div id={`${id}-content`} className={`bb-owner-dashboard-content bb-admin-section-summary-content`}>
             <div id={`${id}-heading`} className={`bb-owner-dashboard-heading`}>
               <div id={`${id}-heading-copy`} className={`bb-owner-dashboard-heading-copy`}>
-                <span id={`${id}-eyebrow`} className={`bb-eyebrow`}><span id={`${id}-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`${id}-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> {route.label} Overview</span></span>
+                <span id={`${id}-eyebrow`} className={`bb-eyebrow`}><span id={`${id}-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`${id}-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> {getAdminParentMenuLabel(route)}</span></span>
                 <h1 id={`${id}-title`} className={`bb-owner-dashboard-title has-table-icon`}><TitleIcon size={28} aria-hidden={`true`} id={`${id}-title-icon`} className={`bb-owner-dashboard-title-icon`} />{route.label}</h1>
                 <p id={`${id}-description`} className={`bb-owner-dashboard-description`}>{route.description}</p>
               </div>

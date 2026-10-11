@@ -168,7 +168,7 @@ export const siteRoutes = {
     minimumRole: Roles.Admin,
     title: `Reports | Bengali Blush`,
     aliases: [`/admin/reports`, `/dashboard/reports`],
-    description: `Review recent studio requests, appointments, and accounts`,
+    description: `Review recent studio requests and appointments`,
   },
   adminAnalytics: {
     href: `/analytics`,
@@ -177,7 +177,7 @@ export const siteRoutes = {
     minimumRole: Roles.Admin,
     title: `Analytics | Bengali Blush`,
     aliases: [`/admin/analytics`, `/dashboard/analytics`],
-    description: `Explore studio activity, request statuses, and record counts`,
+    description: `Explore website visitors, referrers, countries, pages, and studio activity`,
   },
   adminChats: {
     href: `/chats`,
@@ -249,12 +249,12 @@ export const siteRoutes = {
     description: `Review unpaid shop order requests`,
   },
   adminPaymentMethods: {
+    href: `/payments`,
     icon: `CreditCard`,
     label: `Payments`,
     minimumRole: Roles.Admin,
-    href: `/payment-methods`,
     title: `Payments | Bengali Blush`,
-    aliases: [`/admin/payment-methods`],
+    aliases: [`/payment-methods`, `/admin/payment-methods`],
     description: `Manage payment method configuration`,
   },
   adminReviews: {

@@ -4,7 +4,7 @@ import type { RecordPaginationIndex } from './record-pagination-index';
 type PaginationState = { page: number; scope: string; nextCursor: number | null; cursors: readonly (number | undefined)[] };
 const initialState = (scope: string): PaginationState => ({ page: 1, scope, nextCursor: null, cursors: [undefined] });
 
-export const useRecordPagination = (scope: string, index?: RecordPaginationIndex) => {
+export const useRecordPagination = (scope: string, index?: RecordPaginationIndex, totalError?: string) => {
   const [state, setState] = useState(() => initialState(scope));
   const current = state.scope === scope ? state : initialState(scope);
   const cursors = index?.cursors ?? current.cursors;
@@ -41,6 +41,7 @@ export const useRecordPagination = (scope: string, index?: RecordPaginationIndex
     nextCursor,
     goToPage,
     setNextCursor,
+    totalError: index ? `` : totalError,
     canGoBack: page > 1,
     totalRows: index?.totalRows,
     pages: cursors.map((_, index) => index + 1),

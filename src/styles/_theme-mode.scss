@@ -112,8 +112,8 @@ body { transition: background-color .38s ease, color .38s ease; }
   .bb-contact-inquiry-tab:hover { background: hsl(var(--secondary) / .12); }
   .bb-contact-inquiry-tab[aria-selected='true'] { background: hsl(var(--primary)); color: var(--bb-brand-cream); }
 
-  .bb-auth-input, .bb-checkout-input { background: var(--bb-surface); border-color: hsl(var(--border)); }
-  .bb-auth-input:focus, .bb-checkout-input:focus { background: var(--bb-surface-raised); border-color: hsl(var(--secondary)); box-shadow: 0 0 0 3px hsl(var(--secondary) / .1); }
+  .bb-auth-input, .bb-checkout-input { background-color: var(--bb-surface); border-color: hsl(var(--border)); }
+  .bb-auth-input:focus, .bb-checkout-input:focus { background-color: var(--bb-surface-raised); border-color: hsl(var(--secondary)); box-shadow: 0 0 0 3px hsl(var(--secondary) / .1); }
   .bb-checkout-input:user-invalid { border-color: hsl(var(--destructive)); }
   .bb-auth-google { background: var(--bb-surface-raised); border-color: hsl(var(--border)); color: hsl(var(--foreground)); }
   .bb-auth-ritual-option { color: var(--bb-highlight); }

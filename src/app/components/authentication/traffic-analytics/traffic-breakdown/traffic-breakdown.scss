@@ -1,0 +1,29 @@
+.bb-traffic-breakdown-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.bb-traffic-breakdown-row { min-width: 0; animation: bb-traffic-reveal .45s ease var(--bb-traffic-delay) backwards; }
+.bb-traffic-breakdown-button { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr) auto; gap: 7px 8px; border: 1px solid transparent; border-radius: 8px; padding: 9px 7px; color: inherit; background: transparent; text-align: left; cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
+.bb-traffic-breakdown-button:hover, .bb-traffic-breakdown-button.is-selected { border-color: hsl(var(--primary) / .12); background: hsl(var(--primary) / .04); }
+.bb-traffic-breakdown-button:disabled { cursor: default; }
+.bb-traffic-breakdown-name { display: flex; min-width: 0; align-items: center; gap: 6px; font-size: 11px; overflow-wrap: anywhere; }
+.bb-traffic-breakdown-identity { display: grid; min-width: 0; gap: 3px; }
+.bb-traffic-breakdown-label { min-width: 0; line-height: 1.45; }
+.bb-traffic-breakdown-raw { min-width: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; line-height: 1.5; overflow-wrap: anywhere; }
+.bb-traffic-breakdown.is-path .bb-traffic-breakdown-identity { display: flex; flex: 1; align-items: baseline; gap: 8px; overflow: hidden; }
+.bb-traffic-breakdown.is-path .bb-traffic-breakdown-label { max-width: 55%; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bb-traffic-breakdown.is-path .bb-traffic-breakdown-raw { flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bb-traffic-breakdown.is-device .bb-traffic-segment-icon { color: var(--bb-traffic-device-color); }
+.bb-traffic-breakdown-value { display: flex; align-items: baseline; gap: 8px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.bb-traffic-breakdown-share { min-width: 39px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; text-align: right; }
+.bb-traffic-breakdown-track { display: block; height: 4px; grid-column: 1 / -1; overflow: hidden; border-radius: 999px; background: hsl(var(--primary) / .055); }
+.bb-traffic-breakdown-bar { display: block; height: 100%; border-radius: inherit; background: hsl(var(--primary) / .58); transform-origin: left center; animation: bb-traffic-bar-grow .8s cubic-bezier(.22, 1, .36, 1) var(--bb-traffic-delay) backwards; transition: width .8s cubic-bezier(.22, 1, .36, 1); }
+.bb-traffic-breakdown-visitors { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; }
+.bb-traffic-breakdown-arrow { justify-self: end; color: hsl(var(--primary) / .5); }
+.bb-traffic-device-donut { position: relative; display: grid; width: 132px; height: 132px; place-items: center; margin: 0 auto 18px; }
+.bb-traffic-device-rings { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.bb-traffic-device-rings circle { fill: none; stroke-width: 14; }
+.bb-traffic-device-track { stroke: hsl(var(--primary) / .06); }
+.bb-traffic-device-segment { animation: bb-traffic-donut-draw 1s cubic-bezier(.22, 1, .36, 1) var(--bb-traffic-delay) backwards; }
+.bb-traffic-device-center { display: grid; max-width: 92px; justify-items: center; gap: 3px; }
+.bb-traffic-device-total { color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 25px; font-weight: 500; }
+@keyframes bb-traffic-bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes bb-traffic-donut-draw { from { stroke-dasharray: 0 100; } }
+@media (prefers-reduced-motion: reduce) { .bb-traffic-breakdown-row, .bb-traffic-breakdown-bar, .bb-traffic-device-segment { animation: none; } .bb-traffic-breakdown-bar, .bb-traffic-breakdown-button { transition: none; } }

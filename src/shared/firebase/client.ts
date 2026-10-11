@@ -1,9 +1,9 @@
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getApps, initializeApp } from 'firebase/app';
-import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
+import { initializeAppCheck, ReCaptchaEnterpriseProvider, type AppCheck } from 'firebase/app-check';
 
-let appCheckInitialized = false;
+let appCheck: AppCheck | undefined;
 
 export const getFirebaseClient = () => {
   const config = {
@@ -16,9 +16,8 @@ export const getFirebaseClient = () => {
   if (Object.values(config).some((value) => !value)) throw new Error(`Firebase Connection Is Not Configured`);
   const app = getApps()?.[0] ?? initializeApp(config);
   const appCheckSiteKey = process.env.NEXT_PUBLIC_FIREBASE_APP_CHECK_SITE_KEY?.trim();
-  if (typeof window !== `undefined` && appCheckSiteKey && !appCheckInitialized) {
-    initializeAppCheck(app, { isTokenAutoRefreshEnabled: true, provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey) });
-    appCheckInitialized = true;
+  if (typeof window !== `undefined` && appCheckSiteKey && !appCheck) {
+    appCheck = initializeAppCheck(app, { isTokenAutoRefreshEnabled: true, provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey) });
   }
-  return { auth: getAuth(app), database: getFirestore(app) };
+  return { auth: getAuth(app), appCheck, database: getFirestore(app) };
 };

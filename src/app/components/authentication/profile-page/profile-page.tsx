@@ -6,6 +6,7 @@ import { roleLabels } from '@/types/types';
 import { useProfilePage } from './use-profile-page';
 import { useAuth } from '@/shared/authContext/useAuth';
 import { useTheme } from '@/shared/themeContext/useTheme';
+import AdminSkeleton from '../admin-skeleton/admin-skeleton';
 import AccountAccess from '../account-access/account-access';
 import AccountNavigation from '../account-navigation/account-navigation';
 import AccountPasswordPanel from '../account-password-panel/account-password-panel';
@@ -35,7 +36,10 @@ const ProfileDetails = () => {
         <div id={`bb-profile-content`} className={`bb-profile-content`}>
           <div id={`bb-profile-details`} className={`bb-profile-details`}>
             <span id={`bb-profile-eyebrow`} className={`bb-eyebrow`}>Your Account</span>
-            <h1 id={`bb-profile-title`} className={`bb-profile-title`}>Hello, <em>{user.name}.</em></h1>
+            <h1 id={`bb-profile-title`} className={`bb-profile-title`}>
+              <UserRound size={28} aria-hidden={`true`} id={`bb-profile-title-icon`} className={`bb-profile-title-icon`} />
+              <span id={`bb-profile-title-copy`} className={`bb-profile-title-copy`}>Hello, <em>{user.name}.</em></span>
+            </h1>
             <p id={`bb-profile-description`} className={`bb-profile-description`}>Your account is securely connected with {user.provider === `password` ? `email and password` : `Google`}.</p>
             <dl id={`bb-profile-record`} className={`bb-profile-record`}>
               <div id={`bb-profile-row-name`} className={`bb-profile-record-row bb-profile-input-row`}>
@@ -118,13 +122,13 @@ const ProfileDetails = () => {
                       </a>
                     )}
                     <button type={`button`} disabled={busy || actionOpen} id={`bb-profile-deactivate-account`} className={`bb-profile-account-action bb-profile-danger-action`} onClick={(event) => beginAccountAction(`deactivate`, event.currentTarget)}>
-                      <CirclePause size={16} id={`bb-profile-deactivate-icon`} aria-hidden={`true`} />Deactivate Account
+                      <CirclePause size={16} id={`bb-profile-deactivate-icon`} aria-hidden={`true`} />Deactivate
                     </button>
                     <button type={`button`} disabled={busy || actionOpen} id={`bb-profile-delete-account`} className={`bb-profile-account-action bb-profile-danger-action`} onClick={(event) => beginAccountAction(`delete`, event.currentTarget)}>
-                      <Trash2 size={16} id={`bb-profile-delete-icon`} aria-hidden={`true`} />Delete Account
+                      <Trash2 size={16} id={`bb-profile-delete-icon`} aria-hidden={`true`} />Delete
                     </button>
                   </div>
-                  {passwordSettingsLoading && <p role={`status`} id={`bb-profile-password-loading`} className={`bb-profile-password-notice`}>Checking Password Options</p>}
+                  {passwordSettingsLoading && <AdminSkeleton rows={2} variant={`inline`} id={`bb-profile-password-loading`} label={`Loading Password Options`} />}
                   {passwordSettingsError && (
                     <div id={`bb-profile-password-options-error`} className={`bb-profile-password-feedback`}>
                       <p role={`alert`} id={`bb-profile-password-error`} className={`bb-profile-password-notice is-error`}>{passwordSettingsError}</p>

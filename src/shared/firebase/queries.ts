@@ -4,7 +4,7 @@ import { query, limit, where, orderBy, startAfter, onSnapshot, collection, getDo
 export const firestorePageSize = 50;
 export const firestoreMediaPageSize = 5;
 export type RecordPage<T> = { records: T[]; nextCursor: number | null };
-export type RecordQuery = { cursor?: number; status?: string; pageSize?: number; direction?: OrderByDirection };
+export type RecordQuery = { cursor?: number; status?: string; pageSize?: number; direction?: OrderByDirection; includePendingWrites?: boolean };
 type RecordReader<T> = (snapshot: DocumentSnapshot<DocumentData>) => T;
 type RecordSubscriber = { onRecords: (records: unknown[]) => void; onError: (error: Error) => void };
 type RecordWatch = {
@@ -42,7 +42,7 @@ export const getRecordPage = async <T>(collectionName: string, read: RecordReade
 export const subscribeRecordPage = <T>(collectionName: string, read: RecordReader<T>, onPage: (page: RecordPage<T>) => void, onError: (error: Error) => void, options?: RecordQuery) => {
   let received = false;
   return onSnapshot(pageQuery(collectionName, options), { includeMetadataChanges: true }, (snapshot) => {
-    if (snapshot.metadata.hasPendingWrites) return;
+    if (snapshot.metadata.hasPendingWrites && !options?.includePendingWrites) return;
     if (!received && snapshot.metadata.fromCache && snapshot.empty) return;
     received = true;
     try { onPage(readPage(snapshot.docs, read, options?.pageSize)); }
@@ -50,8 +50,8 @@ export const subscribeRecordPage = <T>(collectionName: string, read: RecordReade
   }, onError);
 };
 
-export const subscribeRecords = <T>(collectionName: string, read: RecordReader<T>, onRecords: (records: T[]) => void, onError: (error: Error) => void, status?: string) => {
-  const key = `${collectionName}:${status ?? ``}`;
+export const subscribeRecords = <T>(collectionName: string, read: RecordReader<T>, onRecords: (records: T[]) => void, onError: (error: Error) => void, status?: string, includePendingWrites = false) => {
+  const key = `${collectionName}:${status ?? ``}:${includePendingWrites}`;
   let watch = publicWatches.get(key);
   if (!watch || watch.failed) {
     const reference = collection(getFirebaseClient().database, collectionName);
@@ -65,7 +65,7 @@ export const subscribeRecords = <T>(collectionName: string, read: RecordReader<T
       currentWatch.subscribers.forEach((subscriber) => subscriber.onError(error));
     };
     currentWatch.stop = onSnapshot(status ? query(reference, where(`status`, `==`, status)) : reference, { includeMetadataChanges: true }, (snapshot) => {
-      if (snapshot.metadata.hasPendingWrites) return;
+      if (snapshot.metadata.hasPendingWrites && !includePendingWrites) return;
       if (currentWatch.records === null && snapshot.metadata.fromCache && snapshot.empty) return;
       let records: T[];
       try { records = snapshot.docs.map(read); }

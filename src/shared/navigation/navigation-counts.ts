@@ -5,8 +5,8 @@ export const getNavigationCountLabel = (label: string, count = 0) => count > 0 ?
 
 export const getNavigationBadgeCounts = (counts: AdminNavigationCounts | null, hasProfile: boolean): Readonly<Record<string, number>> => {
   if (!counts) return { [siteRoutes.profile.href]: Number(hasProfile) };
-  const reports = counts.users + counts.contacts + counts.appointments;
-  const dashboard = reports + counts.orders + counts.reviews + counts.products + counts.services + counts.paymentMethods + counts.notifications;
+  const reports = counts.contacts + counts.appointments;
+  const dashboard = reports + counts.users + counts.orders + counts.reviews + counts.products + counts.services + counts.paymentMethods + counts.notifications;
   return {
     studio: counts.gallery + counts.services + counts.notifications,
     feedback: counts.reviews + counts.contacts + counts.appointments,

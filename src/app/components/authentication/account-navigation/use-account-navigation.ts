@@ -5,6 +5,8 @@ import { siteRoutes } from '@/shared/navigation/routes';
 import { adminLinks, accountLinks } from '@/shared/navigation/account-navigation';
 import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
 
+const staticBadgeRoutes = new Set<string>([siteRoutes.profile.href, siteRoutes.adminChats.href, siteRoutes.adminEvents.href]);
+
 export const useAccountNavigation = () => {
   const pathname = usePathname();
   const { user, isAdmin } = useAuth();
@@ -13,5 +15,6 @@ export const useAccountNavigation = () => {
   const initial = user?.name?.trim()?.[0]?.toUpperCase() || `B`;
   const photoUrl = user?.photo_url && failedPhotoUrl !== user.photo_url ? user.photo_url : ``;
   const handlePhotoError = () => setFailedPhotoUrl(photoUrl);
-  return { initial, isAdmin, pathname, photoUrl, adminLinks, accountLinks, handlePhotoError, profileRoute: siteRoutes.profile, ...navigationState };
+  const isBadgeLoading = (key: string) => navigationState.badgeLoading && !staticBadgeRoutes.has(key);
+  return { initial, isAdmin, pathname, photoUrl, adminLinks, accountLinks, isBadgeLoading, handlePhotoError, profileRoute: siteRoutes.profile, ...navigationState };
 };

@@ -1,6 +1,6 @@
-1. Keep canonical routes, redirects, minimum roles, labels, and icon identifiers in a shared route registry. Thin route files should render a component or redirect; keep authentication and page logic outside the router files.
+1. Keep canonical routes, redirects, labels, icons, and explicit allowed roles/capabilities in a shared route registry. Preserve existing minimum-role metadata where needed, but do not use enum order to grant unrelated technical or operational permissions. Thin routes render components or redirects; keep account/page logic outside router files.
 
-2. Use the shared Roles enum for permissions. Account Profile, private settings, messages, and notifications require at least Subscriber when those features exist; Dashboard requires Owner. Public browsing, eligible social profiles and feeds, sign-in, sign-up, styles, About, Contact, Terms, and Privacy remain public unless the user requests a private app. Gate identity-required actions rather than automatically guarding every page.
+2. Use shared role values and capability helpers for permissions. Profile and own private tools require an active authenticated account; Dashboard/Analytics/Observability permit the relevant Owner, Admin, and Developer capabilities. Operational administration and role assignment use narrower policies from [Admin guidance](../admin/admin.md). Public browsing, eligible profiles/feeds, authentication, styles, and policy pages remain public unless a private app is requested. Gate identity-required actions.
 
 3. Keep conventional sign-in aliases such as log, sign, login, log-in, and sign-in pointing to signin. Point new, sign-up, register, and subscribe to signup. Use replace-style redirects where supported so the back action does not loop through aliases.
 

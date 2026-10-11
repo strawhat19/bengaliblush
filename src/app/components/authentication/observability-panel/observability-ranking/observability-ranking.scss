@@ -1,0 +1,25 @@
+.bb-observability-ranking { display: flex; min-width: 0; min-height: 0; flex-direction: column; gap: 8px; }
+.bb-observability-ranking-heading { display: flex; flex: none; flex-wrap: wrap; justify-content: space-between; gap: 5px; padding-inline: 4px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; }
+.bb-observability-ranking-scroll, .bb-observability-ranking-table-wrap { min-width: 0; min-height: 0; flex: 1 1 auto; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: hsl(var(--primary) / .25) transparent; }
+.bb-observability-ranking-rows { display: grid; gap: 6px; margin: 0; padding: 3px 4px 7px; list-style: none; }
+.bb-observability-ranking-row { display: grid; min-width: 0; grid-template-columns: 15px 16px minmax(0, 1fr) auto; align-items: center; gap: 6px 9px; border: 1px solid hsl(var(--primary) / .06); border-radius: 8px; padding: 9px; background: hsl(var(--primary) / .015); animation: bb-runtime-row-reveal .4s ease var(--bb-runtime-row-delay) backwards; }
+.bb-observability-ranking-rank { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; text-align: center; }
+.bb-observability-ranking-icon, .bb-observability-ranking-identity > svg { flex: none; color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-observability-ranking-row.is-error .bb-observability-ranking-icon { color: #bf5d4b; }
+.bb-observability-ranking-copy { display: grid; min-width: 0; gap: 3px; font-size: 11px; font-weight: 400; }
+.bb-observability-ranking-copy > span, .bb-observability-ranking-copy > small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bb-observability-ranking-copy > small, .bb-observability-ranking-values > small { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; font-weight: 400; }
+.bb-observability-ranking-values { display: grid; gap: 4px; justify-items: end; font-variant-numeric: tabular-nums; }
+.bb-observability-ranking-values > strong { color: var(--bb-highlight, hsl(var(--primary))); font-size: 11px; font-weight: 600; }
+.bb-observability-ranking-track { height: 4px; grid-column: 2 / -1; overflow: hidden; border-radius: 999px; background: hsl(var(--primary) / .055); }
+.bb-observability-ranking-bar { display: block; height: 100%; border-radius: inherit; background: hsl(var(--primary) / .6); transform-origin: left center; animation: bb-runtime-row-grow .65s cubic-bezier(.22, 1, .36, 1) var(--bb-runtime-row-delay) backwards; transition: width .65s cubic-bezier(.22, 1, .36, 1); }
+.bb-observability-ranking-table { width: 100%; border-collapse: collapse; text-align: left; }
+.bb-observability-ranking-table th, .bb-observability-ranking-table td { border-bottom: 1px solid hsl(var(--primary) / .09); padding: 9px 7px; font-size: 10px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.bb-observability-ranking-table thead { position: sticky; z-index: 1; top: 0; color: var(--bb-highlight, hsl(var(--primary))); background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-observability-ranking-table th:not(:first-child), .bb-observability-ranking-table td { text-align: right; white-space: nowrap; }
+.bb-observability-ranking-identity { display: flex; min-width: 0; align-items: center; gap: 7px; }
+.bb-observability-ranking-empty { margin: 0; border-radius: 8px; padding: 24px 12px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; text-align: center; }
+.bb-observability-panel.is-compact .bb-observability-ranking { height: 100%; }
+@keyframes bb-runtime-row-reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes bb-runtime-row-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .bb-observability-ranking-row, .bb-observability-ranking-bar { animation: none; } .bb-observability-ranking-bar { transition: none; } }

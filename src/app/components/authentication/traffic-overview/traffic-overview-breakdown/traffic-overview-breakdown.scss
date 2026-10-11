@@ -1,0 +1,31 @@
+.bb-traffic-overview-breakdown { display: flex; height: 100%; min-width: 0; min-height: 0; flex-direction: column; gap: 8px; }
+.bb-traffic-overview-breakdown-heading { display: flex; flex: none; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 3px 12px; padding-inline: 5px; }
+.bb-traffic-overview-breakdown-caption { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; line-height: 1.5; }
+.bb-traffic-overview-breakdown-scroll { min-width: 0; min-height: 0; max-height: 264px; flex: 1 1 auto; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: hsl(var(--primary) / .25) transparent; }
+.bb-traffic-overview-breakdown-scroll:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: -2px; border-radius: 7px; }
+.bb-traffic-overview-breakdown-rows { display: grid; gap: 3px; margin: 0; padding: 2px 4px 6px; list-style: none; }
+.bb-traffic-overview-breakdown-row { min-width: 0; animation: bb-overview-segment-reveal .4s ease var(--bb-overview-segment-delay) backwards; }
+.bb-traffic-overview-breakdown-button { position: relative; display: grid; width: 100%; min-width: 0; min-height: 49px; grid-template-columns: 15px 24px minmax(0, 1fr) auto; align-items: center; gap: 6px 8px; border: 1px solid transparent; border-radius: 8px; padding: 8px 16px 8px 5px; background: transparent; color: inherit; font-family: inherit; text-align: left; cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
+.bb-traffic-overview-breakdown-button:hover, .bb-traffic-overview-breakdown-button.is-selected { border-color: hsl(var(--primary) / .13); background: hsl(var(--primary) / .04); }
+.bb-traffic-overview-breakdown-button:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: -2px; }
+.bb-traffic-overview-breakdown-button:disabled { cursor: default; }
+.bb-traffic-overview-breakdown-button.is-other:hover { border-color: transparent; background: transparent; }
+.bb-traffic-overview-breakdown.is-loading .bb-traffic-overview-breakdown-button { opacity: .55; }
+.bb-traffic-overview-breakdown-rank { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; font-variant-numeric: tabular-nums; text-align: center; }
+.bb-traffic-overview-breakdown-identity { display: grid; min-width: 0; gap: 3px; }
+.bb-traffic-overview-breakdown-label { min-width: 0; overflow: hidden; font-size: 11px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+.bb-traffic-overview-breakdown-raw { min-width: 0; overflow: hidden; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.bb-traffic-overview-breakdown-values { display: grid; gap: 4px; justify-items: end; font-variant-numeric: tabular-nums; }
+.bb-traffic-overview-breakdown-primary { display: inline-flex; align-items: baseline; gap: 7px; }
+.bb-traffic-overview-breakdown-count { font-size: 11px; font-weight: 600; line-height: 1.25; }
+.bb-traffic-overview-breakdown-share { min-width: 34px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; text-align: right; }
+.bb-traffic-overview-breakdown-alternate { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; line-height: 1.35; }
+.bb-traffic-overview-breakdown-track { height: 4px; grid-column: 2 / -1; overflow: hidden; border-radius: 999px; background: hsl(var(--primary) / .055); }
+.bb-traffic-overview-breakdown-bar { display: block; height: 100%; border-radius: inherit; background: hsl(var(--primary) / .6); transform-origin: left center; animation: bb-overview-segment-grow .7s cubic-bezier(.22, 1, .36, 1) var(--bb-overview-segment-delay) backwards; transition: width .7s cubic-bezier(.22, 1, .36, 1); }
+.bb-traffic-overview-breakdown-arrow { position: absolute; right: 4px; top: 11px; color: var(--bb-highlight, hsl(var(--primary))); opacity: .6; }
+.bb-traffic-overview-breakdown.is-list .bb-traffic-overview-breakdown-button { border-bottom-color: hsl(var(--primary) / .06); border-radius: 5px; }
+.bb-traffic-overview-breakdown-empty { display: grid; height: 100%; min-height: 0; place-items: center; margin: 0; padding: 16px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; line-height: 1.7; text-align: center; }
+@keyframes bb-overview-segment-reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes bb-overview-segment-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (max-width: 460px) { .bb-traffic-overview-breakdown-button { grid-template-columns: 12px 24px minmax(0, 1fr) auto; gap: 5px 6px; } .bb-traffic-overview-breakdown-label { font-size: 10px; } .bb-traffic-overview-breakdown-primary { gap: 4px; } }
+@media (prefers-reduced-motion: reduce) { .bb-traffic-overview-breakdown-row, .bb-traffic-overview-breakdown-bar { animation: none; } .bb-traffic-overview-breakdown-button, .bb-traffic-overview-breakdown-bar { transition: none; } }

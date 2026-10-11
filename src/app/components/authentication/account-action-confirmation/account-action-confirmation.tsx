@@ -1,6 +1,7 @@
 'use client';
 
 import './account-action-confirmation.scss';
+import AdminSkeleton from '../admin-skeleton/admin-skeleton';
 import { X, Ban, Trash2, UserCheck, ShieldCheck } from 'lucide-react';
 import { useAccountActionConfirmation, type AccountActionConfirmationProps } from './use-account-action-confirmation';
 
@@ -45,7 +46,7 @@ const AccountActionConfirmation = (props: AccountActionConfirmationProps) => {
         <Icon size={19} id={`${idPrefix}-confirmation-icon`} className={`bb-account-action-icon`} aria-hidden={`true`} />{title}
       </h3>
       <p id={`${idPrefix}-confirmation-description`} className={`bb-account-action-description`}>{description}</p>
-      {loading && <p role={`status`} id={`${idPrefix}-method-status`} className={`bb-account-action-method`}>Checking Sign-In Method</p>}
+      {loading && <AdminSkeleton rows={1} variant={`inline`} id={`${idPrefix}-method-status`} label={`Checking Sign-In Method`} />}
       {method === `google` && <p id={`${idPrefix}-method-note`} className={`bb-account-action-method`}><ShieldCheck size={15} aria-hidden={`true`} />Google will ask you to confirm your identity.</p>}
       {method === `password` && (
         <div id={`${idPrefix}-password-field`} className={`bb-account-action-field`}>

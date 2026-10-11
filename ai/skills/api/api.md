@@ -6,7 +6,7 @@
 
 4. In a server development environment, the base directory may list registered API routes. Derive paths from the actual router or an explicit operation registry, normalize them, and avoid exposing filesystem paths. Do not copy Next.js filesystem traversal into Expo, Angular, or another incompatible runtime.
 
-5. Keep the single useLocalStorage switch in shared configuration, true by default. All persistence goes through the shared storage adapter. Honor an existing session-only CRUD mode when explicitly selected and describe it accurately. If authentication has no backend when local mode is false, return the connection-needed result rather than successful authentication.
+5. Keep persistence mode in shared configuration and route operations through the shared adapter. Preserve a single existing useLocalStorage switch for an explicit local demo; connected apps use their configured backend by default. Honor an explicitly selected session-only mode and describe it accurately. Missing configuration or provider failure must not become successful local authentication or a silent local data fallback.
 
 6. Keep reusable model and authentication operations separate from feature-specific operations. Use focused service facades such as api/auth.ts, api/notifications.ts, and api/social.ts where those concerns are requested. A local service can expose getRoutes(), getHealth(), getUsers(), getNotifications(), and getVisits(), alongside the requested feature's CRUD methods. Public directory entries describe capabilities; they do not imply an HTTP server exists.
 
@@ -16,4 +16,6 @@
 
 9. Keep backend and external-provider secrets out of client bundles, public records, and logs. User-entered local demo connection credentials belong only to private account-scoped settings, separate from public User records; a real backend owns production secrets. Social reads return explicit public or participant projections and enforce audiences before returning records. Authenticated mutations derive the actor from the session. Client-side local demo role gates do not replace backend authorization when real endpoints are connected.
 
-10. Read [database guidance](../database/database.md) for persistence and models, [authentication guidance](../authentication/authentication.md) for users and sessions, [social guidance](../social/social.md) for profile and content audiences, and [route guidance](../routes/routes.md) for page access. Keep implementation practical and scoped to the requested operations.
+10. Read [database guidance](../database/database.md) for persistence/models, [authentication guidance](../authentication/authentication.md) for sessions, [social guidance](../social/social.md) for profile audiences, [route guidance](../routes/routes.md) for page access, and [Admin guidance](../admin/admin.md) for privileged endpoints and dashboards. Keep implementation practical and scoped to requested operations.
+
+11. Analytics/observability facades return typed reports with actual source, range, freshness, and unavailable/error states. Privileged endpoints verify Firebase tokens and current role/status, keep provider tokens server-side, and fix authorized project scope. Bound filters, timeouts, caches, and request concurrency. Use verified provider contracts or trusted aggregate ingestion; never fabricate statistics.

@@ -7,8 +7,10 @@ import '../owner-dashboard/owner-dashboard.scss';
 import { useAuth } from '@/shared/authContext/useAuth';
 import { siteRoutes } from '@/shared/navigation/routes';
 import AccountAccess from '../account-access/account-access';
+import AdminSkeleton from '../admin-skeleton/admin-skeleton';
 import Link from '@/app/components/navigation/page-link/page-link';
 import AccountNavigation from '../account-navigation/account-navigation';
+import { getAdminParentMenuLabel } from '@/shared/navigation/account-navigation';
 import { Package, CreditCard, ReceiptText, ShoppingBag, RotateCcw, ArrowUpRight } from 'lucide-react';
 
 const AdminShopContent = () => {
@@ -26,8 +28,8 @@ const AdminShopContent = () => {
         <div id={`bb-admin-shop-content`} className={`bb-owner-dashboard-content`} aria-busy={loading || refreshing}>
           <div id={`bb-admin-shop-heading`} className={`bb-owner-dashboard-heading`}>
             <div id={`bb-admin-shop-heading-copy`} className={`bb-owner-dashboard-heading-copy`}>
-              <span id={`bb-admin-shop-eyebrow`} className={`bb-eyebrow`}><span id={`bb-admin-shop-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`bb-admin-shop-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> Shop</span></span>
-              <h1 id={`bb-admin-shop-title`} className={`bb-owner-dashboard-title has-table-icon`}><ShoppingBag size={28} aria-hidden={`true`} id={`bb-admin-shop-title-icon`} className={`bb-owner-dashboard-title-icon`} />Your Shop</h1>
+              <span id={`bb-admin-shop-eyebrow`} className={`bb-eyebrow`}><span id={`bb-admin-shop-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`bb-admin-shop-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> {getAdminParentMenuLabel(siteRoutes.adminShop)}</span></span>
+              <h1 id={`bb-admin-shop-title`} className={`bb-owner-dashboard-title has-table-icon`}><ShoppingBag size={28} aria-hidden={`true`} id={`bb-admin-shop-title-icon`} className={`bb-owner-dashboard-title-icon`} />{siteRoutes.adminShop.label}</h1>
               <p id={`bb-admin-shop-description`} className={`bb-owner-dashboard-description`}>Catalog availability and requests among the latest 50 records per collection. Open a record page to browse older entries.</p>
             </div>
             <button type={`button`} disabled={loading || refreshing} id={`bb-admin-shop-refresh`} className={`bb-button bb-button-outline bb-button-outline-dark bb-owner-dashboard-refresh`} onClick={() => { void reload(); }}>
@@ -35,7 +37,11 @@ const AdminShopContent = () => {
             </button>
           </div>
           {error && <p id={`bb-admin-shop-error`} className={`bb-owner-dashboard-error`} role={`alert`}>{error}</p>}
-          {loading ? <p id={`bb-admin-shop-loading`} className={`bb-owner-dashboard-description`} role={`status`}>Loading Shop Records</p> : overview && (
+          {loading ? <div id={`bb-admin-shop-loading`} className={`bb-admin-shop-loading`}>
+            <AdminSkeleton cards={4} variant={`cards`} id={`bb-admin-shop-counts-loading`} label={`Loading Shop Counts`} />
+            <div id={`bb-admin-shop-payment-loading-panel`} className={`bb-admin-shop-panel`}><AdminSkeleton rows={4} variant={`inline`} id={`bb-admin-shop-payment-loading`} label={`Loading Payment Details`} /></div>
+            <div id={`bb-admin-shop-categories-loading-panel`} className={`bb-admin-shop-panel`}><AdminSkeleton rows={4} variant={`inline`} id={`bb-admin-shop-categories-loading`} label={`Loading Product Categories`} /></div>
+          </div> : overview && (
             <>
               <div id={`bb-admin-shop-counts`} className={`bb-admin-shop-counts`}>
                 {counts.map(({ id, Icon, label, value, route }) => (
@@ -49,7 +55,7 @@ const AdminShopContent = () => {
                 <p id={`bb-admin-shop-payment-copy`}>Orders are saved as unpaid requests. Card payments stay disabled until Stripe is connected.</p>
                 <p id={`bb-admin-shop-quoted-total`}>Quoted Product Subtotal: <strong>{new Intl.NumberFormat(undefined, { style: `currency`, currency: `USD` }).format(quotedSubtotal / 100)}</strong></p>
                 <p id={`bb-admin-shop-subtotal-note`} className={`bb-admin-shop-muted`}>Across recent non-cancelled requests. Delivery, tax, final availability, and payment are confirmed separately.</p>
-                <Link href={siteRoutes.adminPaymentMethods.href} id={`bb-admin-shop-manage-methods`} className={`bb-admin-shop-link`}><CreditCard size={15} aria-hidden={`true`} />Manage Payment Methods</Link>
+                <Link href={siteRoutes.adminPaymentMethods.href} id={`bb-admin-shop-manage-methods`} className={`bb-admin-shop-link`}><CreditCard size={15} aria-hidden={`true`} />Manage {siteRoutes.adminPaymentMethods.label}</Link>
               </div>
               <div id={`bb-admin-shop-categories`} className={`bb-admin-shop-panel`}>
                 <h2 id={`bb-admin-shop-categories-title`} className={`bb-admin-shop-panel-title`}><Package size={18} aria-hidden={`true`} />Categories</h2>

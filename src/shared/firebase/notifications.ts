@@ -1,10 +1,10 @@
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
-import { getRecordPage, subscribeRecords, subscribeRecordPage, firestoreMediaPageSize } from './queries';
 import { createRecordId, getNextNumber, hasMatchingValues } from './records';
+import { getRecordPage, subscribeRecords, subscribeRecordPage, firestoreMediaPageSize } from './queries';
 import type { NotificationInput, NotificationRecord, NotificationStatus } from '@/shared/models/notifications/Notification';
-import { doc, query, where, Timestamp, collection, runTransaction, serverTimestamp, getDocsFromServer, type DocumentData, type DocumentSnapshot, type OrderByDirection } from 'firebase/firestore';
+import { doc, query, where, Timestamp, updateDoc, collection, runTransaction, serverTimestamp, getDocsFromServer, type DocumentData, type DocumentSnapshot, type OrderByDirection } from 'firebase/firestore';
 
 const notificationText = (value: unknown, label: string, maximum: number, optional = false, preserveSpacing = false) => {
   if (typeof value !== `string` || (!optional && !value.trim()) || value.length > maximum) throw new Error(`Enter A Valid ${label}`);
@@ -43,7 +43,7 @@ export const normalizeNotification = (input: NotificationInput): NotificationInp
 };
 
 const readNotification = (snapshot: DocumentSnapshot<DocumentData>): NotificationRecord => {
-  const data = snapshot.data();
+  const data = snapshot.data({ serverTimestamps: `estimate` });
   if (!snapshot.exists() || data?.id !== snapshot.id || !Number.isSafeInteger(data?.number) || data?.number < 1
     || !snapshot.id.startsWith(`Notification_${data.number}_`)
     || !(data?.created_at instanceof Timestamp) || !(data?.updated_at instanceof Timestamp)) throw new Error(`Saved Notification Data Needs Attention`);
@@ -73,14 +73,14 @@ export const getPublishedNotifications = async (): Promise<NotificationRecord[]>
   return records.docs.map(readNotification).sort((first, second) => second.number - first.number);
 };
 
-export const subscribePublishedNotifications = (onRecords: (records: NotificationRecord[]) => void, onError: (error: Error) => void) => subscribeRecords(`notifications`, readNotification, (records) => onRecords(records.sort((first, second) => second.number - first.number)), onError, `published`);
+export const subscribePublishedNotifications = (onRecords: (records: NotificationRecord[]) => void, onError: (error: Error) => void) => subscribeRecords(`notifications`, readNotification, (records) => onRecords(records.sort((first, second) => second.number - first.number)), onError, `published`, true);
 
 export const subscribeAdminNotifications = async (onRecords: (records: NotificationRecord[], nextCursor: number | null) => void, onError: (error: Error) => void, cursor?: number, direction: OrderByDirection = `asc`, pageSize = firestoreMediaPageSize) => {
   const { auth, firebaseUid } = await requireAdmin();
   return subscribeRecordPage(`notifications`, readNotification, (page) => {
     if (auth.currentUser?.uid !== firebaseUid) { onError(new Error(`Your Account Changed, Try Again`)); return; }
     onRecords(page.records, page.nextCursor);
-  }, onError, { cursor, pageSize, direction });
+  }, onError, { cursor, pageSize, direction, includePendingWrites: true });
 };
 
 export const getAdminNotifications = async (): Promise<NotificationRecord[]> => {
@@ -126,16 +126,8 @@ export const saveNotification = async (input: NotificationInput, id?: string): P
 export const updateNotificationStatus = async (id: string, status: NotificationStatus): Promise<void> => {
   if (![`draft`, `published`].includes(status)) throw new Error(`Choose A Valid Notification Status`);
   const { auth, database, firebaseUid } = await requireAdmin();
-  await runTransaction(database, async (transaction) => {
-    if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
-    const ref = doc(database, `notifications`, notificationId(id));
-    const snapshot = await transaction.get(ref);
-    if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
-    if (!snapshot.exists()) throw new Error(`Saved Notification Was Not Found`);
-    const notification = readNotification(snapshot);
-    if (notification.status === status) return;
-    transaction.update(ref, { status, updated_at: serverTimestamp() });
-  });
+  if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
+  await updateDoc(doc(database, `notifications`, notificationId(id)), { status, updated_at: serverTimestamp() });
 };
 
 export const deleteNotification = async (id: string): Promise<void> => {

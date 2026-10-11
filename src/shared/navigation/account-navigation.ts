@@ -64,5 +64,10 @@ export const adminLinks: readonly AccountNavigationItem[] = [
     ],
   },
 ];
+export const getAdminParentMenuLabel = (route: SiteRoute) => {
+  const parentMenu = adminLinks.find(({ route: menuRoute, children }) => menuRoute.href === route.href || children?.some(({ route: childRoute }) => childRoute.href === route.href));
+  return parentMenu?.label ?? parentMenu?.route.label ?? route.label;
+};
+
 export const accountLinks: readonly AccountNavigationLink[] = [{ route: siteRoutes.profile, Icon: UserRound }];
 export const expandableNavigationKeys = [...accountLinks, ...adminLinks].filter((item) => item.children?.length).map((item) => item.id ?? item.route.href);
