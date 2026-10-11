@@ -11,6 +11,7 @@ type AccountNavigationLink = {
 type AccountNavigationGroup = {
   id: string;
   label: string;
+  route: SiteRoute;
   Icon: LucideIcon;
   children: readonly AccountNavigationLink[];
 };
@@ -32,6 +33,7 @@ export const adminLinks: readonly AccountNavigationItem[] = [
     id: `studio`,
     Icon: Palette,
     label: `Studio`,
+    route: siteRoutes.adminStudio,
     children: [
       { route: siteRoutes.adminEvents, Icon: CalendarDays },
       { route: siteRoutes.adminGallery, Icon: Images },
@@ -43,6 +45,7 @@ export const adminLinks: readonly AccountNavigationItem[] = [
     id: `feedback`,
     label: `Feedback`,
     Icon: MessageSquareText,
+    route: siteRoutes.adminFeedback,
     children: [
       { route: siteRoutes.adminChats, Icon: MessageSquareText },
       { route: siteRoutes.adminReviews, Icon: Quote },

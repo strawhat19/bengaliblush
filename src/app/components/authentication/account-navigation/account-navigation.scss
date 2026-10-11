@@ -18,13 +18,13 @@
 .bb-account-navigation-child-link { gap: 6px; padding-inline: 8px; }
 .bb-account-navigation-heading > .bb-account-navigation-link { flex: 1; }
 .bb-account-navigation-link > svg { width: 15px; height: 15px; flex: none; }
-.bb-account-navigation-link:is(:hover, :focus-visible) { border-color: hsl(var(--secondary)); background: hsl(var(--secondary)); color: var(--bb-brand-ink); }
+.bb-account-navigation-link:is(:hover, :focus-visible) { border-color: color-mix(in srgb, hsl(var(--primary)) 32%, var(--bb-panel-border, hsl(var(--border)))); background: color-mix(in srgb, hsl(var(--primary)) 9%, var(--bb-brand-cream)); color: hsl(var(--primary)); }
 .bb-account-navigation-link[aria-current='page']:not(.bb-account-navigation-profile-link) { border-color: hsl(var(--primary)); background: hsl(var(--primary)); color: var(--bb-brand-cream); }
-.bb-account-navigation-link[aria-current='page']:not(.bb-account-navigation-profile-link):is(:hover, :focus-visible) { border-color: var(--bb-brand-ink); background: var(--bb-brand-ink); }
+.bb-account-navigation-link[aria-current='page']:not(.bb-account-navigation-profile-link):is(:hover, :focus-visible) { border-color: hsl(var(--primary)); background: color-mix(in srgb, hsl(var(--primary)) 88%, var(--bb-brand-ink)); }
 .bb-account-navigation-heading.has-submenu { border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 8px; background: var(--bb-brand-cream, hsl(var(--card))); color: hsl(var(--primary)); transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
-.bb-account-navigation-heading.has-submenu:is(:hover, :focus-within) { border-color: hsl(var(--secondary)); background: hsl(var(--secondary)); color: var(--bb-brand-ink); }
+.bb-account-navigation-heading.has-submenu:is(:hover, :focus-within) { border-color: color-mix(in srgb, hsl(var(--primary)) 32%, var(--bb-panel-border, hsl(var(--border)))); background: color-mix(in srgb, hsl(var(--primary)) 9%, var(--bb-brand-cream)); color: hsl(var(--primary)); }
 .bb-account-navigation-heading.has-submenu.is-current { border-color: hsl(var(--primary)); background: hsl(var(--primary)); color: var(--bb-brand-cream); }
-.bb-account-navigation-heading.has-submenu.is-current:is(:hover, :focus-within) { border-color: var(--bb-brand-ink); background: var(--bb-brand-ink); }
+.bb-account-navigation-heading.has-submenu.is-current:is(:hover, :focus-within) { border-color: hsl(var(--primary)); background: color-mix(in srgb, hsl(var(--primary)) 88%, var(--bb-brand-ink)); }
 .bb-account-navigation-heading.has-submenu > .bb-account-navigation-link { border: 0; border-radius: 7px 0 0 7px; padding-right: 6px; background: transparent; color: inherit; }
 .bb-account-navigation-heading.has-submenu > .bb-account-navigation-group-toggle { border-radius: 7px; padding-right: 10px; text-align: left; font-family: inherit; cursor: pointer; }
 .bb-account-navigation-group-toggle > .bb-account-navigation-link-label { flex: 1; }
@@ -32,6 +32,8 @@
 .bb-account-navigation-group-toggle[aria-expanded='true'] > .bb-account-navigation-submenu-icon { transform: rotate(180deg); }
 .bb-account-navigation-toggle { display: grid; width: 34px; flex: none; place-items: center; margin: 4px; border: 0; border-radius: 6px; padding: 0; background: transparent; color: inherit; cursor: pointer; transition: background-color .2s ease; }
 .bb-account-navigation-toggle:hover { background: hsl(var(--secondary) / .18); }
+:root:not([data-theme='dark']) .bb-account-navigation-toggle:hover { background: hsl(var(--primary) / .1); }
+:root:not([data-theme='dark']) .bb-account-navigation-heading.is-current .bb-account-navigation-toggle:hover { background: color-mix(in srgb, var(--bb-brand-cream) 12%, transparent); }
 .bb-account-navigation-toggle > svg { transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
 .bb-account-navigation-toggle[aria-expanded='true'] > svg { transform: rotate(180deg); }
 .bb-account-navigation-submenu { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .32s cubic-bezier(.22, 1, .36, 1), opacity .24s ease; }

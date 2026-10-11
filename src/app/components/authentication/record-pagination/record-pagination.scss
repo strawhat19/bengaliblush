@@ -1,4 +1,14 @@
-.bb-record-pagination { gap: 14px; display: flex; margin-top: 22px; align-items: center; justify-content: space-between; }
-.bb-record-pagination-label { color: hsl(var(--foreground) / .6); font-size: 12px; text-align: center; }
-.bb-record-pagination .bb-button:disabled { opacity: .5; cursor: default; }
-@media (max-width: 600px) { .bb-record-pagination { flex-wrap: wrap; } .bb-record-pagination-label { order: 3; width: 100%; } }
+.bb-record-pagination { display: flex; min-height: 36px; align-items: center; justify-content: space-between; gap: 14px; margin: 0; border-radius: 0 0 11px 11px; padding: 6px 18px; background: hsl(var(--primary)); color: var(--bb-brand-cream); }
+.bb-record-pagination-footer .bb-record-pagination-cell { border: 0; padding: 0; background: hsl(var(--primary)); color: var(--bb-brand-cream); }
+.bb-record-pagination-label { min-width: 0; flex: 1; overflow: hidden; color: inherit; font-size: 9px; line-height: 1.5; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.bb-record-pagination-controls { display: flex; flex: none; align-items: center; gap: 6px; margin-left: auto; }
+.bb-record-pagination-ellipsis { display: grid; min-width: 10px; height: 24px; flex: none; place-items: center; font-size: 9px; opacity: .7; }
+.bb-record-pagination-button { display: inline-flex; min-width: 24px; min-height: 24px; flex: none; align-items: center; justify-content: center; border: 1px solid color-mix(in srgb, var(--bb-brand-cream) 30%, transparent); border-radius: 5px; padding: 3px 6px; background: transparent; color: inherit; font-size: 9px; line-height: 1.2; cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
+.bb-record-pagination-button.is-page { font-family: var(--app-font-mono); }
+.bb-record-pagination-button.is-arrow { width: 24px; padding: 0; }
+.bb-record-pagination-button.is-active { border-color: var(--bb-brand-cream); background: var(--bb-brand-cream); color: hsl(var(--primary)); font-weight: 600; cursor: default; }
+.bb-record-pagination-button:hover:not(:disabled):not(.is-active) { border-color: var(--bb-brand-cream); background: color-mix(in srgb, var(--bb-brand-cream) 10%, transparent); }
+.bb-record-pagination-button:focus-visible { outline: 2px solid hsl(var(--secondary)); outline-offset: 2px; }
+.bb-record-pagination-button:disabled { opacity: .5; cursor: default; }
+@media (max-width: 480px) { .bb-record-pagination { gap: 8px; padding-inline: 13px; } }
+@media (prefers-reduced-motion: reduce) { .bb-record-pagination-button { transition: none; } }

@@ -1,7 +1,7 @@
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
-import { getRecordPage, subscribeRecordPage } from './queries';
+import { getRecordPage, subscribeRecordPage, firestoreMediaPageSize } from './queries';
 import type { User } from '@/shared/models/users/User';
 import { readUser, readContactSubmission, readAppointmentSubmission } from './records';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
@@ -50,7 +50,7 @@ export const subscribeOwnerOverview = async (onOverview: (overview: OwnerOvervie
     Object.assign(overview, { [key]: page.records });
     loaded.add(key);
     if (loaded.size === sections.length) onOverview({ ...overview }, section ? page.nextCursor : null);
-  }, onError, { cursor: section ? cursor : undefined }));
+  }, onError, { cursor: section ? cursor : undefined, direction: section ? `asc` : `desc`, pageSize: section === `users` ? firestoreMediaPageSize : undefined }));
   return () => subscriptions.forEach((unsubscribe) => unsubscribe());
 };
 

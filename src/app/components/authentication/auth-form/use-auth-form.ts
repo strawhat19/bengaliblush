@@ -97,7 +97,7 @@ export const useAuthForm = (mode: AuthMode) => {
     notice: feedback?.text || error,
     failed: feedback?.failed ?? Boolean(error),
     togglePassword: () => setShowPassword((current) => !current),
-    submitLabel: loading ? `Loading Your Account` : action === `email` ? signup ? `Creating Account` : `Signing In` : signup ? `Create Account` : `Sign In`,
+    submitLabel: loading ? `Account` : action === `email` ? signup ? `Creating Account` : `Signing In` : signup ? `Create Account` : `Sign In`,
     buttonLabel: action === `google` ? `Connecting To Google` : signup ? `Sign Up With Google` : `Sign In With Google`,
   };
 };

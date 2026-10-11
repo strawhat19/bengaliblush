@@ -1,7 +1,7 @@
 'use client';
 
 import './notification-row.scss';
-import { X, Eye, Pencil, EyeOff, Trash2 } from 'lucide-react';
+import { X, Eye, Trash2, Settings } from 'lucide-react';
 import { formatRecordDate } from '../../owner-dashboard/dashboard-data';
 import StatusCell, { getStatusLabel } from '../../status-cell/status-cell';
 import { notificationIcons } from '@/shared/notifications/notification-icons';
@@ -24,7 +24,7 @@ const NotificationRow = ({ busy, record, confirming, onEdit, onDelete, onStatus,
   const Icon = notificationIcons[record.kind];
   return (
     <tr id={rowId} className={`bb-admin-notification-row`}>
-      <td id={`${rowId}-number`} className={`bb-admin-notification-number`}>{record.number}</td>
+      <td id={`${rowId}-number`} className={`bb-admin-notification-number`}><span id={`${rowId}-number-badge`} className={`bb-table-number-badge`}>{record.number}</span></td>
       <td id={`${rowId}-title-cell`} className={`bb-admin-notification-main`}>
         <div id={`${rowId}-identity`} className={`bb-admin-notification-identity`}>
           <span id={`${rowId}-thumbnail`} className={`bb-admin-notification-thumbnail`} aria-hidden={`true`}>
@@ -42,16 +42,16 @@ const NotificationRow = ({ busy, record, confirming, onEdit, onDelete, onStatus,
       <td id={`${rowId}-updated`} className={`bb-admin-notification-updated`}>{formatRecordDate(record.updated_at)}</td>
       <td id={`${rowId}-actions-cell`} className={`bb-admin-notification-actions-cell`}>
         <div id={`${rowId}-actions`} className={`actionsCell`}>
-          <button type={`button`} disabled={busy} id={`${rowId}-edit`} className={`bb-admin-notification-action`} onClick={() => onEdit(record)} aria-label={`Edit ${record.title}`}><Pencil size={13} aria-hidden={`true`} />Edit</button>
-          <button type={`button`} disabled={busy} id={`${rowId}-publication`} className={`bb-admin-notification-action`} onClick={() => { void onStatus(record); }} aria-label={`${published ? `Unpublish` : `Publish`} ${record.title}`}>{published ? <EyeOff size={13} aria-hidden={`true`} /> : <Eye size={13} aria-hidden={`true`} />}{published ? `Unpublish` : `Publish`}</button>
-          <button type={`button`} disabled={busy} id={`${rowId}-delete`} className={`bb-admin-notification-action is-danger`} aria-expanded={confirming} aria-controls={`${rowId}-delete-confirmation`} onClick={() => onRequestDelete(record)} aria-label={`Delete ${record.title}`}><Trash2 size={13} aria-hidden={`true`} />Delete</button>
+          <button type={`button`} disabled={busy} id={`${rowId}-edit`} className={`bb-admin-notification-action`} onClick={() => onEdit(record)} title={`Edit ${record.title}`} aria-label={`Edit ${record.title}`}><Settings size={14} aria-hidden={`true`} /></button>
+          {!published && <button type={`button`} disabled={busy} id={`${rowId}-publication`} className={`bb-admin-notification-action`} onClick={() => { void onStatus(record); }} title={`Publish ${record.title}`} aria-label={`Publish ${record.title}`}><Eye size={14} aria-hidden={`true`} /></button>}
+          <button type={`button`} disabled={busy} id={`${rowId}-delete`} className={`bb-admin-notification-action is-danger`} aria-expanded={confirming} aria-controls={`${rowId}-delete-confirmation`} onClick={() => onRequestDelete(record)} title={`Delete ${record.title}`} aria-label={`Delete ${record.title}`}><Trash2 size={14} aria-hidden={`true`} /></button>
         </div>
         {confirming && <div id={`${rowId}-delete-confirmation`} className={`bb-admin-notification-delete-confirmation`} role={`group`} aria-labelledby={`${rowId}-delete-title`}>
           <p id={`${rowId}-delete-title`} className={`bb-admin-notification-delete-title`}>Delete “{record.title}”?</p>
           <p id={`${rowId}-delete-note`} className={`bb-admin-notification-delete-note`}>This removes the saved notification from Admin and public pages.</p>
           <div id={`${rowId}-delete-actions`} className={`actionsCell`}>
-            <button type={`button`} disabled={busy} id={`${rowId}-delete-confirm`} className={`bb-admin-notification-action is-danger`} onClick={() => { void onDelete(record).then((saved) => { if (saved) onCancelDelete(); }); }} aria-label={`Confirm Delete ${record.title}`}><Trash2 size={13} aria-hidden={`true`} />Confirm Delete</button>
-            <button type={`button`} disabled={busy} id={`${rowId}-delete-cancel`} className={`bb-admin-notification-action`} onClick={onCancelDelete}><X size={13} aria-hidden={`true`} />Cancel</button>
+            <button type={`button`} disabled={busy} id={`${rowId}-delete-confirm`} className={`bb-admin-notification-action is-danger`} onClick={() => { void onDelete(record).then((saved) => { if (saved) onCancelDelete(); }); }} title={`Confirm Delete ${record.title}`} aria-label={`Confirm Delete ${record.title}`}><Trash2 size={14} aria-hidden={`true`} /></button>
+            <button type={`button`} disabled={busy} id={`${rowId}-delete-cancel`} className={`bb-admin-notification-action`} onClick={onCancelDelete} title={`Cancel Delete ${record.title}`} aria-label={`Cancel Delete ${record.title}`}><X size={14} aria-hidden={`true`} /></button>
           </div>
         </div>}
       </td>

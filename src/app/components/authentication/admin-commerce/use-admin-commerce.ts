@@ -1,7 +1,9 @@
 import { useAuth } from '@/shared/authContext/useAuth';
+import { siteRoutes } from '@/shared/navigation/routes';
 import { useCatalog } from '@/shared/shop/catalog-context';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useRecordPagination } from '@/shared/firebase/use-record-pagination';
+import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
 import type { OrderRecord, ProductInput, ServiceInput, ReviewInput, PaymentMethodInput } from '@/shared/models/commerce/Commerce';
 import { subscribeCommerceOverview, saveProduct, saveService, saveReview, savePaymentMethod, updateOrderStatus, importStudioCatalog, type CommerceOverview } from '@/api/commerce';
 
@@ -14,9 +16,11 @@ export type CommerceMutation =
 export const useAdminCommerce = (section?: keyof CommerceOverview) => {
   const { user, isAdmin } = useAuth();
   const { refresh } = useCatalog();
+  const { tablePagination } = useAccountNavigationState();
   const requestRef = useRef(0);
   const pendingRef = useRef(false);
-  const pagination = useRecordPagination(JSON.stringify([user?.id, section]));
+  const routes = { orders: siteRoutes.adminOrders, reviews: siteRoutes.adminReviews, products: siteRoutes.adminProducts, services: siteRoutes.adminServices, paymentMethods: siteRoutes.adminPaymentMethods };
+  const pagination = useRecordPagination(JSON.stringify([user?.id, section]), section ? tablePagination[routes[section].href] : undefined);
   const { cursor, setNextCursor } = pagination;
   const [revision, setRevision] = useState(0);
   const [notice, setNotice] = useState(``);

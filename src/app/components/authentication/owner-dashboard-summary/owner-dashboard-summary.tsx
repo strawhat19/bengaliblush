@@ -22,12 +22,12 @@ const OwnerDashboardSummary = ({ summary, overview, commerce, notifications }: {
   const maxActivity = Math.max(1, ...months.flatMap((month) => activityCategories.map(({ id }) => month[id])));
   const activityTotal = months.reduce((total, month) => total + activityCategories.reduce((count, { id }) => count + month[id], 0), 0);
   let segmentStart = 0;
-  const gradient = statuses.filter(({ count }) => count > 0).map(({ color, count }) => {
-    const end = segmentStart + (count / totalRequests) * 100;
-    const segment = `${color} ${segmentStart}% ${end}%`;
-    segmentStart = end;
-    return segment;
-  }).join(`, `);
+  const segments = statuses.filter(({ count }) => count > 0).map(({ color, count, label }) => {
+    const start = segmentStart;
+    const length = count / totalRequests * 100;
+    segmentStart += length;
+    return { color, label, start, length };
+  });
   const counts = [
     { id: `users`, icon: Users, label: `Users`, count: overview.users.length, href: siteRoutes.adminUsers.href },
     { id: `contacts`, icon: MessageCircle, label: `Requests`, count: overview.contacts.length, href: siteRoutes.adminRequests.href },
@@ -40,7 +40,7 @@ const OwnerDashboardSummary = ({ summary, overview, commerce, notifications }: {
       { id: `services`, icon: WandSparkles, label: `Services`, count: commerce.services.length, href: siteRoutes.adminServices.href },
       { id: `payment-methods`, icon: CreditCard, label: `Payments`, count: commerce.paymentMethods.length, href: siteRoutes.adminPaymentMethods.href },
     ] : []),
-  ];
+  ].filter(({ count }) => count > 0);
 
   return (
     <>
@@ -54,16 +54,19 @@ const OwnerDashboardSummary = ({ summary, overview, commerce, notifications }: {
             {activityCategories.map(({ id, label }) => <span key={id} id={`bb-owner-activity-legend-${id}`} className={`bb-owner-chart-key is-${id}`}><span id={`bb-owner-activity-legend-dot-${id}`} className={`bb-owner-chart-key-dot`} aria-hidden={`true`} />{label}</span>)}
           </div>
           <div id={`bb-owner-activity-bars`} className={`bb-owner-activity-bars`} role={`img`} aria-label={`New database records over the last six months. ${months.map((month) => `${month.fullLabel}: ${activityCategories.map(({ id, label }) => `${month[id]} ${label.toLowerCase()}`).join(`, `)}`).join(`. `)}`}>
-            {months.map((month) => (
+            {months.map((month, monthIndex) => (
               <div key={month.key} id={`bb-owner-activity-month-${month.key}`} className={`bb-owner-activity-month`} aria-hidden={`true`}>
                 <div id={`bb-owner-activity-group-${month.key}`} className={`bb-owner-activity-group`}>
-                  {activityCategories.map(({ id, label }) => (
+                  {activityCategories.map(({ id, label }, categoryIndex) => (
                     <span
                       key={id}
                       className={`bb-owner-activity-bar is-${id}`}
                       id={`bb-owner-activity-${month.key}-${id}`}
                       title={`${month.fullLabel}: ${month[id]} ${label}`}
-                      style={{ '--bb-bar-height': `${month[id] / maxActivity * 100}%` } as CSSProperties}
+                      style={{
+                        '--bb-bar-height': `${month[id] / maxActivity * 100}%`,
+                        '--bb-motion-delay': `${100 + monthIndex * 70 + categoryIndex * 35}ms`,
+                      } as CSSProperties}
                     />
                   ))}
                 </div>
@@ -83,9 +86,35 @@ const OwnerDashboardSummary = ({ summary, overview, commerce, notifications }: {
               role={`img`}
               id={`bb-owner-status-donut`}
               className={`bb-owner-status-donut`}
-              style={{ background: gradient ? `conic-gradient(${gradient})` : `hsl(var(--primary) / .08)` }}
               aria-label={totalRequests ? statuses.map(({ label, count }) => `${label}: ${count}`).join(`, `) : `No Requests Yet`}
             >
+              <svg
+                focusable={`false`}
+                viewBox={`0 0 132 132`}
+                aria-hidden={`true`}
+                id={`bb-owner-status-donut-rings`}
+                className={`bb-owner-status-donut-rings`}
+              >
+                <circle cx={66} cy={66} r={59} id={`bb-owner-status-donut-track`} className={`bb-owner-status-donut-ring bb-owner-status-donut-track`} />
+                {segments.map(({ color, label, start, length }, index) => (
+                  <circle
+                    r={59}
+                    cx={66}
+                    cy={66}
+                    key={label}
+                    stroke={color}
+                    pathLength={100}
+                    id={`bb-owner-status-donut-segment-${index}`}
+                    className={`bb-owner-status-donut-ring bb-owner-status-donut-segment`}
+                    style={{
+                      strokeDashoffset: -start,
+                      strokeDasharray: `${length} ${100 - length}`,
+                      '--bb-segment-duration': `${length * 10}ms`,
+                      '--bb-motion-delay': `${160 + start * 10}ms`,
+                    } as CSSProperties}
+                  />
+                ))}
+              </svg>
               <span id={`bb-owner-status-donut-center`} className={`bb-owner-status-donut-center`} aria-hidden={`true`}>
                 <strong id={`bb-owner-status-total`} className={`bb-owner-status-total`}>{totalRequests}</strong>
                 <span id={`bb-owner-status-total-label`} className={`bb-owner-status-total-label`}>Request(s)</span>
@@ -93,7 +122,7 @@ const OwnerDashboardSummary = ({ summary, overview, commerce, notifications }: {
             </div>
             <ul id={`bb-owner-status-legend`} className={`bb-owner-status-legend`}>
               {statuses.map(({ label, count, color }, index) => (
-                <li key={label} id={`bb-owner-status-legend-${index}`} className={`bb-owner-status-legend-item`}>
+                <li key={label} id={`bb-owner-status-legend-${index}`} className={`bb-owner-status-legend-item`} style={{ '--bb-motion-delay': `${280 + index * 65}ms` } as CSSProperties}>
                   <span id={`bb-owner-status-legend-dot-${index}`} className={`bb-owner-status-legend-dot`} style={{ background: color }} aria-hidden={`true`} />
                   <span id={`bb-owner-status-legend-label-${index}`} className={`bb-owner-status-legend-label`}>{label}</span>
                   <strong id={`bb-owner-status-legend-count-${index}`} className={`bb-owner-status-legend-count`}>{count}</strong>

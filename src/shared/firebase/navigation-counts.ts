@@ -2,8 +2,10 @@ import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
 import { onAuthStateChanged } from 'firebase/auth';
+import { firestorePageSize, firestoreMediaPageSize } from './queries';
 import { siteGalleryImages } from '@/shared/gallery/gallery-content';
 import { doc, query, limit, where, collection, onSnapshot } from 'firebase/firestore';
+import { createRecordPaginationIndex, type RecordPaginationIndex } from './record-pagination-index';
 
 export type AdminNavigationCounts = {
   users: number;
@@ -17,13 +19,18 @@ export type AdminNavigationCounts = {
   notifications: number;
   paymentMethods: number;
 };
+export type AdminNavigationPagination = Partial<Record<Exclude<keyof AdminNavigationCounts, `gallery`>, RecordPaginationIndex>>;
 
 const countRangeSize = 50;
 const boundedCollections = { users: `users`, orders: `orders`, contacts: `contactSubmissions`, appointments: `appointmentSubmissions` } as const;
 const countedCollections = [`reviews`, `products`, `services`, `notifications`, `paymentMethods`] as const;
 const collectionCount = Object.keys(boundedCollections).length + countedCollections.length;
+const readRecordNumbers = (values: readonly unknown[]) => values.map((value) => {
+  if (typeof value !== `number`) throw new Error(`Saved Menu Count Data Needs Attention`);
+  return value;
+});
 
-export const subscribeAdminNavigationCounts = async (onCounts: (counts: AdminNavigationCounts) => void, onError: (error: Error) => void): Promise<() => void> => {
+export const subscribeAdminNavigationCounts = async (onCounts: (counts: AdminNavigationCounts, pagination: AdminNavigationPagination) => void, onError: (error: Error) => void): Promise<() => void> => {
   const account = await getCurrentAccount();
   if (!hasAdminAccess(account.role)) throw new Error(`Admin Access Is Required`);
   const { auth, database } = getFirebaseClient();
@@ -32,6 +39,7 @@ export const subscribeAdminNavigationCounts = async (onCounts: (counts: AdminNav
   const ready = new Set<string>();
   const imageSources = new Map<string, Set<string>>();
   const subscriptions = new Set<() => void>();
+  const pagination: AdminNavigationPagination = {};
   const counts: AdminNavigationCounts = { users: 0, orders: 0, reviews: 0, gallery: 0, contacts: 0, products: 0, services: 0, appointments: 0, notifications: 0, paymentMethods: 0 };
   let active = true;
   const stop = () => {
@@ -55,19 +63,22 @@ export const subscribeAdminNavigationCounts = async (onCounts: (counts: AdminNav
     if (!canReceive() || ready.size !== collectionCount) return;
     const images = new Set(siteGalleryImages.map(({ src }) => src));
     imageSources.forEach((source) => source.forEach((image) => images.add(image)));
-    onCounts({ ...counts, gallery: images.size });
+    onCounts({ ...counts, gallery: images.size }, { ...pagination });
   };
   try {
     attach(onAuthStateChanged(auth, () => { canReceive(); }, fail));
     for (const [field, collectionName] of Object.entries(boundedCollections)) {
       if (!active) break;
       const key = field as keyof typeof boundedCollections;
-      const rangeCounts = new Map<number, number>();
+      const rangeNumbers = new Map<number, number[]>();
       let allocatedNumber = -1;
       let attachedRanges = 0;
       const receiveCount = () => {
-        if (!canReceive() || allocatedNumber < 0 || rangeCounts.size !== Math.ceil(allocatedNumber / countRangeSize)) return;
-        counts[key] = [...rangeCounts.values()].reduce((total, count) => total + count, 0);
+        if (!canReceive() || allocatedNumber < 0 || rangeNumbers.size !== Math.ceil(allocatedNumber / countRangeSize)) return;
+        const numbers = [...rangeNumbers.values()].flat();
+        try { pagination[key] = createRecordPaginationIndex(numbers, key === `users` ? firestoreMediaPageSize : firestorePageSize); }
+        catch (error) { fail(error); return; }
+        counts[key] = numbers.length;
         ready.add(key);
         publish();
       };
@@ -87,7 +98,8 @@ export const subscribeAdminNavigationCounts = async (onCounts: (counts: AdminNav
           const records = query(collection(database, collectionName), where(`number`, `>=`, firstNumber), where(`number`, `<`, firstNumber + countRangeSize), limit(countRangeSize));
           attach(onSnapshot(records, { includeMetadataChanges: true }, (page) => {
             if (!canReceive() || page.metadata.fromCache || page.metadata.hasPendingWrites) return;
-            rangeCounts.set(range, page.size);
+            try { rangeNumbers.set(range, readRecordNumbers(page.docs.map((record) => record.data()?.number))); }
+            catch (error) { fail(error); return; }
             receiveCount();
           }, fail));
         }
@@ -98,6 +110,10 @@ export const subscribeAdminNavigationCounts = async (onCounts: (counts: AdminNav
       if (!active) break;
       attach(onSnapshot(collection(database, key), { includeMetadataChanges: true }, (snapshot) => {
         if (!canReceive() || snapshot.metadata.fromCache || snapshot.metadata.hasPendingWrites) return;
+        try {
+          const numbers = readRecordNumbers(snapshot.docs.map((record) => record.data()?.number));
+          pagination[key] = createRecordPaginationIndex(numbers, key === `paymentMethods` ? firestorePageSize : firestoreMediaPageSize);
+        } catch (error) { fail(error); return; }
         counts[key] = snapshot.size;
         if ([`reviews`, `products`, `services`].includes(key)) {
           const status = key === `reviews` ? `published` : `active`;

@@ -9,11 +9,11 @@
 .bb-admin-notification-body { display: -webkit-box; max-width: 340px; overflow: hidden; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); line-height: 1.6; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .bb-admin-notification-kind, .bb-admin-notification-updated { font-size: 10px; white-space: nowrap; }
 .bb-admin-notification-updated { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
-.bb-admin-notification-actions-cell { min-width: 205px; }
-.bb-admin-notification-action { display: inline-flex; align-items: center; gap: 6px; border: 1px solid hsl(var(--primary) / .16); border-radius: 7px; padding: 8px 10px; background: transparent; color: var(--bb-highlight, hsl(var(--primary))); font-size: 10px; transition: background-color .2s ease; }
-.bb-admin-notification-action:hover:not(:disabled) { background: hsl(var(--primary) / .05); }
-.bb-admin-notification-action.is-danger { border-color: #dc262630; color: #dc2626; }
-.bb-admin-notification-action.is-danger:hover:not(:disabled) { background: #dc262608; }
+.bb-admin-notification-actions-cell { min-width: 142px; }
+.bb-owner-dashboard .bb-admin-notification-actions-cell .actionsCell { gap: 8px; }
+.bb-admin-notification-action { display: inline-flex; width: 30px; height: 26px; flex: none; align-items: center; justify-content: center; border: 1px solid hsl(var(--primary)); border-radius: 5px; padding: 0; background: hsl(var(--primary)); color: var(--bb-brand-cream); cursor: pointer; transition: background-color .2s ease, border-color .2s ease; }
+.bb-admin-notification-action:hover:not(:disabled) { background: color-mix(in srgb, hsl(var(--primary)) 88%, var(--bb-brand-ink)); }
+.bb-admin-notification-action.is-danger:hover:not(:disabled) { border-color: #dc262660; }
 .bb-admin-notification-action:disabled { cursor: default; opacity: .5; }
 .bb-admin-notification-action:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
 .bb-admin-notification-delete-confirmation { max-width: 330px; margin-top: 14px; border: 1px solid #dc262630; border-radius: 9px; padding: 14px; background: #dc262604; animation: bb-admin-notification-confirmation-in .2s ease both; }

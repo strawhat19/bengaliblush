@@ -26,7 +26,7 @@ const AccountAccess = ({ children, adminOnly = false, ownerOnly = false }: { chi
       <div id={`bb-account-access-content`} className={`bb-container bb-account-access-content`}>
         <ShieldCheck size={28} aria-hidden={`true`} />
         <h1 id={`bb-account-access-heading`} className={`bb-account-access-heading`}>
-          {loading ? `Loading Your Account` : user ? ownerOnly ? `Owner Access Required` : `Admin Access Required` : `Sign In To View This`}
+          {loading ? `Account` : user ? ownerOnly ? `Owner Access Required` : `Admin Access Required` : `Sign In To View This`}
         </h1>
         {loading ? (
           <div id={`bb-account-loading-skeleton`} className={`bb-account-loading-skeleton`} role={`status`} aria-label={`Loading Your Account`}><span /><span /></div>

@@ -10,6 +10,7 @@ import { getStatusLabel } from '../status-cell/status-cell';
 import Link from '@/app/components/navigation/page-link/page-link';
 import OwnerSubmissionCard from '../owner-submission-card/owner-submission-card';
 import { Users, Search, ArrowUpRight, CalendarDays, MessageCircle } from 'lucide-react';
+import RecordPagination, { type RecordPaginationProps } from '../record-pagination/record-pagination';
 import { submissionStatuses, type SubmissionStatus } from '@/shared/models/submissions/Submission';
 
 type OwnerRecordsTableProps = {
@@ -18,6 +19,7 @@ type OwnerRecordsTableProps = {
   disabled?: boolean;
   overview: OwnerOverview;
   kind: `users` | `contacts` | `appointments`;
+  pagination?: Omit<RecordPaginationProps, `id` | `columns` | `disabled` | `matchingRows`>;
   onStatus: (kind: `contact` | `appointment`, id: string, status: SubmissionStatus) => Promise<void>;
 };
 
@@ -27,7 +29,9 @@ const tableLabels = {
   appointments: { Icon: CalendarDays, title: `Appointment Requests`, empty: `No appointment requests yet.`, columns: [`No.`, `Request`, `Submitted By`, `Preferred Time`, `Received`, `Status`] },
 };
 
-const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, onStatus }: OwnerRecordsTableProps) => {
+const compareRecordNumbers = (first: { number: number }, second: { number: number }) => first.number - second.number;
+
+const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, pagination, onStatus }: OwnerRecordsTableProps) => {
   const [search, setSearch] = useState(``);
   const [filter, setFilter] = useState(`all`);
   const { Icon, title, empty, columns } = tableLabels[kind];
@@ -43,11 +47,18 @@ const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, onStatus
   const accountName = (id: string | null | undefined) => overview.users.find((user) => user.id === id)?.name;
 
   return (
-    <section id={tableId} className={`bb-owner-records`} aria-labelledby={`${tableId}-title`}>
-      <div id={`${tableId}-heading`} className={`bb-owner-records-heading`}>
-        <h2 id={`${tableId}-title`} className={`bb-owner-records-title`}><Icon size={20} aria-hidden={`true`} />{limit ? `Recent ${title}` : title}</h2>
-        {limit && <Link href={routes[kind].href} id={`${tableId}-view-all`} className={`bb-owner-records-view-all`}>View All <ArrowUpRight size={14} aria-hidden={`true`} /></Link>}
-      </div>
+    <section
+      id={tableId}
+      aria-label={limit ? undefined : title}
+      aria-labelledby={limit ? `${tableId}-title` : undefined}
+      className={`bb-owner-records${limit ? `` : ` is-standalone`}`}
+    >
+      {limit ? (
+        <div id={`${tableId}-heading`} className={`bb-owner-records-heading`}>
+          <h2 id={`${tableId}-title`} className={`bb-owner-records-title`}><Icon size={20} aria-hidden={`true`} />{`Recent ${title}`}</h2>
+          <Link href={routes[kind].href} id={`${tableId}-view-all`} className={`bb-owner-records-view-all`}>View All <ArrowUpRight size={14} aria-hidden={`true`} /></Link>
+        </div>
+      ) : null}
       {!limit && overview[kind].length > 0 && (
         <div id={`${tableId}-filters`} className={`bb-owner-records-filters`}>
           <label id={`${tableId}-search-label`} className={`bb-owner-records-search`} htmlFor={`${tableId}-search`}>
@@ -67,7 +78,6 @@ const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, onStatus
             <option value={`all`} id={`${tableId}-filter-all`}>{kind === `users` ? `All Roles` : `All Statuses`}</option>
             {filters.map(([value, label]) => <option key={value} value={value} id={`${tableId}-filter-${value}`}>{label}</option>)}
           </select>
-          <span id={`${tableId}-results`} className={`bb-owner-records-results`} role={`status`}>{matchingCount} Of {overview[kind].length} Record(s)</span>
         </div>
       )}
       {matchingCount ? (
@@ -80,8 +90,8 @@ const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, onStatus
               </tr>
             </thead>
             <tbody id={`${tableId}-table-body`} className={`bb-owner-table-body`}>
-              {kind === `users` && users.slice(0, limit).map((user) => <OwnerUserRow key={user.id} user={user} />)}
-              {kind === `contacts` && contacts.slice(0, limit).map((submission) => (
+              {kind === `users` && users.slice(0, limit).sort(compareRecordNumbers).map((user) => <OwnerUserRow key={user.id} user={user} />)}
+              {kind === `contacts` && contacts.slice(0, limit).sort(compareRecordNumbers).map((submission) => (
                 <OwnerSubmissionCard
                   kind={`contact`}
                   key={submission.id}
@@ -92,7 +102,7 @@ const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, onStatus
                   accountName={accountName(submission.user_id)}
                 />
               ))}
-              {kind === `appointments` && appointments.slice(0, limit).map((submission) => (
+              {kind === `appointments` && appointments.slice(0, limit).sort(compareRecordNumbers).map((submission) => (
                 <OwnerSubmissionCard
                   kind={`appointment`}
                   key={submission.id}
@@ -104,9 +114,13 @@ const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, onStatus
                 />
               ))}
             </tbody>
+            {!limit && pagination && <RecordPagination {...pagination} id={`${tableId}-pagination`} columns={columns.length} matchingRows={matchingCount} disabled={disabled || Boolean(savingId)} />}
           </table>
         </div>
-      ) : <p id={`${tableId}-empty`} className={`bb-owner-records-empty`}>{overview[kind].length ? `No records match these filters.` : empty}</p>}
+      ) : <>
+        <p id={`${tableId}-empty`} className={`bb-owner-records-empty`}>{overview[kind].length ? `No records match these filters.` : empty}</p>
+        {!limit && pagination && <RecordPagination {...pagination} id={`${tableId}-pagination`} matchingRows={matchingCount} disabled={disabled || Boolean(savingId)} />}
+      </>}
     </section>
   );
 };

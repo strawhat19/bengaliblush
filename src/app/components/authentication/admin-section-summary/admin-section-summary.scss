@@ -1,0 +1,11 @@
+.bb-admin-section-summary-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.bb-admin-section-summary-card { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; border: 1px solid var(--bb-panel-border, hsl(var(--border))); border-radius: 12px; padding: 24px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-text, hsl(var(--foreground))); transition: transform .2s ease, border-color .2s ease, background-color .2s ease; }
+.bb-admin-section-summary-card:hover { transform: translateY(-3px); border-color: var(--bb-highlight, hsl(var(--primary))); background: var(--bb-surface-raised, hsl(var(--muted))); }
+.bb-admin-section-summary-card:focus-visible { outline: 2px solid var(--bb-highlight, hsl(var(--primary))); outline-offset: 4px; }
+.bb-admin-section-summary-icon-wrap { display: grid; width: 44px; height: 44px; place-items: center; border-radius: 10px; background: color-mix(in srgb, var(--bb-highlight, hsl(var(--primary))) 10%, transparent); color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-admin-section-summary-card-title { margin: 20px 0 10px; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 28px; font-weight: 500; letter-spacing: -.02em; }
+.bb-admin-section-summary-card-description { margin: 0 0 24px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 12px; line-height: 1.8; }
+.bb-admin-section-summary-card-action { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; color: var(--bb-highlight, hsl(var(--primary))); font-size: 11px; font-weight: 500; }
+@media (min-width: 651px) { .bb-page:has(> .bb-admin-section-summary) { overflow: clip; } }
+@media (max-width: 850px) { .bb-admin-section-summary-cards { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .bb-admin-section-summary-card { transition: none; } .bb-admin-section-summary-card:hover { transform: none; } }

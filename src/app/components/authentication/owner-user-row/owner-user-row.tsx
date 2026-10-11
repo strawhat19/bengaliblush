@@ -14,7 +14,7 @@ const OwnerUserRow = ({ user }: { user: User }) => {
   const statusColor = status === `active` ? `green` : status === `deleting` ? `red` : `gray`;
   return (
     <tr id={`bb-owner-user-${user.id}`} className={`bb-owner-user-row`}>
-      <td id={`bb-owner-user-number-${user.id}`} className={`bb-owner-user-number`}>{user.number}</td>
+      <td id={`bb-owner-user-number-${user.id}`} className={`bb-owner-user-number`}><span id={`bb-owner-user-number-badge-${user.id}`} className={`bb-table-number-badge`}>{user.number}</span></td>
       <td id={`bb-owner-user-account-${user.id}`} className={`bb-owner-user-account`}>
         <div id={`bb-owner-user-identity-${user.id}`} className={`bb-owner-user-identity`}>
           {user.photo_url && <span id={`bb-owner-user-avatar-${user.id}`} className={`bb-owner-user-avatar`} aria-hidden={`true`}>

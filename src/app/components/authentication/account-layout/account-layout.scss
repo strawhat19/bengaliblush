@@ -24,7 +24,8 @@
     padding: 120px 0 clamp(32px, 4vw, 56px);
   }
 
-  .bb-profile-page { min-height: 0; }
+  .bb-profile-page,
+  .bb-owner-dashboard { min-height: 0; }
 
   .bb-profile-layout {
     width: 100%;
@@ -136,6 +137,8 @@
       width: var(--bb-account-sidebar-width);
       height: calc(100dvh - var(--bb-account-header-height));
       transition: width .3s cubic-bezier(.22, 1, .36, 1), background-color .35s ease, border-color .35s ease, color .35s ease;
+
+      &:not(.is-collapsed) { padding: 9px 8px 5px; }
     }
 
     &:has(.bb-account-navigation) .bb-footer {

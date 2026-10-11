@@ -26,8 +26,8 @@ const AdminShopContent = () => {
         <div id={`bb-admin-shop-content`} className={`bb-owner-dashboard-content`} aria-busy={loading || refreshing}>
           <div id={`bb-admin-shop-heading`} className={`bb-owner-dashboard-heading`}>
             <div id={`bb-admin-shop-heading-copy`} className={`bb-owner-dashboard-heading-copy`}>
-              <span id={`bb-admin-shop-eyebrow`} className={`bb-eyebrow`}>Admin · Shop</span>
-              <h1 id={`bb-admin-shop-title`} className={`bb-owner-dashboard-title`}>Your Shop</h1>
+              <span id={`bb-admin-shop-eyebrow`} className={`bb-eyebrow`}><span id={`bb-admin-shop-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`bb-admin-shop-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> Shop</span></span>
+              <h1 id={`bb-admin-shop-title`} className={`bb-owner-dashboard-title has-table-icon`}><ShoppingBag size={28} aria-hidden={`true`} id={`bb-admin-shop-title-icon`} className={`bb-owner-dashboard-title-icon`} />Your Shop</h1>
               <p id={`bb-admin-shop-description`} className={`bb-owner-dashboard-description`}>Catalog availability and requests among the latest 50 records per collection. Open a record page to browse older entries.</p>
             </div>
             <button type={`button`} disabled={loading || refreshing} id={`bb-admin-shop-refresh`} className={`bb-button bb-button-outline bb-button-outline-dark bb-owner-dashboard-refresh`} onClick={() => { void reload(); }}>

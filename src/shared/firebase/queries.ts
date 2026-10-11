@@ -2,8 +2,9 @@ import { getFirebaseClient } from './client';
 import { query, limit, where, orderBy, startAfter, onSnapshot, collection, getDocsFromServer, type DocumentData, type DocumentSnapshot, type QueryConstraint, type OrderByDirection } from 'firebase/firestore';
 
 export const firestorePageSize = 50;
+export const firestoreMediaPageSize = 5;
 export type RecordPage<T> = { records: T[]; nextCursor: number | null };
-export type RecordQuery = { cursor?: number; status?: string; direction?: OrderByDirection };
+export type RecordQuery = { cursor?: number; status?: string; pageSize?: number; direction?: OrderByDirection };
 type RecordReader<T> = (snapshot: DocumentSnapshot<DocumentData>) => T;
 type RecordSubscriber = { onRecords: (records: unknown[]) => void; onError: (error: Error) => void };
 type RecordWatch = {
@@ -17,23 +18,25 @@ type RecordWatch = {
 const publicWatches = new Map<string, RecordWatch>();
 
 const pageQuery = (collectionName: string, options: RecordQuery = {}) => {
+  const pageSize = options.pageSize ?? firestorePageSize;
   if (options.cursor !== undefined && (!Number.isSafeInteger(options.cursor) || options.cursor < 1)) throw new Error(`Choose A Valid Record Page`);
+  if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > firestorePageSize) throw new Error(`Choose A Valid Page Size`);
   const constraints: QueryConstraint[] = [];
   if (options.status) constraints.push(where(`status`, `==`, options.status));
   constraints.push(orderBy(`number`, options.direction ?? `desc`));
   if (options.cursor !== undefined) constraints.push(startAfter(options.cursor));
-  constraints.push(limit(firestorePageSize + 1));
+  constraints.push(limit(pageSize + 1));
   return query(collection(getFirebaseClient().database, collectionName), ...constraints);
 };
 
-const readPage = <T>(documents: DocumentSnapshot<DocumentData>[], read: RecordReader<T>): RecordPage<T> => ({
-  records: documents.slice(0, firestorePageSize).map(read),
-  nextCursor: documents.length > firestorePageSize ? documents?.[firestorePageSize - 1]?.data()?.number ?? null : null,
+const readPage = <T>(documents: DocumentSnapshot<DocumentData>[], read: RecordReader<T>, pageSize = firestorePageSize): RecordPage<T> => ({
+  records: documents.slice(0, pageSize).map(read),
+  nextCursor: documents.length > pageSize ? documents?.[pageSize - 1]?.data()?.number ?? null : null,
 });
 
 export const getRecordPage = async <T>(collectionName: string, read: RecordReader<T>, options?: RecordQuery): Promise<RecordPage<T>> => {
   const snapshot = await getDocsFromServer(pageQuery(collectionName, options));
-  return readPage(snapshot.docs, read);
+  return readPage(snapshot.docs, read, options?.pageSize);
 };
 
 export const subscribeRecordPage = <T>(collectionName: string, read: RecordReader<T>, onPage: (page: RecordPage<T>) => void, onError: (error: Error) => void, options?: RecordQuery) => {
@@ -42,7 +45,7 @@ export const subscribeRecordPage = <T>(collectionName: string, read: RecordReade
     if (snapshot.metadata.hasPendingWrites) return;
     if (!received && snapshot.metadata.fromCache && snapshot.empty) return;
     received = true;
-    try { onPage(readPage(snapshot.docs, read)); }
+    try { onPage(readPage(snapshot.docs, read, options?.pageSize)); }
     catch (error) { onError(error instanceof Error ? error : new Error(`Saved Data Needs Attention`)); }
   }, onError);
 };

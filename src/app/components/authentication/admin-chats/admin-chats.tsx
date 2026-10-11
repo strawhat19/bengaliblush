@@ -16,9 +16,8 @@ const AdminChats = () => (
         <div id={`bb-admin-chats-content`} className={`bb-owner-dashboard-content`}>
           <div id={`bb-admin-chats-heading`} className={`bb-owner-dashboard-heading`}>
             <div id={`bb-admin-chats-heading-copy`} className={`bb-owner-dashboard-heading-copy`}>
-              <span id={`bb-admin-chats-eyebrow`} className={`bb-eyebrow`}>Admin · Feedback</span>
-              <h1 id={`bb-admin-chats-title`} className={`bb-owner-dashboard-title`}>{siteRoutes.adminChats.label}</h1>
-              <p id={`bb-admin-chats-description`} className={`bb-owner-dashboard-description`}>{siteRoutes.adminChats.description}</p>
+              <span id={`bb-admin-chats-eyebrow`} className={`bb-eyebrow`}><span id={`bb-admin-chats-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`bb-admin-chats-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> Feedback</span></span>
+              <h1 id={`bb-admin-chats-title`} className={`bb-owner-dashboard-title has-table-icon`}><MessageSquareText size={28} aria-hidden={`true`} id={`bb-admin-chats-title-icon`} className={`bb-owner-dashboard-title-icon`} />{siteRoutes.adminChats.label}</h1>
             </div>
           </div>
           <div id={`bb-admin-chats-empty`} className={`bb-admin-chats-empty`}>

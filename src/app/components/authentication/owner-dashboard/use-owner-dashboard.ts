@@ -1,4 +1,6 @@
 import { useAuth } from '@/shared/authContext/useAuth';
+import { siteRoutes } from '@/shared/navigation/routes';
+import { firestorePageSize } from '@/shared/firebase/queries';
 import { subscribeAdminNotifications } from '@/api/notifications';
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useRecordPagination } from '@/shared/firebase/use-record-pagination';
@@ -6,11 +8,14 @@ import { subscribeCommerceOverview, type CommerceOverview } from '@/api/commerce
 import type { SubmissionStatus } from '@/shared/models/submissions/Submission';
 import type { NotificationRecord } from '@/shared/models/notifications/Notification';
 import { subscribeOwnerOverview, updateSubmissionStatus, type OwnerOverview } from '@/api/owner';
+import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
 
 export const useOwnerDashboard = (section: `overview` | keyof OwnerOverview = `overview`) => {
   const { user, isAdmin } = useAuth();
+  const { tablePagination } = useAccountNavigationState();
   const requestRef = useRef(0);
-  const pagination = useRecordPagination(JSON.stringify([user?.id, section]));
+  const routes = { users: siteRoutes.adminUsers, contacts: siteRoutes.adminRequests, appointments: siteRoutes.adminAppointments };
+  const pagination = useRecordPagination(JSON.stringify([user?.id, section]), section === `overview` ? undefined : tablePagination[routes[section].href]);
   const { cursor, setNextCursor } = pagination;
   const [revision, setRevision] = useState(0);
   const [notice, setNotice] = useState(``);
@@ -65,7 +70,7 @@ export const useOwnerDashboard = (section: `overview` | keyof OwnerOverview = `o
     }, onError, section === `overview` ? undefined : section, cursor));
     if (section === `overview`) {
       attach(subscribeCommerceOverview((snapshot) => { if (request === requestRef.current) { commerce = snapshot; saveSnapshot(`commerce`); } }, onError));
-      attach(subscribeAdminNotifications((snapshot) => { if (request === requestRef.current) { notifications = snapshot; saveSnapshot(`notifications`); } }, onError));
+      attach(subscribeAdminNotifications((snapshot) => { if (request === requestRef.current) { notifications = snapshot; saveSnapshot(`notifications`); } }, onError, undefined, `desc`, firestorePageSize));
     }
     return () => { requestRef.current += 1; subscriptions.forEach((stop) => stop()); };
   }, [cursor, isAdmin, section, revision, accountId, setNextCursor]);

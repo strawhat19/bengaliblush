@@ -1,7 +1,7 @@
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
-import { getRecordPage, subscribeRecords, subscribeRecordPage } from './queries';
+import { getRecordPage, subscribeRecords, subscribeRecordPage, firestoreMediaPageSize } from './queries';
 import { createRecordId, getNextNumber, hasMatchingValues } from './records';
 import type { User } from '@/shared/models/users/User';
 import { AccountDeletionPending } from './account-actions';
@@ -54,7 +54,7 @@ export const subscribeCommerceOverview = async (onOverview: (overview: CommerceO
     if (key === section) nextCursor = page.nextCursor;
     loaded.add(key);
     if (loaded.size === sections.length) onOverview({ ...overview }, nextCursor);
-  }, onError, { cursor: key === section ? cursor : undefined }));
+  }, onError, { cursor: key === section ? cursor : undefined, direction: key === section ? `asc` : `desc`, pageSize: key === section && [`reviews`, `products`, `services`].includes(key) ? firestoreMediaPageSize : undefined }));
   return () => subscriptions.forEach((unsubscribe) => unsubscribe());
 };
 

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import './commerce-record-row.scss';
-import { Pencil, ChevronDown } from 'lucide-react';
+import { Eye, Settings } from 'lucide-react';
 import StatusCell, { getStatusLabel } from '../../status-cell/status-cell';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
 import type { OrderRecord, PaymentMethodRecord } from '@/shared/models/commerce/Commerce';
@@ -22,7 +22,7 @@ const CommerceRecordRow = ({ busy, record, onEdit, onOrderStatus, paymentMethods
     const paymentMethod = paymentMethods.find((method) => method.id === record.payment_method_id);
     return (
       <tr id={rowId} className={`bb-commerce-record-row bb-commerce-order-row`}>
-        <td id={`${rowId}-number`} className={`bb-commerce-record-number`}>{record.number}</td>
+        <td id={`${rowId}-number`} className={`bb-commerce-record-number`}><span id={`${rowId}-number-badge`} className={`bb-table-number-badge`}>{record.number}</span></td>
         <td id={`${rowId}-customer`} className={`bb-commerce-record-main`}><strong id={`${rowId}-name`} className={`bb-commerce-record-name`}>{record.name}</strong><span id={`${rowId}-email`} className={`bb-commerce-record-meta`}>{record.email}</span><span id={`${rowId}-actor`} className={`bb-commerce-record-meta`}>{record.user_id ? `Account` : `Guest`}</span></td>
         <td id={`${rowId}-items`} className={`bb-commerce-order-items`}>{record.items.map((item, index) => <span key={`${item.product_id}:${index}`} id={`${rowId}-item-${index}`} className={`bb-commerce-order-item`}>{item.quantity} × {item.name}</span>)}</td>
         <td id={`${rowId}-amount`} className={`bb-commerce-record-detail`}><strong id={`${rowId}-subtotal`} className={`bb-commerce-record-name`}>{formatCommerceAmount(record.subtotal)}</strong><span id={`${rowId}-payment-status`} className={`bb-commerce-record-meta`}>Unpaid</span></td>
@@ -30,7 +30,7 @@ const CommerceRecordRow = ({ busy, record, onEdit, onOrderStatus, paymentMethods
         <td id={`${rowId}-created`} className={`bb-commerce-record-date`}>{formatCommerceDate(record.created_at)}</td>
         <td id={`${rowId}-actions-cell`} className={`bb-commerce-record-actions`}>
           <details id={`${rowId}-details`} className={`bb-commerce-order-details`}>
-            <summary id={`${rowId}-details-summary`} className={`bb-commerce-order-summary`}><ChevronDown size={14} aria-hidden={`true`} />View Order</summary>
+            <summary id={`${rowId}-details-summary`} title={`View Order ${record.number}`} aria-label={`View Order ${record.number}`} className={`bb-commerce-record-edit bb-commerce-order-summary`}><Eye size={14} aria-hidden={`true`} /></summary>
             <div id={`${rowId}-details-content`} className={`bb-commerce-order-details-content`}>
               <dl id={`${rowId}-details-record`} className={`bb-commerce-order-details-record`}>
                 {[
@@ -65,7 +65,7 @@ const CommerceRecordRow = ({ busy, record, onEdit, onOrderStatus, paymentMethods
 
   return (
     <tr id={rowId} className={`bb-commerce-record-row`}>
-      <td id={`${rowId}-number`} className={`bb-commerce-record-number`}>{record.number}</td>
+      <td id={`${rowId}-number`} className={`bb-commerce-record-number`}><span id={`${rowId}-number-badge`} className={`bb-table-number-badge`}>{record.number}</span></td>
       <td id={`${rowId}-main`} className={`bb-commerce-record-main`}>
         <div id={`${rowId}-identity`} className={`bb-commerce-record-identity`}>
           {(product || image) && <div
@@ -92,7 +92,7 @@ const CommerceRecordRow = ({ busy, record, onEdit, onOrderStatus, paymentMethods
       <td id={`${rowId}-detail`} className={`bb-commerce-record-detail`}>{details}</td>
       <td id={`${rowId}-status-cell`} className={`bb-commerce-record-status`}><StatusCell id={rowId} status={record.status} /></td>
       <td id={`${rowId}-updated`} className={`bb-commerce-record-date`}>{formatCommerceDate(record.updated_at)}</td>
-      <td id={`${rowId}-actions-cell`} className={`bb-commerce-record-actions`}><div id={`${rowId}-actions`} className={`actionsCell`}><button type={`button`} disabled={busy} id={`${rowId}-edit`} className={`bb-commerce-record-edit`} aria-label={`Edit ${record.name}`} onClick={() => onEdit(record)}><Pencil size={13} aria-hidden={`true`} />Edit</button></div></td>
+      <td id={`${rowId}-actions-cell`} className={`bb-commerce-record-actions`}><div id={`${rowId}-actions`} className={`actionsCell`}><button type={`button`} disabled={busy} id={`${rowId}-edit`} title={`Edit ${record.name}`} className={`bb-commerce-record-edit`} aria-label={`Edit ${record.name}`} onClick={() => onEdit(record)}><Settings size={14} aria-hidden={`true`} /></button></div></td>
     </tr>
   );
 };

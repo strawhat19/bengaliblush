@@ -1,6 +1,8 @@
 import { useAuth } from '@/shared/authContext/useAuth';
+import { siteRoutes } from '@/shared/navigation/routes';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useRecordPagination } from '@/shared/firebase/use-record-pagination';
+import { useAccountNavigationState } from '@/shared/accountNavigationContext/useAccountNavigationState';
 import { subscribeAdminNotifications, saveNotification, deleteNotification } from '@/api/notifications';
 import type { NotificationInput, NotificationRecord, NotificationStatus } from '@/shared/models/notifications/Notification';
 
@@ -16,10 +18,11 @@ export const getNotificationInput = (record: NotificationRecord, status: Notific
 
 export const useAdminNotifications = () => {
   const { user, isAdmin } = useAuth();
+  const { tablePagination } = useAccountNavigationState();
   const scopeRef = useRef(0);
   const requestRef = useRef(0);
   const pendingRef = useRef(false);
-  const pagination = useRecordPagination(JSON.stringify([user?.id, `notifications`]));
+  const pagination = useRecordPagination(JSON.stringify([user?.id, `notifications`]), tablePagination[siteRoutes.adminNotifications.href]);
   const { cursor, setNextCursor } = pagination;
   const [revision, setRevision] = useState(0);
   const [notice, setNotice] = useState(``);
@@ -33,6 +36,8 @@ export const useAdminNotifications = () => {
   const loading = Boolean(accountId && isAdmin && !records && !error);
 
   const reload = useCallback(async () => { setRevision((current) => current + 1); }, []);
+
+  useEffect(() => () => { scopeRef.current += 1; }, [isAdmin, accountId]);
 
   useEffect(() => {
     if (!accountId || !isAdmin) return;
@@ -55,7 +60,7 @@ export const useAdminNotifications = () => {
       if (request === requestRef.current) unsubscribe = stop;
       else stop();
     }).catch(onError);
-    return () => { scopeRef.current += 1; requestRef.current += 1; unsubscribe?.(); };
+    return () => { requestRef.current += 1; unsubscribe?.(); };
   }, [cursor, isAdmin, revision, accountId, setNextCursor]);
 
   const runMutation = async (id: string, operation: () => Promise<void>, message: string) => {

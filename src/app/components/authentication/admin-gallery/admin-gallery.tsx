@@ -1,9 +1,8 @@
 'use client';
 
-import './admin-gallery.scss';
+import { Images } from 'lucide-react';
 import '../profile-page/profile-page.scss';
 import '../owner-dashboard/owner-dashboard.scss';
-import { Images } from 'lucide-react';
 import { useAdminGallery } from './use-admin-gallery';
 import AccountAccess from '../account-access/account-access';
 import GalleryGrid from '../../gallery/gallery-grid/gallery-grid';
@@ -17,15 +16,10 @@ const AdminGalleryContent = ({ images: siteImages }: { images: readonly GalleryI
       <div id={`bb-admin-gallery-layout`} className={`bb-container bb-profile-layout`}>
         <AccountNavigation />
         <div id={`bb-admin-gallery-content`} className={`bb-owner-dashboard-content bb-admin-gallery-content`}>
-          <header id={`bb-admin-gallery-heading`} className={`bb-admin-gallery-heading`}>
-            <div id={`bb-admin-gallery-heading-copy`} className={`bb-admin-gallery-heading-copy`}>
-              <span id={`bb-admin-gallery-eyebrow`} className={`bb-eyebrow`}>Admin · Bengali Blush</span>
-              <h1 id={`bb-admin-gallery-title`} className={`bb-admin-gallery-title`}>Gallery<span id={`bb-admin-gallery-title-mark`} className={`bb-admin-gallery-title-mark`} aria-hidden={`true`}>.</span></h1>
-              <p id={`bb-admin-gallery-description`} className={`bb-admin-gallery-description`}>A little world of beauty, rituals, and the stories we share.</p>
-            </div>
-            <div id={`bb-admin-gallery-edition`} className={`bb-admin-gallery-edition`} aria-hidden={`true`}>
-              <Images size={21} strokeWidth={1.2} />
-              <span id={`bb-admin-gallery-edition-label`} className={`bb-admin-gallery-edition-label`}>The Visual Journal</span>
+          <header id={`bb-admin-gallery-heading`} className={`bb-owner-dashboard-heading is-record-page bb-admin-gallery-heading`}>
+            <div id={`bb-admin-gallery-heading-copy`} className={`bb-owner-dashboard-heading-copy bb-admin-gallery-heading-copy`}>
+              <span id={`bb-admin-gallery-eyebrow`} className={`bb-eyebrow`}><span id={`bb-admin-gallery-eyebrow-label`} className={`bb-owner-dashboard-eyebrow-label`}>Admin <span aria-hidden={`true`} id={`bb-admin-gallery-eyebrow-separator`} className={`bb-owner-dashboard-eyebrow-separator`}>·</span> Bengali Blush</span></span>
+              <h1 id={`bb-admin-gallery-title`} className={`bb-owner-dashboard-title has-table-icon bb-admin-gallery-title`}><Images size={28} aria-hidden={`true`} id={`bb-admin-gallery-title-icon`} className={`bb-owner-dashboard-title-icon`} />Gallery</h1>
             </div>
           </header>
           <GalleryGrid images={images} loading={loading} error={error} />

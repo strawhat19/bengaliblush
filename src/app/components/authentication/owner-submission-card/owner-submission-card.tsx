@@ -22,7 +22,7 @@ const OwnerSubmissionCard = ({ kind, disabled, savingId, submission, accountName
 
   return (
     <tr id={idPrefix} className={`bb-owner-submission-row`}>
-      <td id={`${idPrefix}-number`} className={`bb-owner-submission-number`}>{submission.number}</td>
+      <td id={`${idPrefix}-number`} className={`bb-owner-submission-number`}><span id={`${idPrefix}-number-badge`} className={`bb-table-number-badge`}>{submission.number}</span></td>
       <td id={`${idPrefix}-request`} className={`bb-owner-submission-request`}>
         <strong id={`${idPrefix}-title`} className={`bb-owner-submission-title`}>{appointment?.name || contact?.contact}</strong>
         {appointment && <><span id={`${idPrefix}-service`} className={`bb-owner-submission-service`}>{appointment.service}</span><span id={`${idPrefix}-email`} className={`bb-owner-submission-email`}>{appointment.email}</span></>}

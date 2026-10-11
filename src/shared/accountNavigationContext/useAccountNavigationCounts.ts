@@ -2,10 +2,10 @@ import { usePathname } from 'next/navigation';
 import { useMemo, useState, useEffect } from 'react';
 import { useAuth } from '@/shared/authContext/useAuth';
 import { isProfileOrAdminPage } from '@/shared/navigation/routes';
-import { getNavigationBadgeCounts } from '@/shared/navigation/navigation-counts';
-import { subscribeAdminNavigationCounts, type AdminNavigationCounts } from '@/api/navigation';
+import { getNavigationBadgeCounts, getNavigationTablePagination } from '@/shared/navigation/navigation-counts';
+import { subscribeAdminNavigationCounts, type AdminNavigationCounts, type AdminNavigationPagination } from '@/api/navigation';
 
-type NavigationCountsState = { error: string; source: object; counts: AdminNavigationCounts | null };
+type NavigationCountsState = { error: string; source: object; counts: AdminNavigationCounts | null; pagination: AdminNavigationPagination | null };
 
 export const useAccountNavigationCounts = () => {
   const pathname = usePathname();
@@ -20,8 +20,8 @@ export const useAccountNavigationCounts = () => {
     if (!enabled) return;
     let active = true;
     let unsubscribe: () => void = () => undefined;
-    const receive = (counts: AdminNavigationCounts) => { if (active) setState({ counts, source, error: `` }); };
-    const fail = (error: Error) => { if (active) setState({ source, counts: null, error: error.message || `Unable To Load Menu Counts` }); };
+    const receive = (counts: AdminNavigationCounts, pagination: AdminNavigationPagination) => { if (active) setState({ counts, source, pagination, error: `` }); };
+    const fail = (error: Error) => { if (active) setState({ source, counts: null, pagination: null, error: error.message || `Unable To Load Menu Counts` }); };
     void subscribeAdminNavigationCounts(receive, fail).then((stop) => {
       if (active) unsubscribe = stop;
       else stop();
@@ -30,7 +30,9 @@ export const useAccountNavigationCounts = () => {
   }, [enabled, source]);
 
   const counts = enabled && state?.source === source ? state.counts : null;
+  const pagination = enabled && state?.source === source ? state.pagination : null;
   const badgeError = enabled && state?.source === source ? state.error : ``;
   const badgeCounts = useMemo(() => getNavigationBadgeCounts(counts, hasProfile), [counts, hasProfile]);
-  return { badgeError, badgeCounts };
+  const tablePagination = useMemo(() => getNavigationTablePagination(pagination), [pagination]);
+  return { badgeError, badgeCounts, tablePagination };
 };

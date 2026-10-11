@@ -10,7 +10,7 @@ import { useEffect, useState, type MouseEvent, type CSSProperties } from 'react'
 import ProfileMenu from '@/app/components/authentication/profile-menu/profile-menu';
 import NotificationsMenu from '@/app/components/navigation/notifications-menu/notifications-menu';
 import { navigationRoutes, siteRoutes, type NavigationIcon } from '@/shared/navigation/routes';
-import { Bell, Home, Info, LogIn, Quote, Users, Images, MapPin, Package, BookOpen, FileText, UserPlus, UserRound, CreditCard, ReceiptText, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, MessageCircle, WandSparkles, LayoutDashboard, MessageSquareText, type LucideIcon } from 'lucide-react';
+import { Bell, Home, Info, LogIn, Quote, Users, Images, MapPin, Package, Palette, BookOpen, FileText, UserPlus, UserRound, CreditCard, ReceiptText, ShieldCheck, ShoppingBag, CalendarDays, ShoppingCart, ArrowUpRight, MessageCircle, WandSparkles, LayoutDashboard, MessageSquareText, type LucideIcon } from 'lucide-react';
 
 export type HeaderWidth = 'boxed' | 'full';
 
@@ -24,7 +24,7 @@ type HeaderProps = {
   cartButtonFilled?: boolean;
 };
 
-const navigationIcons = { Bell, Home, Info, LogIn, Quote, Users, Images, MapPin, Package, BookOpen, FileText, UserPlus, UserRound, CreditCard, ReceiptText, ShieldCheck, CalendarDays, ShoppingBag, MessageCircle, WandSparkles, LayoutDashboard, MessageSquareText } satisfies Record<NavigationIcon, LucideIcon>;
+const navigationIcons = { Bell, Home, Info, LogIn, Quote, Users, Images, MapPin, Package, Palette, BookOpen, FileText, UserPlus, UserRound, CreditCard, ReceiptText, ShieldCheck, CalendarDays, ShoppingBag, MessageCircle, WandSparkles, LayoutDashboard, MessageSquareText } satisfies Record<NavigationIcon, LucideIcon>;
 const navigationItems = navigationRoutes.map((route) => ({
   ...route,
   locator: route.section ?? route.href.slice(1),

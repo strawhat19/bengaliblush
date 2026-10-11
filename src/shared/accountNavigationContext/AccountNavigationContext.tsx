@@ -1,5 +1,6 @@
 'use client';
 
+import type { RecordPaginationIndex } from '@/api/navigation';
 import { useAccountNavigationCounts } from './useAccountNavigationCounts';
 import { expandableNavigationKeys } from '@/shared/navigation/account-navigation';
 import { useMemo, useState, useCallback, createContext, useSyncExternalStore, type ReactNode } from 'react';
@@ -11,6 +12,7 @@ type AccountNavigationContextValue = {
   expandedRoutes: readonly string[];
   toggleSubmenu: (href: string) => void;
   badgeCounts: Readonly<Record<string, number>>;
+  tablePagination: Readonly<Record<string, RecordPaginationIndex>>;
 };
 
 const maxExpandedSubmenus = Math.ceil(expandableNavigationKeys.length / 2);
@@ -25,7 +27,7 @@ const subscribeToDesktopLayout = (onChange: () => void) => {
 export const AccountNavigationContext = createContext<AccountNavigationContextValue | undefined>(undefined);
 
 export const AccountNavigationProvider = ({ children }: { children: ReactNode }) => {
-  const { badgeError, badgeCounts } = useAccountNavigationCounts();
+  const { badgeError, badgeCounts, tablePagination } = useAccountNavigationCounts();
   const [collapsed, setCollapsed] = useState(false);
   const desktopLayout = useSyncExternalStore(subscribeToDesktopLayout, getDesktopLayout, getServerDesktopLayout);
   const [expandedMenus, setExpandedMenus] = useState(() => ({
@@ -40,7 +42,7 @@ export const AccountNavigationProvider = ({ children }: { children: ReactNode })
     const expanded = routes.includes(href) ? routes.filter((route) => route !== href) : [...routes, href];
     return { ...current, [submenuLayout]: submenuLayout === `singleColumn` ? expanded.slice(-maxExpandedSubmenus) : expanded };
   }), [submenuLayout]);
-  const value = useMemo(() => ({ badgeError, collapsed, badgeCounts, toggleCollapsed, expandedRoutes, toggleSubmenu }), [badgeError, collapsed, badgeCounts, toggleCollapsed, expandedRoutes, toggleSubmenu]);
+  const value = useMemo(() => ({ badgeError, collapsed, badgeCounts, toggleCollapsed, expandedRoutes, toggleSubmenu, tablePagination }), [badgeError, collapsed, badgeCounts, toggleCollapsed, expandedRoutes, toggleSubmenu, tablePagination]);
 
   return <AccountNavigationContext.Provider value={value}>{children}</AccountNavigationContext.Provider>;
 };

@@ -1,10 +1,10 @@
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
-import { getRecordPage, subscribeRecords, subscribeRecordPage } from './queries';
+import { getRecordPage, subscribeRecords, subscribeRecordPage, firestoreMediaPageSize } from './queries';
 import { createRecordId, getNextNumber, hasMatchingValues } from './records';
 import type { NotificationInput, NotificationRecord } from '@/shared/models/notifications/Notification';
-import { doc, query, where, Timestamp, collection, runTransaction, serverTimestamp, getDocsFromServer, type DocumentData, type DocumentSnapshot } from 'firebase/firestore';
+import { doc, query, where, Timestamp, collection, runTransaction, serverTimestamp, getDocsFromServer, type DocumentData, type DocumentSnapshot, type OrderByDirection } from 'firebase/firestore';
 
 const notificationText = (value: unknown, label: string, maximum: number, optional = false, preserveSpacing = false) => {
   if (typeof value !== `string` || (!optional && !value.trim()) || value.length > maximum) throw new Error(`Enter A Valid ${label}`);
@@ -75,17 +75,17 @@ export const getPublishedNotifications = async (): Promise<NotificationRecord[]>
 
 export const subscribePublishedNotifications = (onRecords: (records: NotificationRecord[]) => void, onError: (error: Error) => void) => subscribeRecords(`notifications`, readNotification, (records) => onRecords(records.sort((first, second) => second.number - first.number)), onError, `published`);
 
-export const subscribeAdminNotifications = async (onRecords: (records: NotificationRecord[], nextCursor: number | null) => void, onError: (error: Error) => void, cursor?: number) => {
+export const subscribeAdminNotifications = async (onRecords: (records: NotificationRecord[], nextCursor: number | null) => void, onError: (error: Error) => void, cursor?: number, direction: OrderByDirection = `asc`, pageSize = firestoreMediaPageSize) => {
   const { auth, firebaseUid } = await requireAdmin();
   return subscribeRecordPage(`notifications`, readNotification, (page) => {
     if (auth.currentUser?.uid !== firebaseUid) { onError(new Error(`Your Account Changed, Try Again`)); return; }
     onRecords(page.records, page.nextCursor);
-  }, onError, { cursor });
+  }, onError, { cursor, pageSize, direction });
 };
 
 export const getAdminNotifications = async (): Promise<NotificationRecord[]> => {
   const { auth, firebaseUid } = await requireAdmin();
-  const records = await getRecordPage(`notifications`, readNotification);
+  const records = await getRecordPage(`notifications`, readNotification, { direction: `asc`, pageSize: firestoreMediaPageSize });
   if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
   return records.records;
 };

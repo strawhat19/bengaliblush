@@ -17,6 +17,24 @@ export const dashboardViews = {
   analytics: { title: `Studio Analytics`, description: `Studio activity trends, request statuses, and counts from your recent database records.` },
 };
 
+export const getDashboardTableSummary = (overview: OwnerOverview, section: Exclude<DashboardSection, `overview`>) => {
+  if (section === `users`) return [
+    { id: `total`, label: `Accounts On This Page`, value: overview.users.length },
+    { id: `active`, label: `Active`, value: overview.users.filter((record) => (record.account_status ?? `active`) === `active`).length },
+    { id: `inactive`, label: `Inactive`, value: overview.users.filter((record) => [`deactivated`, `deleting`].includes(record.account_status ?? `active`)).length },
+  ];
+  if (section === `contacts`) return [
+    { id: `total`, label: `Requests On This Page`, value: overview.contacts.length },
+    { id: `new`, label: `Awaiting Review`, value: overview.contacts.filter((record) => record.status === `new`).length },
+    { id: `reviewed`, label: `Reviewed`, value: overview.contacts.filter((record) => record.status === `reviewed`).length },
+  ];
+  return [
+    { id: `total`, label: `Appointments On This Page`, value: overview.appointments.length },
+    { id: `requested`, label: `Requested`, value: overview.appointments.filter((record) => record.status === `requested`).length },
+    { id: `confirmed`, label: `Confirmed`, value: overview.appointments.filter((record) => record.status === `confirmed`).length },
+  ];
+};
+
 export const formatRecordDate = (value: string, includeTime = false) => {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return `—`;

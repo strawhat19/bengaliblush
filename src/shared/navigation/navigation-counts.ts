@@ -1,5 +1,5 @@
 import { siteRoutes } from './routes';
-import type { AdminNavigationCounts } from '@/api/navigation';
+import type { AdminNavigationCounts, AdminNavigationPagination, RecordPaginationIndex } from '@/api/navigation';
 
 export const getNavigationCountLabel = (label: string, count = 0) => count > 0 ? `${label}, ${count.toLocaleString(`en-US`)} Item(s)` : label;
 
@@ -26,4 +26,22 @@ export const getNavigationBadgeCounts = (counts: AdminNavigationCounts | null, h
     [siteRoutes.adminNotifications.href]: counts.notifications,
     [siteRoutes.adminPaymentMethods.href]: counts.paymentMethods,
   };
+};
+
+export const getNavigationTablePagination = (pagination: AdminNavigationPagination | null): Readonly<Record<string, RecordPaginationIndex>> => {
+  if (!pagination) return {};
+  const tablePagination: Record<string, RecordPaginationIndex> = {};
+  const routes = {
+    [siteRoutes.adminUsers.href]: pagination.users,
+    [siteRoutes.adminOrders.href]: pagination.orders,
+    [siteRoutes.adminReviews.href]: pagination.reviews,
+    [siteRoutes.adminRequests.href]: pagination.contacts,
+    [siteRoutes.adminServices.href]: pagination.services,
+    [siteRoutes.adminProducts.href]: pagination.products,
+    [siteRoutes.adminAppointments.href]: pagination.appointments,
+    [siteRoutes.adminNotifications.href]: pagination.notifications,
+    [siteRoutes.adminPaymentMethods.href]: pagination.paymentMethods,
+  };
+  Object.entries(routes).forEach(([href, index]) => { if (index) tablePagination[href] = index; });
+  return tablePagination;
 };

@@ -8,7 +8,8 @@ a.bb-owner-dashboard-count:hover { border-color: hsl(var(--primary) / .4); backg
 .bb-owner-dashboard-charts { display: flex; flex-wrap: wrap; gap: 18px; }
 .bb-owner-dashboard-charts > .bb-owner-chart-panel { flex: 1 1 220px; }
 .bb-owner-dashboard-charts > #bb-owner-activity { flex: 1.6 1 280px; }
-.bb-owner-chart-panel { min-width: 0; border: 1px solid hsl(var(--primary) / .15); border-radius: 12px; padding: 22px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-owner-chart-panel { min-width: 0; border: 1px solid hsl(var(--primary) / .15); border-radius: 12px; padding: 22px; background: var(--bb-panel-surface, hsl(var(--card))); animation: bb-owner-chart-reveal .55s cubic-bezier(.22, 1, .36, 1) backwards; }
+.bb-owner-dashboard-charts > .bb-owner-chart-panel:nth-child(2) { animation-delay: .08s; }
 .bb-owner-chart-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 20px; }
 .bb-owner-chart-title { margin: 0; color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 23px; font-weight: 500; }
 .bb-owner-chart-caption, .bb-owner-chart-note { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; }
@@ -25,17 +26,27 @@ a.bb-owner-dashboard-count:hover { border-color: hsl(var(--primary) / .4); backg
 .bb-owner-activity-bars { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
 .bb-owner-activity-month { display: grid; gap: 9px; }
 .bb-owner-activity-group { display: flex; height: 140px; align-items: flex-end; justify-content: center; gap: 3px; border-bottom: 1px solid hsl(var(--primary) / .12); background: repeating-linear-gradient(to top, transparent 0, transparent calc(25% - 1px), hsl(var(--primary) / .05) calc(25% - 1px), hsl(var(--primary) / .05) 25%); }
-.bb-owner-activity-bar { width: 100%; max-width: 12px; height: var(--bb-bar-height); border-radius: 3px 3px 0 0; transition: height .4s ease; }
+.bb-owner-activity-bar { width: 100%; max-width: 12px; height: var(--bb-bar-height); border-radius: 3px 3px 0 0; transform-origin: center bottom; transition: height .85s cubic-bezier(.22, 1, .36, 1); animation: bb-owner-bar-rise .85s cubic-bezier(.22, 1, .36, 1) var(--bb-motion-delay, 0ms) backwards; }
 .bb-owner-activity-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; text-align: center; }
 .bb-owner-status-chart-content { display: grid; justify-items: center; gap: 20px; }
-.bb-owner-status-donut { display: grid; width: 132px; height: 132px; place-items: center; border-radius: 50%; }
-.bb-owner-status-donut-center { display: grid; width: 104px; height: 104px; align-content: center; justify-items: center; gap: 5px; border-radius: 50%; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-owner-status-donut { position: relative; display: grid; width: 132px; height: 132px; place-items: center; border-radius: 50%; }
+.bb-owner-status-donut-rings { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform: rotate(-90deg); transform-origin: center; }
+.bb-owner-status-donut-ring { fill: none; stroke-width: 14; stroke-linecap: butt; }
+.bb-owner-status-donut-track { stroke: hsl(var(--primary) / .08); }
+.bb-owner-status-donut-segment { transition: stroke-dasharray .85s cubic-bezier(.22, 1, .36, 1), stroke-dashoffset .85s cubic-bezier(.22, 1, .36, 1); animation: bb-owner-donut-draw var(--bb-segment-duration) linear var(--bb-motion-delay) backwards; }
+.bb-owner-status-donut-center { position: relative; display: grid; width: 104px; height: 104px; align-content: center; justify-items: center; gap: 5px; border-radius: 50%; background: var(--bb-panel-surface, hsl(var(--card))); animation: bb-owner-chart-reveal .55s cubic-bezier(.22, 1, .36, 1) .35s backwards; }
 .bb-owner-status-total { color: var(--bb-highlight, hsl(var(--primary))); font-family: var(--app-font-serif); font-size: 32px; font-weight: 500; line-height: 1; }
 .bb-owner-status-total-label { color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; }
 .bb-owner-status-legend { display: grid; width: 100%; min-width: 0; gap: 13px; margin: 0; padding: 0; list-style: none; }
-.bb-owner-status-legend-item { display: flex; min-width: 0; align-items: center; gap: 7px; font-size: 10px; }
+.bb-owner-status-legend-item { display: flex; min-width: 0; align-items: center; gap: 7px; font-size: 10px; animation: bb-owner-chart-reveal .45s cubic-bezier(.22, 1, .36, 1) var(--bb-motion-delay, 0ms) backwards; }
 .bb-owner-status-legend-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; }
 .bb-owner-status-legend-label { min-width: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); overflow-wrap: anywhere; }
 .bb-owner-status-legend-count { flex: none; margin-left: auto; font-weight: 600; }
 @media (max-width: 480px) { .bb-owner-chart-panel { padding: 18px; } }
-@media (prefers-reduced-motion: reduce) { .bb-owner-dashboard-count, .bb-owner-activity-bar { transition: none; } }
+@keyframes bb-owner-donut-draw { from { stroke-dasharray: 0 100; } }
+@keyframes bb-owner-bar-rise { from { opacity: 0; transform: scaleY(0); } to { opacity: 1; transform: scaleY(1); } }
+@keyframes bb-owner-chart-reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .bb-owner-chart-panel, .bb-owner-activity-bar, .bb-owner-status-donut-center, .bb-owner-status-donut-segment, .bb-owner-status-legend-item { animation: none; }
+  .bb-owner-dashboard-count, .bb-owner-activity-bar, .bb-owner-status-donut-segment { transition: none; }
+}

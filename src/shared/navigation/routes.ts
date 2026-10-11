@@ -1,6 +1,6 @@
 import { Roles, hasAdminAccess } from '../../types/types';
 
-export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `Images` | `MapPin` | `Package` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard` | `MessageSquareText`;
+export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `Images` | `MapPin` | `Package` | `Palette` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard` | `MessageSquareText`;
 
 export type SiteRoute = {
   href: string;
@@ -135,6 +135,22 @@ export const siteRoutes = {
     title: `Dashboard | Bengali Blush`,
     aliases: [`/admin`],
     description: `Your studio database at a glance`,
+  },
+  adminStudio: {
+    label: `Studio`,
+    icon: `Palette`,
+    href: `/admin/studio`,
+    minimumRole: Roles.Admin,
+    title: `Studio | Bengali Blush`,
+    description: `Manage studio events, gallery, services, and notifications`,
+  },
+  adminFeedback: {
+    label: `Feedback`,
+    href: `/admin/feedback`,
+    icon: `MessageSquareText`,
+    minimumRole: Roles.Admin,
+    title: `Feedback | Bengali Blush`,
+    description: `Review studio chats, reviews, requests, and appointments`,
   },
   adminUsers: {
     icon: `Users`,
