@@ -19,4 +19,4 @@ export const applyThemeMode = (mode: ThemeMode) => {
 };
 
 // Feature settings must be confirmed before restoring the saved theme.
-export const themeBootstrapScript = `(function(){var root=document.documentElement;root.dataset.theme='dark';root.style.colorScheme='dark';var palette=${JSON.stringify(themePalettes.dark)};var tokens=${JSON.stringify(themeTokens)};Object.keys(tokens).forEach(function(key){root.style.setProperty(tokens[key],palette[key]);});})();`;
+export const themeBootstrapScript = `(function(){var root=document.documentElement;root.dataset.theme='light';root.style.colorScheme='light';var palette=${JSON.stringify(themePalettes.light)};var tokens=${JSON.stringify(themeTokens)};Object.keys(tokens).forEach(function(key){root.style.setProperty(tokens[key],palette[key]);});})();`;

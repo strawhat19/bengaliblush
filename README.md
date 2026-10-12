@@ -32,7 +32,7 @@ Google and email/password sign-in use Firebase project `bengaliblush-9ac28` and 
 
 Firebase web configuration is saved in the gitignored `.env` file. `.env.example` lists the required variables. Firebase web API keys identify the app; Firebase Authentication and the deployed Firestore rules enforce access. No service-account private key is required for this client SDK integration.
 
-Signed-in accounts save their light/dark theme in the private `users` record as `theme_mode` and restore it on sign-in. Accounts without a saved theme adopt the visitor's current preference. Signed-out preferences stay in browser storage, separately from account preferences.
+Bengali Blush defaults to light mode, including the initial page render and when the Theme Toggle feature is disabled or unavailable. Saved preferences are retained while the feature is disabled and restored when it becomes eligible again. Signed-in accounts save their light/dark theme in the private `users` record as `theme_mode` and restore it on sign-in. Accounts without a saved theme adopt the visitor's current preference. Signed-out preferences stay in browser storage, separately from account preferences.
 
 Profile account actions require Google or current-password verification and typed `DEACTIVATE` or `DELETE` confirmation. Deactivation pauses Bengali Blush access and signs out while retaining saved data; signing in again offers explicit reactivation. It does not disable the Firebase Authentication identity globally. Legacy accounts without `account_status` remain active.
 

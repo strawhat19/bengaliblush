@@ -4,12 +4,16 @@
   --bb-highlight: hsl(var(--primary));
   --bb-brand-ink: hsl(340 32% 15%);
   --bb-brand-cream: hsl(29 50% 98%);
+  --bb-selection-text: var(--bb-brand-cream);
   --bb-panel-text: hsl(var(--foreground));
   --bb-panel-muted: hsl(var(--muted-foreground));
   --bb-panel-border: hsl(var(--border));
   --bb-panel-surface: hsl(var(--card));
   --bb-surface-raised: hsl(var(--background));
 }
+
+::selection { color: var(--bb-selection-text); background: var(--bb-highlight); text-shadow: none; }
+@media (forced-colors: active) { ::selection { color: HighlightText; background: Highlight; } }
 
 body { transition: background-color .38s ease, color .38s ease; }
 
@@ -19,6 +23,7 @@ body { transition: background-color .38s ease, color .38s ease; }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
+  --bb-selection-text: var(--bb-brand-ink);
 
   // Cream stays available for text on burgundy chrome; surfaces have their own tokens.
   :is(.bb-drawer, .bb-cart-footer, .bb-auth-page, .bb-booking-modal, .bb-booking-modal-content, .bb-product-card, .bb-blog-card, .bb-service-card, .bb-shop-card, .bb-review-card, .bb-blog-prose-figure, .bb-cart-summary-empty, .bb-cart-summary-loading, .bb-cart-summary-preview-note, .bb-checkout-empty, .bb-checkout-loading, .bb-checkout-payment-preview, .bb-auth-review, .bb-auth-ritual-option, .bb-auth-story-art-note, .bb-auth-story-founder-letter, .bb-form-success, .bb-contact-draft-status) {

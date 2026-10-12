@@ -663,9 +663,6 @@ function Footer({ onBook }: { onBook: () => void }) {
               <h4 id={`bb-footer-info-heading`} className={`bb-footer-info-heading`}>More Info</h4>
               <div className="bb-footer-links">
                 <Link href={siteRoutes.contact.href} id={`bb-footer-contact-link`} className={`bb-footer-page-link`}><Mail size={13} aria-hidden={`true`} />Contact</Link>
-                <Link href={siteRoutes.services.href} id={`bb-footer-services-link`} className={`bb-footer-page-link`} data-testid={`footer-link-services`}>
-                  <WandSparkles size={13} aria-hidden={`true`} />Services
-                </Link>
                 <button type={`button`} onClick={onBook} id={`bb-footer-book-button`} className={`bb-footer-page-link`} data-testid={`footer-link-book`}>
                   <CalendarDays size={13} aria-hidden={`true`} />Book Now
                 </button>

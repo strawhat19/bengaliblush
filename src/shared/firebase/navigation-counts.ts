@@ -22,8 +22,8 @@ export type AdminNavigationCounts = {
 export type AdminNavigationPagination = Partial<Record<Exclude<keyof AdminNavigationCounts, `gallery`>, RecordPaginationIndex>>;
 
 const countRangeSize = 50;
-const boundedCollections = { users: `users`, orders: `orders`, contacts: `contactSubmissions`, appointments: `appointmentSubmissions` } as const;
-const countedCollections = [`reviews`, `products`, `services`, `notifications`, `paymentMethods`] as const;
+const boundedCollections = { users: `users`, orders: `orders`, contacts: `contactSubmissions`, notifications: `notifications`, appointments: `appointmentSubmissions` } as const;
+const countedCollections = [`reviews`, `products`, `services`, `paymentMethods`] as const;
 const collectionCount = Object.keys(boundedCollections).length + countedCollections.length;
 const readRecordNumbers = (values: readonly unknown[]) => values.map((value) => {
   if (typeof value !== `number`) throw new Error(`Saved Menu Count Data Needs Attention`);
@@ -76,7 +76,7 @@ export const subscribeAdminNavigationCounts = async (onCounts: (counts: AdminNav
       const receiveCount = () => {
         if (!canReceive() || allocatedNumber < 0 || rangeNumbers.size !== Math.ceil(allocatedNumber / countRangeSize)) return;
         const numbers = [...rangeNumbers.values()].flat();
-        try { pagination[key] = createRecordPaginationIndex(numbers, key === `users` ? firestoreMediaPageSize : firestorePageSize); }
+        try { pagination[key] = createRecordPaginationIndex(numbers, [`users`, `notifications`].includes(key) ? firestoreMediaPageSize : firestorePageSize); }
         catch (error) { fail(error); return; }
         counts[key] = numbers.length;
         ready.add(key);

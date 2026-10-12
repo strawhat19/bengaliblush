@@ -38,12 +38,12 @@ export const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const guestActiveRef = useRef(false);
-  const modeRef = useRef<ThemeMode>(`dark`);
+  const modeRef = useRef<ThemeMode>(`light`);
   const guestModeRef = useRef<ThemeMode>(`light`);
   const accountRef = useRef<AccountTheme | null>(null);
   const { user, loading, updateTheme } = useAuth();
   const { flags } = useFeatureFlags();
-  const [mode, setMode] = useState<ThemeMode>(`dark`);
+  const [mode, setMode] = useState<ThemeMode>(`light`);
   const [notice, setNotice] = useState<string>();
 
   const displayMode = useCallback((nextMode: ThemeMode) => {
@@ -51,7 +51,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     setMode(nextMode);
   }, []);
 
-  const effectiveMode = flags.themeToggle ? mode : `dark`;
+  const effectiveMode = flags.themeToggle ? mode : `light`;
   useLayoutEffect(() => applyThemeMode(effectiveMode), [effectiveMode]);
 
   const saveTheme = useCallback((account: AccountTheme, nextMode: ThemeMode) => {
