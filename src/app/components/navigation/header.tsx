@@ -1,16 +1,17 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/shared/authContext/useAuth';
 import { ShoppingCart, ArrowUpRight } from 'lucide-react';
+import { useAuth } from '@/shared/authContext/useAuth';
 import Link from '@/app/components/navigation/page-link/page-link';
 import { navigationIcons } from '@/shared/navigation/navigation-icons';
+import { useFeatureFlags } from '@/shared/featureFlags/useFeatureFlags';
+import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import { navigationRoutes, siteRoutes } from '@/shared/navigation/routes';
 import { scrollToElement } from '@/shared/navigation/scroll-to-element';
-import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import ThemeToggle from '@/app/components/navigation/theme-toggle/theme-toggle';
-import { useEffect, useState, type MouseEvent, type CSSProperties } from 'react';
 import ProfileMenu from '@/app/components/authentication/profile-menu/profile-menu';
+import { useRef, useEffect, useState, type MouseEvent, type CSSProperties } from 'react';
 import NotificationsMenu from '@/app/components/navigation/notifications-menu/notifications-menu';
 
 export type HeaderWidth = 'boxed' | 'full';
@@ -66,6 +67,9 @@ export default function Header({
 }: HeaderProps) {
   const pathname = usePathname();
   const { user, loading } = useAuth();
+  const { flags } = useFeatureFlags();
+  const headerRef = useRef<HTMLElement>(null);
+  const visibleNavigationItems = navigationItems.filter(({ href }) => href !== siteRoutes.contact.href || flags.contact);
   const authPathname = pathname.replace(/\/+$/, ``) || `/`;
   const mobileAuthRoutes = [siteRoutes.signin, siteRoutes.signup].filter(({ href, aliases }) =>
     user || loading || ![href, ...aliases].includes(authPathname));
@@ -134,21 +138,37 @@ export default function Header({
     };
   }, []);
 
+  useEffect(() => {
+    const header = headerRef.current;
+    const logo = header?.querySelector<HTMLElement>(`#bb-link-logo`);
+    if (!header || !logo) return;
+    const shell = header.closest<HTMLElement>(`.bb-page`) ?? document.documentElement;
+    const measureHeader = () => {
+      shell.style.setProperty(`--bb-header-height`, `${Math.ceil(header.getBoundingClientRect().height)}px`);
+      shell.style.setProperty(`--bb-header-brand-width`, `${Math.floor(logo.getBoundingClientRect().width)}px`);
+    };
+    measureHeader();
+    const observer = new ResizeObserver(measureHeader);
+    observer.observe(logo);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
+
   const headerClassName = [
     `bb-header`,
     sticky ? `is-sticky` : ``,
     pinkheader ? `is-pinkheader` : ``,
-    mobileOpen || profileOpen || notificationsOpen ? `is-menu-open` : ``,
+    mobileOpen || profileOpen || (flags.notifications && notificationsOpen) ? `is-menu-open` : ``,
     sticky && scrolled ? `is-scrolled` : ``,
   ].filter(Boolean).join(` `);
   const containerClassName = width === `full` ? `bb-header-inner is-full-width` : `bb-container bb-header-inner`;
 
   return (
-    <header className={headerClassName} data-hero-reveal data-width={width}>
+    <header ref={headerRef} id={`bb-site-header`} className={headerClassName} data-hero-reveal data-width={width}>
       <div className={containerClassName}>
         <BrandMark />
         <nav className="bb-nav" aria-label="Main navigation">
-          {navigationItems.map(({ Icon, href, label, locator, section }) => (
+          {visibleNavigationItems.map(({ Icon, href, label, locator, section }) => (
             <Link
               href={href}
               key={locator}
@@ -164,11 +184,11 @@ export default function Header({
         </nav>
         <div id={`bb-header-actions`} className="bb-header-actions">
           <ThemeToggle />
-          <NotificationsMenu
+          {flags.notifications && <NotificationsMenu
             onOpen={() => { closeMobile(); closeProfile(); }}
             onOpenChange={setNotificationsOpen}
             closeSignal={`${pathname}:${notificationCloseCount}`}
-          />
+          />}
           <span id={`bb-bag-control`} className={`bb-bag-control`}>
             <button
               type={`button`}
@@ -211,7 +231,7 @@ export default function Header({
             <small>Beauty Studio</small>
           </div>
           <div className="bb-mobile-nav-grid">
-            {navigationItems.map(({ Icon, href, label, locator, section, description }, index) => (
+            {visibleNavigationItems.map(({ Icon, href, label, locator, section, description }, index) => (
               <Link
                 href={href}
                 key={locator}

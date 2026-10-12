@@ -2,9 +2,10 @@
 
 import { useAuth } from '@/shared/authContext/useAuth';
 import { useLocalStorage } from '@/shared/config/storefront';
+import { useFeatureFlags } from '@/shared/featureFlags/useFeatureFlags';
 import { readPreference, writePreference } from '@/shared/storage/preference-storage';
-import { createContext, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { applyThemeMode, isThemeMode, THEME_STORAGE_KEY, GUEST_THEME_STORAGE_KEY, type ThemeMode } from './theme';
+import { createContext, useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect, type ReactNode } from 'react';
 
 type ThemeContextValue = {
   mode: ThemeMode;
@@ -37,18 +38,21 @@ export const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const guestActiveRef = useRef(false);
-  const modeRef = useRef<ThemeMode>(`light`);
+  const modeRef = useRef<ThemeMode>(`dark`);
   const guestModeRef = useRef<ThemeMode>(`light`);
   const accountRef = useRef<AccountTheme | null>(null);
   const { user, loading, updateTheme } = useAuth();
-  const [mode, setMode] = useState<ThemeMode>(`light`);
+  const { flags } = useFeatureFlags();
+  const [mode, setMode] = useState<ThemeMode>(`dark`);
   const [notice, setNotice] = useState<string>();
 
   const displayMode = useCallback((nextMode: ThemeMode) => {
     modeRef.current = nextMode;
-    applyThemeMode(nextMode);
     setMode(nextMode);
   }, []);
+
+  const effectiveMode = flags.themeToggle ? mode : `dark`;
+  useLayoutEffect(() => applyThemeMode(effectiveMode), [effectiveMode]);
 
   const saveTheme = useCallback((account: AccountTheme, nextMode: ThemeMode) => {
     account.desiredMode = nextMode;
@@ -148,6 +152,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   }, [user, loading, updateTheme, saveTheme, displayMode, restoreGuest]);
 
   const setTheme = useCallback((nextMode: ThemeMode) => {
+    if (!flags.themeToggle) return;
     if (nextMode === modeRef.current && !notice) return;
     displayMode(nextMode);
     const cacheNotice = writePreference(THEME_STORAGE_KEY, nextMode);
@@ -158,10 +163,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
     guestModeRef.current = nextMode;
     setNotice(writePreference(GUEST_THEME_STORAGE_KEY, nextMode) ?? cacheNotice ?? undefined);
-  }, [user, notice, saveTheme, displayMode]);
+  }, [user, notice, saveTheme, displayMode, flags.themeToggle]);
 
   const toggleTheme = useCallback(() => setTheme(modeRef.current === `light` ? `dark` : `light`), [setTheme]);
-  const value = useMemo(() => ({ mode, notice, setTheme, toggleTheme }), [mode, notice, setTheme, toggleTheme]);
+  const value = useMemo(() => ({ notice, setTheme, toggleTheme, mode: effectiveMode }), [effectiveMode, notice, setTheme, toggleTheme]);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };

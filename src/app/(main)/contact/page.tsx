@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ContactPage from '@/app/components/contact/contact-page';
+import FeatureAccess from '@/app/components/feature-access/feature-access';
 import BengaliBlushLanding from '@/app/components/landing/bengali-blush-landing';
 
 export const metadata: Metadata = {
@@ -8,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function ContactRoute() {
-  return <BengaliBlushLanding><ContactPage /></BengaliBlushLanding>;
+  return <BengaliBlushLanding><FeatureAccess feature={`contact`}><ContactPage /></FeatureAccess></BengaliBlushLanding>;
 }

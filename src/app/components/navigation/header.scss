@@ -8,6 +8,7 @@
 .bb-menu-icon > span { height: 1.5px; }
 .bb-nav-link > svg, .bb-mobile-nav-copy > span > svg { flex: none; }
 .bb-header-actions { flex: none; }
+.bb-header .bb-logo { flex: none; }
 .bb-header .bb-logo-mark { width: 40px; height: 40px; background-size: 135.338%; }
 .bb-header .bb-logo-mark::after { border-radius: 50%; background-size: 135.338%; }
 .bb-header-actions .bb-bag-button:not(.is-filled) {
@@ -29,6 +30,12 @@
   .bb-nav .bb-nav-link { font-size: 12px; }
   .bb-header .bb-logo-text { display: none; }
   .bb-header .bb-ghost-button { padding-inline: 12px; }
+  .bb-account-shell {
+    .bb-header .bb-logo-text { display: block; }
+    .bb-nav { gap: 10px; }
+    .bb-nav .bb-nav-link { gap: 4px; font-size: 10px; }
+    .bb-nav .bb-nav-link > svg { width: 12px; height: 12px; }
+  }
 }
 
 @media (max-width: 800px) {

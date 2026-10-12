@@ -64,7 +64,7 @@ const TrafficOverview = () => {
     <section id={`bb-traffic-overview`} className={`bb-traffic-overview`} aria-labelledby={`bb-traffic-overview-title`} aria-busy={loading}>
       <div id={`bb-traffic-overview-heading`} className={`bb-traffic-overview-heading`}>
         <div id={`bb-traffic-overview-copy`} className={`bb-traffic-overview-copy`}>
-          <h2 id={`bb-traffic-overview-title`} className={`bb-traffic-overview-title`}><Globe size={19} aria-hidden={`true`} />Website Traffic</h2>
+          <h2 id={`bb-traffic-overview-title`} className={`bb-traffic-overview-title`}><Globe size={19} aria-hidden={`true`} />Traffic</h2>
         </div>
         <div id={`bb-traffic-overview-actions`} className={`bb-traffic-overview-actions`}>
           <button type={`button`} disabled={loading} onClick={refresh} id={`bb-traffic-overview-refresh`} className={`bb-traffic-overview-icon-button`} aria-label={`Refresh Traffic`} title={`Refresh Traffic`}><RefreshCw size={13} aria-hidden={`true`} className={loading ? `is-spinning` : undefined} /></button>
@@ -72,7 +72,7 @@ const TrafficOverview = () => {
           <Link href={siteRoutes.adminAnalytics.href} id={`bb-traffic-overview-details`} className={`bb-traffic-overview-link`}>View Analytics<ArrowUpRight size={13} aria-hidden={`true`} /></Link>
         </div>
       </div>
-      <div id={`bb-traffic-overview-tabs`} className={`bb-traffic-overview-tabs`} role={`tablist`} aria-label={`Website Traffic Views`}>
+      <div id={`bb-traffic-overview-tabs`} className={`bb-traffic-overview-tabs`} role={`tablist`} aria-label={`Traffic Views`}>
         {views.map(({ key, label, icon: Icon }, index) => <button key={key} type={`button`} role={`tab`} tabIndex={activeView === key ? 0 : -1} aria-selected={activeView === key} aria-controls={`bb-traffic-overview-panel`} id={`bb-traffic-overview-tab-${key}`} className={`bb-traffic-overview-tab${activeView === key ? ` is-active` : ``}`} ref={(element) => { tabRefs.current[index] = element; }} onClick={() => selectView(key)} onKeyDown={(event) => moveTab(event, index)}><Icon size={12} aria-hidden={`true`} />{label}</button>)}
       </div>
       <div id={`bb-traffic-overview-toolbar`} className={`bb-traffic-overview-toolbar`}>

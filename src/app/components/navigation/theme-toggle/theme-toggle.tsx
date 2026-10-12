@@ -2,10 +2,13 @@
 
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/shared/themeContext/useTheme';
+import { useFeatureFlags } from '@/shared/featureFlags/useFeatureFlags';
 
 const ThemeToggle = () => {
   const { mode, notice, toggleTheme } = useTheme();
+  const { flags } = useFeatureFlags();
   const nextMode = mode === `light` ? `dark` : `light`;
+  if (!flags.themeToggle) return null;
 
   return (
     <span id={`bb-theme-control`} className={`bb-theme-control`}>

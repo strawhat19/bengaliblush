@@ -5,6 +5,7 @@ import { useState } from 'react';
 import '../profile-page/profile-page.scss';
 import { useAuth } from '@/shared/authContext/useAuth';
 import { useOwnerDashboard } from './use-owner-dashboard';
+import { Cpu, Globe, RotateCcw, CircleCheck } from 'lucide-react';
 import AccountAccess from '../account-access/account-access';
 import AdminSkeleton from '../admin-skeleton/admin-skeleton';
 import TrafficOverview from '../traffic-overview/traffic-overview';
@@ -12,12 +13,10 @@ import TrafficAnalytics from '../traffic-analytics/traffic-analytics';
 import AccountNavigation from '../account-navigation/account-navigation';
 import OwnerRecordsTable from '../owner-records-table/owner-records-table';
 import ObservabilityPanel from '../observability-panel/observability-panel';
+import { navigationIcons } from '@/shared/navigation/navigation-icons';
 import { getAdminParentMenuLabel } from '@/shared/navigation/account-navigation';
 import OwnerDashboardSummary from '../owner-dashboard-summary/owner-dashboard-summary';
-import { Cpu, Globe, Users, FileText, RotateCcw, CircleCheck, CalendarDays, MessageCircle, LayoutDashboard } from 'lucide-react';
 import { dashboardViews, dashboardSections, getDashboardSummary, getDashboardTableSummary, type DashboardView, type DashboardSection } from './dashboard-data';
-
-const tableIcons = { users: Users, contacts: MessageCircle, appointments: CalendarDays };
 
 const DashboardContent = ({ view, section }: { view: DashboardView; section: DashboardSection }) => {
   const [analyticsPanel, setAnalyticsPanel] = useState<`traffic` | `runtime`>(`traffic`);
@@ -26,7 +25,7 @@ const DashboardContent = ({ view, section }: { view: DashboardView; section: Das
   const { route, title } = section === `overview` && view !== `overview` ? dashboardViews[view] : dashboardSections[section];
   const summary = overview && section === `overview` ? getDashboardSummary(overview, loadedAt, commerce, notifications) : null;
   const tableSummary = overview && section !== `overview` ? getDashboardTableSummary(overview, section) : null;
-  const TitleIcon = section === `overview` ? view === `reports` ? FileText : LayoutDashboard : tableIcons[section];
+  const TitleIcon = navigationIcons[route.icon];
   const recentSections = view === `reports` ? ([`contacts`, `appointments`] as const) : ([`users`, `contacts`, `appointments`] as const);
 
   return (
@@ -56,8 +55,8 @@ const DashboardContent = ({ view, section }: { view: DashboardView; section: Das
           {notice && <p id={`bb-owner-dashboard-notice`} className={`bb-owner-dashboard-notice`} role={`status`}><CircleCheck size={14} aria-hidden={`true`} />{notice}</p>}
           {section === `overview` && view === `overview` && <><TrafficOverview /><ObservabilityPanel compact /></>}
           {view === `analytics` && <div role={`group`} id={`bb-owner-analytics-views`} className={`bb-owner-analytics-views`} aria-label={`Analytics View`}>
-            <button type={`button`} id={`bb-owner-analytics-view-traffic`} className={`bb-owner-analytics-view${analyticsPanel === `traffic` ? ` is-active` : ``}`} aria-pressed={analyticsPanel === `traffic`} onClick={() => setAnalyticsPanel(`traffic`)}><Globe size={15} aria-hidden={`true`} />Website Traffic</button>
-            <button type={`button`} id={`bb-owner-analytics-view-runtime`} className={`bb-owner-analytics-view${analyticsPanel === `runtime` ? ` is-active` : ``}`} aria-pressed={analyticsPanel === `runtime`} onClick={() => setAnalyticsPanel(`runtime`)}><Cpu size={15} aria-hidden={`true`} />Runtime Health</button>
+            <button type={`button`} id={`bb-owner-analytics-view-traffic`} className={`bb-owner-analytics-view${analyticsPanel === `traffic` ? ` is-active` : ``}`} aria-pressed={analyticsPanel === `traffic`} onClick={() => setAnalyticsPanel(`traffic`)}><Globe size={15} aria-hidden={`true`} />Traffic</button>
+            <button type={`button`} id={`bb-owner-analytics-view-runtime`} className={`bb-owner-analytics-view${analyticsPanel === `runtime` ? ` is-active` : ``}`} aria-pressed={analyticsPanel === `runtime`} onClick={() => setAnalyticsPanel(`runtime`)}><Cpu size={15} aria-hidden={`true`} />Health</button>
           </div>}
           {view === `analytics` && analyticsPanel === `runtime` && <ObservabilityPanel headingActionsTarget={headingActionsTarget} />}
           {view === `analytics` && analyticsPanel === `traffic` && <TrafficAnalytics outcomesLoading={loading} headingActionsTarget={headingActionsTarget} outcomes={overview ? {

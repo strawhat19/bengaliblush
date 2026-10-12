@@ -13,6 +13,7 @@ import { subscribeAuth, signOutAccount, getAuthErrorMessage, type EmailSignInInp
 
 type AuthContextValue = {
   error: string;
+  sessionError: string;
   loading: boolean;
   isAdmin: boolean;
   isOwner: boolean;
@@ -43,6 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const pendingSignInCover = useRef<(() => void) | null>(null);
   const pendingSessionTransition = useRef<SessionTransition | null>(null);
   const [error, setError] = useState(``);
+  const [sessionError, setSessionError] = useState(``);
   const [account, setAccount] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [deletionAccountId, setDeletionAccountId] = useState(``);
@@ -82,12 +84,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     let unsubscribe: (() => void) | undefined;
     const onAccount = (account: User | null) => {
       if (!active) return;
+      setSessionError(``);
       if (account && (!account.account_status || account.account_status === `active`)) pendingSignInCover.current?.();
       publishAccount(account);
       setLoading(false);
     };
     const onError = (failure: unknown) => {
       if (!active) return;
+      setSessionError(getAuthErrorMessage(failure));
       publishAccount(null, failure instanceof AccountDeletionPending ? failure.accountId : ``);
       setLoading(false);
       setError(getAuthErrorMessage(failure));
@@ -223,7 +227,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [publishAccount, holdSessionTransition, finishSessionTransition]);
 
   return (
-    <AuthContext.Provider value={{ user, error, loading, signOut, clearError, updateName, updateTheme, inactiveUser, changePassword, deleteAccount, resetPassword, reactivateAccount, deactivateAccount, deletionAccountId, resetAccountPassword, accountActionPending, signInWithEmail, signUpWithEmail, signInWithGoogle, isAdmin: hasAdminAccess(user?.role), isOwner: user?.role === Roles.Owner }}>
+    <AuthContext.Provider value={{ user, error, loading, signOut, clearError, updateName, updateTheme, inactiveUser, sessionError, changePassword, deleteAccount, resetPassword, reactivateAccount, deactivateAccount, deletionAccountId, resetAccountPassword, accountActionPending, signInWithEmail, signUpWithEmail, signInWithGoogle, isAdmin: hasAdminAccess(user?.role), isOwner: user?.role === Roles.Owner }}>
       {children}
     </AuthContext.Provider>
   );

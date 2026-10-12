@@ -1,6 +1,6 @@
 import { Roles, hasAdminAccess } from '../../types/types';
 
-export type NavigationIcon = `Bell` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `Images` | `MapPin` | `Package` | `Palette` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard` | `MessageSquareText`;
+export type NavigationIcon = `Cpu` | `Bell` | `Flag` | `Info` | `Home` | `LogIn` | `Quote` | `Users` | `Images` | `MapPin` | `Package` | `Palette` | `BookOpen` | `FileText` | `UserPlus` | `UserRound` | `CreditCard` | `ReceiptText` | `ShieldCheck` | `CalendarDays` | `ShoppingBag` | `MessageCircle` | `WandSparkles` | `LayoutDashboard` | `MessageSquareText` | `ChartNoAxesCombined`;
 
 export type SiteRoute = {
   href: string;
@@ -173,11 +173,20 @@ export const siteRoutes = {
   adminAnalytics: {
     href: `/analytics`,
     label: `Analytics`,
-    icon: `LayoutDashboard`,
+    icon: `ChartNoAxesCombined`,
     minimumRole: Roles.Admin,
     title: `Analytics | Bengali Blush`,
     aliases: [`/admin/analytics`, `/dashboard/analytics`],
     description: `Explore website visitors, referrers, countries, pages, and studio activity`,
+  },
+  adminHealth: {
+    icon: `Cpu`,
+    href: `/health`,
+    label: `Health`,
+    minimumRole: Roles.Admin,
+    title: `Health | Bengali Blush`,
+    description: `Review runtime metrics, errors, and performance`,
+    aliases: [`/observability`, `/admin/health`, `/admin/observability`, `/dashboard/health`],
   },
   adminChats: {
     href: `/chats`,
@@ -280,6 +289,15 @@ export const siteRoutes = {
     href: `/admin/notifications`,
     title: `Notifications | Bengali Blush`,
     description: `Manage active and inactive studio notices`,
+  },
+  adminFeatures: {
+    icon: `Flag`,
+    href: `/features`,
+    label: `Features`,
+    minimumRole: Roles.Owner,
+    title: `Features | Bengali Blush`,
+    aliases: [`/admin/features`, `/dashboard/features`],
+    description: `Manage studio feature availability and audiences`,
   },
 } satisfies Record<string, SiteRoute>;
 

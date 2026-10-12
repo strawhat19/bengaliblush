@@ -48,6 +48,57 @@ service cloud.firestore {
     function exactKeys(data, keys) {
       return data.keys().hasAll(keys) && data.keys().hasOnly(keys);
     }
+    function featureSettingsPath() {
+      return /databases/$(database)/documents/featureSettings/$('FeatureSettings_1_Global_4_23_PM_10_12_26_b39e4e10-d4d7-41cf-9c5f-40a6a4703e90');
+    }
+    function featureViewerRole() {
+      return !signedIn() ? 'guest' : (activeAccount()
+        ? get(/databases/$(database)/documents/users/$(get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id)).data.role : '');
+    }
+    function validFeatureAudience(data) {
+      return data is map && exactKeys(data, ['roles', 'plans', 'planMode']) && data.planMode == 'minimum'
+        && (data.roles == null || (data.roles is list && data.roles.size() <= 4
+          && data.roles.hasOnly(['guest', 'admin', 'owner', 'subscriber']) && data.roles.size() == data.roles.toSet().size()))
+        && (data.plans == null || (data.plans is list && data.plans.size() == 1 && validSlug(data.plans[0])));
+    }
+    function validFeature(data) {
+      return data is map && exactKeys(data, ['enabled', 'description', 'audience']) && data.enabled is bool
+        && validText(data.description, 0, 1000) && validFeatureAudience(data.audience);
+    }
+    function validFeatureSettings(data, id) {
+      return exactKeys(data, ['id', 'name', 'type', 'number', 'version', 'features', 'created_at', 'updated_at'])
+        && id == 'FeatureSettings_1_Global_4_23_PM_10_12_26_b39e4e10-d4d7-41cf-9c5f-40a6a4703e90'
+        && validIdentity(data, id, 'FeatureSettings') && data.number == 1
+        && data.type == 'FeatureSettings' && data.name == 'Global' && data.version is int && data.version == 1
+        && data.created_at is timestamp && data.updated_at is timestamp && data.features is map
+        && exactKeys(data.features, ['themeToggle', 'marquee', 'notifications', 'contact'])
+        && validFeature(data.features.themeToggle) && validFeature(data.features.marquee)
+        && validFeature(data.features.notifications) && validFeature(data.features.contact);
+    }
+    function freeFeaturePlans(data) {
+      return data.features.themeToggle.audience.plans == null && data.features.marquee.audience.plans == null
+        && data.features.notifications.audience.plans == null && data.features.contact.audience.plans == null;
+    }
+    function retainedMinimumPlan(next, previous) {
+      return next.audience.plans == null || next.audience.plans == previous.audience.plans;
+    }
+    function retainedFeaturePlans(next, previous) {
+      return retainedMinimumPlan(next.features.themeToggle, previous.features.themeToggle)
+        && retainedMinimumPlan(next.features.marquee, previous.features.marquee)
+        && retainedMinimumPlan(next.features.notifications, previous.features.notifications)
+        && retainedMinimumPlan(next.features.contact, previous.features.contact);
+    }
+    function eligibleFeature(data, role) {
+      return data.enabled && data.audience.plans == null
+        && (data.audience.roles == null || role in data.audience.roles);
+    }
+    function featureEnabled(key) {
+      let role = featureViewerRole();
+      return role in ['guest', 'admin', 'owner', 'subscriber']
+        && (!exists(featureSettingsPath()) || (validFeatureSettings(get(featureSettingsPath()).data,
+          'FeatureSettings_1_Global_4_23_PM_10_12_26_b39e4e10-d4d7-41cf-9c5f-40a6a4703e90')
+          && eligibleFeature(get(featureSettingsPath()).data.features[key], role)));
+    }
     function validIdentity(data, id, type) {
       return data.id == id && data.number is int && data.number > 0
         && id.matches(type + '_' + string(data.number) + '_[A-Za-z0-9]+_[A-Za-z0-9_]+_[a-f0-9-]+');
@@ -70,7 +121,9 @@ service cloud.firestore {
           || (collectionName in ['contactSubmissions', 'appointmentSubmissions', 'orders'] && submissionActor(data)
             && data.created_at == request.time && data.updated_at == request.time)
           || (collectionName in ['events', 'products', 'services', 'reviews', 'paymentMethods', 'notifications'] && isAdmin()
-            && data.created_at == request.time && data.updated_at == request.time));
+            && data.created_at == request.time && data.updated_at == request.time)
+          || (collectionName == 'featureSettings' && isOwner() && number == 1 && validFeatureSettings(data, id)
+            && freeFeaturePlans(data) && data.created_at == request.time && data.updated_at == request.time));
     }
     function validUser(data, id) {
       return data.keys().hasAll(['id', 'name', 'email', 'number', 'role', 'photo_url', 'created_at', 'updated_at', 'firebase_uid', 'provider', 'profile_visibility'])
@@ -289,10 +342,11 @@ service cloud.firestore {
     match /counters/{collectionName} {
       allow get: if collectionName in ['contactSubmissions', 'appointmentSubmissions', 'orders']
         || (collectionName in ['events', 'products', 'services', 'reviews', 'paymentMethods', 'notifications'] && isAdmin())
+        || (collectionName == 'featureSettings' && isOwner())
         || (signedIn() && collectionName == 'users'
           && (!exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid)) || activeAccount()));
       allow list: if boundedList(100) && isOwner();
-      allow create, update: if collectionName in ['events', 'users', 'contactSubmissions', 'appointmentSubmissions', 'orders', 'products', 'services', 'reviews', 'paymentMethods', 'notifications']
+      allow create, update: if collectionName in ['events', 'users', 'contactSubmissions', 'appointmentSubmissions', 'orders', 'products', 'services', 'reviews', 'paymentMethods', 'notifications', 'featureSettings']
         && exactKeys(request.resource.data, ['number', 'record_id'])
         && request.resource.data.number is int
         && request.resource.data.number == (exists(/databases/$(database)/documents/counters/$(collectionName)) ? resource.data.number + 1 : 1)
@@ -300,6 +354,19 @@ service cloud.firestore {
         && !exists(/databases/$(database)/documents/$(collectionName)/$(request.resource.data.record_id))
         && validCounterRecord(collectionName, request.resource.data.record_id, request.resource.data.number);
       allow delete: if false;
+    }
+    match /featureSettings/{id} {
+      allow get: if id == 'FeatureSettings_1_Global_4_23_PM_10_12_26_b39e4e10-d4d7-41cf-9c5f-40a6a4703e90';
+      allow list, delete: if false;
+      allow create: if isOwner() && validFeatureSettings(request.resource.data, id) && freeFeaturePlans(request.resource.data)
+        && request.resource.data.created_at == request.time && request.resource.data.updated_at == request.time
+        && matchingCounter('featureSettings', id, 1);
+      allow update: if isOwner() && validFeatureSettings(request.resource.data, id)
+        && request.resource.data.id == resource.data.id && request.resource.data.number == resource.data.number
+        && request.resource.data.type == resource.data.type && request.resource.data.name == resource.data.name
+        && request.resource.data.version == resource.data.version && request.resource.data.created_at == resource.data.created_at
+        && request.resource.data.updated_at == request.time && retainedFeaturePlans(request.resource.data, resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['features', 'updated_at']);
     }
     match /users/{id} {
       allow get: if signedIn() && ((ownProfile(id)
@@ -328,7 +395,7 @@ service cloud.firestore {
     match /contactSubmissions/{id} {
       allow get: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
       allow list: if boundedList(100) && signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());
-      allow create: if validContact(request.resource.data, id) && request.resource.data.status == 'new'
+      allow create: if featureEnabled('contact') && validContact(request.resource.data, id) && request.resource.data.status == 'new'
         && newSubmission(request.resource.data, 'contactSubmissions', id);
       allow update: if adminSubmissionWrite(resource.data) && validContact(request.resource.data, id) && immutableSubmissionFields(request.resource.data)
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updated_at']);
@@ -398,7 +465,8 @@ service cloud.firestore {
       allow delete: if ownSubmissionDelete(resource.data);
     }
     match /notifications/{id} {
-      allow get, list: if (resource != null && resource.data.status == 'published') || isAdmin();
+      allow get: if (resource != null && resource.data.status == 'published' && featureEnabled('notifications')) || isAdmin();
+      allow list: if (boundedList(100) && resource != null && resource.data.status == 'published' && featureEnabled('notifications')) || (boundedList(100) && isAdmin());
       allow create: if validNotification(request.resource.data, id) && matchingSlug('notifications', request.resource.data)
         && newCommerceRecord(request.resource.data, 'notifications', id);
       allow update: if isAdmin() && validNotification(request.resource.data, id) && immutableCommerceFields(request.resource.data)

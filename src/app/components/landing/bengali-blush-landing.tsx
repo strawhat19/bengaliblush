@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { siteContact } from '@/shared/config/site';
+import { useFeatureFlags } from '@/shared/featureFlags/useFeatureFlags';
 import { siteRoutes, isProfileOrAdminPage } from '@/shared/navigation/routes';
 import { getProductHref } from '@/shared/shop/shop-utils';
 import { CatalogProvider, useCatalog } from '@/shared/shop/catalog-context';
@@ -164,6 +165,7 @@ function Intro() {
 }
 
 function Marquee() {
+  const { flags } = useFeatureFlags();
   const items = [
     `A little more blush`,
     `made for your main character moment`,
@@ -173,8 +175,9 @@ function Marquee() {
     `soft glam for every celebration`,
     `a little magic in the details`,
   ];
+  if (!flags.marquee) return null;
   return (
-    <div className="bb-marquee" aria-hidden="true">
+    <div id={`bb-studio-marquee`} className={`bb-marquee`} aria-hidden={`true`}>
       <div className="bb-marquee-track">
         {[0, 1].map((copy) => <div className="bb-marquee-group" key={copy}>{items.map((item) => <span className="bb-marquee-item" key={item}>{item}<b>+</b></span>)}</div>)}
       </div>
@@ -606,6 +609,7 @@ function BookingSection({ onSuccess, confirmation }: { onSuccess: (name: string,
 }
 
 function Footer({ onBook }: { onBook: () => void }) {
+  const { flags } = useFeatureFlags();
   return (
     <footer className="bb-footer">
       <div className="bb-container">
@@ -629,14 +633,14 @@ function Footer({ onBook }: { onBook: () => void }) {
                   <MapPin size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
                   {siteContact.address}
                 </span>
-                <a href={siteContact.phoneHref} data-testid="link-phone">
+                {flags.contact && <a href={siteContact.phoneHref} data-testid="link-phone">
                   <Phone size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
                   {siteContact.phone}
-                </a>
-                <a href={`mailto:${siteContact.email}`} data-testid="link-email">
+                </a>}
+                {flags.contact && <a href={`mailto:${siteContact.email}`} data-testid="link-email">
                   <Mail size={13} style={{ verticalAlign: 'middle', marginRight: 7 }} />
                   {siteContact.email}
-                </a>
+                </a>}
                 {siteContact.socials.map(({ id, href, handle }) => (
                   <a key={id} href={href} id={`bb-footer-social-${id}`} target={`_blank`} rel={`noreferrer`} data-testid={`link-${id}`}>
                     <Instagram size={13} style={{ verticalAlign: `middle`, marginRight: 7 }} />
@@ -658,6 +662,7 @@ function Footer({ onBook }: { onBook: () => void }) {
             <div id={`bb-footer-info`} className={`bb-footer-info`}>
               <h4 id={`bb-footer-info-heading`} className={`bb-footer-info-heading`}>More Info</h4>
               <div className="bb-footer-links">
+                <Link href={siteRoutes.contact.href} id={`bb-footer-contact-link`} className={`bb-footer-page-link`}><Mail size={13} aria-hidden={`true`} />Contact</Link>
                 <Link href={siteRoutes.services.href} id={`bb-footer-services-link`} className={`bb-footer-page-link`} data-testid={`footer-link-services`}>
                   <WandSparkles size={13} aria-hidden={`true`} />Services
                 </Link>

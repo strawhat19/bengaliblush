@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { siteRoutes } from '@/shared/navigation/routes';
+import FeatureAccess from '@/app/components/feature-access/feature-access';
 import BengaliBlushLanding from '@/app/components/landing/bengali-blush-landing';
 import NotificationsIndex from '@/app/components/notifications/notifications-index/notifications-index';
 
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 
 const NotificationsRoute = () => (
   <BengaliBlushLanding>
-    <NotificationsIndex />
+    <FeatureAccess feature={`notifications`}><NotificationsIndex /></FeatureAccess>
   </BengaliBlushLanding>
 );
 

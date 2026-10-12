@@ -6,6 +6,7 @@ import { roleLabels } from '@/types/types';
 import { useProfilePage } from './use-profile-page';
 import { useAuth } from '@/shared/authContext/useAuth';
 import { useTheme } from '@/shared/themeContext/useTheme';
+import { useFeatureFlags } from '@/shared/featureFlags/useFeatureFlags';
 import AdminSkeleton from '../admin-skeleton/admin-skeleton';
 import AccountAccess from '../account-access/account-access';
 import AccountNavigation from '../account-navigation/account-navigation';
@@ -20,6 +21,7 @@ const privacyAppearance = {
 
 const ProfileDetails = () => {
   const { mode, notice, setTheme } = useTheme();
+  const { flags } = useFeatureFlags();
   const {
     user, name, busy, dirty, cancel, pending, isAdmin, isOwner, feedback, canReset, saveName, handleName, joinedDate, actionOpen, signingOut, signOutError,
     accountAction, handleSignOut, passwordAction, passwordNotice, passwordSettings, accountActionError, beginAccountAction, beginPasswordAction,
@@ -32,7 +34,7 @@ const ProfileDetails = () => {
   return (
     <section id={`bb-profile-page`} className={`bb-section bb-profile-page`} aria-labelledby={`bb-profile-title`}>
       <div id={`bb-profile-layout`} className={`bb-container bb-profile-layout`}>
-        {isAdmin && <AccountNavigation />}
+        <AccountNavigation />
         <div id={`bb-profile-content`} className={`bb-profile-content`}>
           <div id={`bb-profile-details`} className={`bb-profile-details`}>
             <span id={`bb-profile-eyebrow`} className={`bb-eyebrow`}>Your Account</span>
@@ -199,7 +201,7 @@ const ProfileDetails = () => {
                 </dd>
               </div>
             </dl>
-            <section id={`bb-profile-theme-preference`} className={`bb-profile-theme-preference`} aria-labelledby={`bb-profile-label-theme`}>
+            {flags.themeToggle && <section id={`bb-profile-theme-preference`} className={`bb-profile-theme-preference`} aria-labelledby={`bb-profile-label-theme`}>
               <h3 id={`bb-profile-label-theme`} className={`bb-profile-theme-title`}>Theme</h3>
               <div id={`bb-profile-value-theme`} className={`bb-profile-theme-value`}>
                 <div
@@ -218,7 +220,7 @@ const ProfileDetails = () => {
                 </div>
                 {notice && <p role={`status`} id={`bb-profile-theme-notice`} className={`bb-profile-theme-notice`}>{notice}</p>}
               </div>
-            </section>
+            </section>}
           </aside>
         </div>
       </div>

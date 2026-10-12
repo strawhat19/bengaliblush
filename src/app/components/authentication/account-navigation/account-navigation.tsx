@@ -12,11 +12,10 @@ import NavigationBadge from '@/app/components/navigation/navigation-badge/naviga
 
 const AccountNavigation = () => {
   const { tooltip, tooltipEvents, keepTooltip, leaveTooltip, getTooltipProps } = useTooltip();
-  const { initial, isAdmin, pathname, photoUrl, collapsed, adminLinks, badgeError, badgeCounts, badgeLoading, accountLinks, profileRoute, toggleSubmenu, expandedRoutes, isBadgeLoading, handlePhotoError, toggleCollapsed } = useAccountNavigation();
-  const accountMenuLinks = collapsed ? accountLinks : accountLinks.filter(({ route }) => route.href !== profileRoute.href);
+  const { initial, isAdmin, pathname, photoUrl, collapsed, adminLinks, badgeError, badgeCounts, badgeLoading, accountLinks, profileRoute, toggleSubmenu, expandedRoutes, isBadgeLoading, handlePhotoError, toggleCollapsed, preferenceNotice } = useAccountNavigation();
   const groups = [
-    ...(accountMenuLinks.length ? [{ id: `account`, title: `ACCOUNT`, links: accountMenuLinks }] : []),
-    ...(isAdmin ? [{ id: `admin`, title: `ADMIN`, links: adminLinks }] : []),
+    ...(accountLinks.length ? [{ id: `account`, title: `ACCOUNT`, links: accountLinks }] : []),
+    ...(isAdmin && adminLinks.length ? [{ id: `admin`, title: `ADMIN`, links: adminLinks }] : []),
   ];
 
   return (
@@ -47,7 +46,7 @@ const AccountNavigation = () => {
             const submenuLabel = countLoading ? `${expanded ? `Collapse` : `Expand`} ${label} Submenu, Loading Item Count` : getNavigationCountLabel(`${expanded ? `Collapse` : `Expand`} ${label} Submenu`, count);
             const active = pathname === route?.href || Boolean(children?.some(({ route }) => pathname === route.href));
             return (
-              <div key={navigationKey} id={itemId} className={`bb-account-navigation-item`}>
+              <div key={navigationKey} id={itemId} className={`bb-account-navigation-item${hasChildren ? ` has-submenu` : ``}`}>
                 <div id={`${itemId}-heading`} className={`bb-account-navigation-heading${hasChildren ? ` has-submenu` : ``}${active ? ` is-current` : ``}`}>
                   {route ? (
                   <Link
@@ -59,7 +58,7 @@ const AccountNavigation = () => {
                     className={`bb-account-navigation-link`}
                   >
                     <Icon size={17} aria-hidden={`true`} />
-                    <span id={`${linkId}-label`} className={`bb-account-navigation-link-label`}>{route.label}</span>
+                    <span id={`${linkId}-label`} className={`bb-account-navigation-link-label`}>{label}</span>
                     {countLoading ? <span aria-hidden={`true`} id={`${linkId}-count`} className={`bb-navigation-badge bb-account-navigation-count-skeleton`} /> : <NavigationBadge count={count} id={`${linkId}-count`} />}
                   </Link>
                   ) : (
@@ -138,11 +137,12 @@ const AccountNavigation = () => {
         </div>
         ))}
       </div>
+      {preferenceNotice && <p role={`status`} id={`bb-account-navigation-preference-notice`} className={`bb-account-navigation-preference-notice`}>{preferenceNotice}</p>}
       <div id={`bb-account-navigation-footer`} className={`bb-account-navigation-footer`}>
-        {!collapsed && (
           <Link
+            {...getTooltipProps(`bb-account-navigation-profile-link`, collapsed ? profileRoute.label : undefined)}
             href={profileRoute.href}
-            aria-label={getNavigationCountLabel(profileRoute.label, badgeCounts[profileRoute.href])}
+            aria-label={profileRoute.label}
             id={`bb-account-navigation-profile-link`}
             aria-current={pathname === profileRoute.href ? `page` : undefined}
             className={`bb-account-navigation-link bb-account-navigation-profile-link`}
@@ -166,9 +166,7 @@ const AccountNavigation = () => {
               )}
             </span>
             <span id={`bb-account-navigation-profile-label`} className={`bb-account-navigation-link-label`}>{profileRoute.label}</span>
-            <NavigationBadge count={badgeCounts[profileRoute.href]} id={`bb-account-navigation-profile-count`} />
           </Link>
-        )}
         <button
           {...getTooltipProps(`bb-account-navigation-collapse-toggle`, `${collapsed ? `Expand` : `Collapse`} Sidebar`)}
           type={`button`}

@@ -1,10 +1,14 @@
 import { getCurrentAccount } from './auth';
 import { getFirebaseClient } from './client';
 import { hasAdminAccess } from '@/types/types';
+import { onAuthStateChanged } from 'firebase/auth';
+import type { FeatureSettingsState } from '@/shared/featureFlags/types';
 import { createRecordId, getNextNumber, hasMatchingValues } from './records';
-import { getRecordPage, subscribeRecords, subscribeRecordPage, firestoreMediaPageSize } from './queries';
+import { getRecordPage, subscribeRecordPage, firestoreMediaPageSize } from './queries';
+import { isFeatureEligible, defaultFeatureValues } from '@/shared/featureFlags/values';
+import { requireFeatureAccess, getFeatureViewerRole, subscribeFeatureSettings } from '@/shared/featureFlags/service';
 import type { NotificationInput, NotificationRecord, NotificationStatus } from '@/shared/models/notifications/Notification';
-import { doc, query, where, Timestamp, updateDoc, collection, runTransaction, serverTimestamp, getDocsFromServer, type DocumentData, type DocumentSnapshot, type OrderByDirection } from 'firebase/firestore';
+import { doc, query, limit, where, orderBy, Timestamp, updateDoc, onSnapshot, collection, runTransaction, serverTimestamp, getDocsFromServer, type DocumentData, type DocumentSnapshot, type OrderByDirection } from 'firebase/firestore';
 
 const notificationText = (value: unknown, label: string, maximum: number, optional = false, preserveSpacing = false) => {
   if (typeof value !== `string` || (!optional && !value.trim()) || value.length > maximum) throw new Error(`Enter A Valid ${label}`);
@@ -67,13 +71,49 @@ const requireAdmin = async () => {
   return { ...getFirebaseClient(), firebaseUid: account.firebase_uid };
 };
 
+const publishedNotificationsQuery = () => query(collection(getFirebaseClient().database, `notifications`), where(`status`, `==`, `published`), orderBy(`number`, `desc`), limit(100));
+
 export const getPublishedNotifications = async (): Promise<NotificationRecord[]> => {
-  const { database } = getFirebaseClient();
-  const records = await getDocsFromServer(query(collection(database, `notifications`), where(`status`, `==`, `published`)));
-  return records.docs.map(readNotification).sort((first, second) => second.number - first.number);
+  await requireFeatureAccess(`notifications`);
+  const records = await getDocsFromServer(publishedNotificationsQuery());
+  return records.docs.map(readNotification);
 };
 
-export const subscribePublishedNotifications = (onRecords: (records: NotificationRecord[]) => void, onError: (error: Error) => void) => subscribeRecords(`notifications`, readNotification, (records) => onRecords(records.sort((first, second) => second.number - first.number)), onError, `published`, true);
+export const subscribePublishedNotifications = (onRecords: (records: NotificationRecord[]) => void, onError: (error: Error) => void) => {
+  const { auth } = getFirebaseClient();
+  let active = true;
+  let revision = 0;
+  let state: FeatureSettingsState = { error: null, loading: true, settings: null };
+  let unsubscribeRecords: (() => void) | undefined;
+  const refresh = () => {
+    const currentRevision = ++revision;
+    unsubscribeRecords?.();
+    unsubscribeRecords = undefined;
+    if (state.loading) return;
+    if (state.error) { onError(new Error(state.error)); return; }
+    const settings = state.settings;
+    const firebaseUid = auth.currentUser?.uid;
+    void getFeatureViewerRole().then((role) => {
+      if (!active || currentRevision !== revision || auth.currentUser?.uid !== firebaseUid) return;
+      if (!isFeatureEligible(settings?.features.notifications ?? defaultFeatureValues.notifications, role)) { onRecords([]); return; }
+      unsubscribeRecords = onSnapshot(publishedNotificationsQuery(), { includeMetadataChanges: true }, (snapshot) => {
+        if (!active || currentRevision !== revision || auth.currentUser?.uid !== firebaseUid || snapshot.metadata.fromCache || snapshot.metadata.hasPendingWrites) return;
+        try { onRecords(snapshot.docs.map(readNotification)); }
+        catch (error) { onRecords([]); onError(error instanceof Error ? error : new Error(`Saved Notification Data Needs Attention`)); }
+      }, (error) => {
+        if (!active || currentRevision !== revision) return;
+        onRecords([]);
+        onError(error);
+      });
+    }).catch((error: unknown) => {
+      if (!active || currentRevision !== revision) return;
+      onError(error instanceof Error ? error : new Error(`Unable To Load Notifications`));
+    });
+  };
+  const unsubscribeSettings = subscribeFeatureSettings((nextState) => { state = nextState; refresh(); });
+  const unsubscribeAuth = onAuthStateChanged(auth, refresh);
+  return () => { active = false; revision += 1; unsubscribeAuth(); unsubscribeSettings(); unsubscribeRecords?.(); };
+};
 
 export const subscribeAdminNotifications = async (onRecords: (records: NotificationRecord[], nextCursor: number | null) => void, onError: (error: Error) => void, cursor?: number, direction: OrderByDirection = `asc`, pageSize = firestoreMediaPageSize) => {
   const { auth, firebaseUid } = await requireAdmin();

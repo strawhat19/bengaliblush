@@ -1,0 +1,33 @@
+.bb-admin-features-table th, .bb-admin-features-table td { vertical-align: middle; }
+.bb-admin-feature-number { width: 50px; }
+.bb-admin-feature-identity-cell { min-width: 180px; }
+.bb-admin-feature-identity { display: flex; align-items: center; gap: 10px; }
+.bb-admin-feature-thumbnail { display: grid; width: 34px; height: 34px; flex: none; place-items: center; border: 1px solid hsl(var(--primary) / .16); border-radius: 8px; background: hsl(var(--primary) / .06); color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-admin-feature-name { max-width: 190px; font-weight: 600; line-height: 1.5; }
+.bb-admin-feature-description { min-width: 200px; max-width: 350px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); line-height: 1.7; overflow-wrap: anywhere; }
+.bb-admin-feature-plans-cell { min-width: 145px; max-width: 220px; }
+.bb-admin-feature-plan-label { display: block; line-height: 1.5; overflow-wrap: anywhere; }
+.bb-admin-feature-plans { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.bb-admin-feature-actions-cell { min-width: 205px; }
+.bb-owner-dashboard .bb-admin-feature-actions { flex-wrap: nowrap; gap: 7px; }
+.bb-admin-feature-segments { display: inline-flex; flex: none; gap: 2px; border: 1px solid hsl(var(--primary) / .17); border-radius: 7px; padding: 2px; }
+.bb-admin-feature-segment, .bb-admin-feature-plan { display: inline-flex; min-height: 28px; align-items: center; justify-content: center; gap: 4px; border: 1px solid transparent; border-radius: 5px; padding: 4px 7px; background: transparent; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 10px; white-space: nowrap; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.bb-admin-feature-plan { border-color: hsl(var(--primary) / .17); }
+.bb-admin-feature-segment.is-active, .bb-admin-feature-plan.is-active { border-color: hsl(var(--primary) / .2); background: hsl(var(--primary) / .1); color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-admin-feature-action { display: inline-flex; min-width: 32px; min-height: 32px; flex: none; align-items: center; justify-content: center; gap: 6px; border: 1px solid hsl(var(--primary) / .17); border-radius: 7px; padding: 6px; background: transparent; color: var(--bb-highlight, hsl(var(--primary))); font-size: 11px; transition: background-color .2s ease, border-color .2s ease; }
+.bb-admin-feature-clear-plan { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; border: 0; border-radius: 4px; padding: 4px 0; background: transparent; color: var(--bb-highlight, hsl(var(--primary))); font-size: 10px; }
+.bb-admin-feature-segment:hover:not(:disabled), .bb-admin-feature-plan:hover:not(:disabled), .bb-admin-feature-action:hover:not(:disabled) { border-color: var(--bb-highlight, hsl(var(--primary))); background: hsl(var(--primary) / .08); color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-admin-feature-segment:focus-visible, .bb-admin-feature-plan:focus-visible, .bb-admin-feature-action:focus-visible, .bb-admin-feature-clear-plan:focus-visible { outline: 2px solid var(--bb-highlight, hsl(var(--primary))); outline-offset: 3px; }
+.bb-admin-feature-segment:disabled, .bb-admin-feature-plan:disabled, .bb-admin-feature-action:disabled, .bb-admin-feature-clear-plan:disabled { cursor: not-allowed; opacity: .5; }
+.bb-admin-feature-feedback { display: flex; align-items: center; gap: 5px; max-width: 205px; margin: 8px 0 0; color: #15803d; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.bb-admin-feature-feedback.is-error { color: #be123c; }
+.bb-admin-features-read-error { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.bb-admin-features-error-message { margin: 0; }
+.bb-admin-features-retry { padding-inline: 10px; }
+.bb-admin-features-plan-availability { margin: 12px 0 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; line-height: 1.7; }
+:root[data-theme='dark'] .bb-admin-features {
+  .bb-admin-feature-feedback { color: #86efac; }
+  .bb-admin-feature-feedback.is-error, .bb-admin-features-read-error { color: #ffb4bf; }
+}
+@media (pointer: coarse) { .bb-admin-feature-segment, .bb-admin-feature-plan, .bb-admin-feature-action, .bb-admin-feature-clear-plan { min-height: 44px; } .bb-admin-feature-action { min-width: 44px; } }
+@media (prefers-reduced-motion: reduce) { .bb-admin-feature-segment, .bb-admin-feature-plan, .bb-admin-feature-action { transition: none; } }

@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/shared/themeContext/ThemeContext';
 import { themeBootstrapScript } from '@/shared/themeContext/theme';
 import PwaRegistration from '@/app/components/pwa/pwa-registration';
 import { Allura, DM_Mono, DM_Sans, Fraunces } from 'next/font/google';
+import { FeatureFlagsProvider } from '@/shared/featureFlags/FeatureFlagsContext';
 import { NotificationsProvider } from '@/shared/notifications/notifications-context';
 import { AccountNavigationProvider } from '@/shared/accountNavigationContext/AccountNavigationContext';
 
@@ -82,16 +83,18 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         <AuthProvider>
-          <ThemeProvider>
-            <NotificationsProvider>
-              <AccountNavigationProvider>
-                <BlushLoader />
-                {children}
-                <PwaRegistration />
-                <Analytics />
-              </AccountNavigationProvider>
-            </NotificationsProvider>
-          </ThemeProvider>
+          <FeatureFlagsProvider>
+            <ThemeProvider>
+              <NotificationsProvider>
+                <AccountNavigationProvider>
+                  <BlushLoader />
+                  {children}
+                  <PwaRegistration />
+                  <Analytics />
+                </AccountNavigationProvider>
+              </NotificationsProvider>
+            </ThemeProvider>
+          </FeatureFlagsProvider>
         </AuthProvider>
       </body>
     </html>

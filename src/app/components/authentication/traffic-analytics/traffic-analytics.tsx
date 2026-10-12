@@ -73,8 +73,8 @@ const TrafficAnalytics = ({ outcomes, headingActionsTarget, outcomesLoading = fa
       <div id={`bb-traffic-summary`} className={`bb-traffic-summary${report || loading ? `` : ` is-filters-only`}`}>
         <div id={`bb-traffic-filters`} className={`bb-traffic-filters`}>
           <div id={`bb-traffic-range-controls`} className={`bb-traffic-range-controls`}>
-            <div id={`bb-traffic-date-presets`} className={`bb-traffic-toggle`} aria-label={`Reporting Period`}>
-              {[7, 30, 90].map((days) => <button key={days} type={`button`} disabled={loading} onClick={() => setPreset(days)} id={`bb-traffic-date-preset-${days}`} aria-pressed={selectedDays === days && filters.to === today} className={`bb-traffic-toggle-button${selectedDays === days && filters.to === today ? ` is-active` : ``}`}>{days} Days</button>)}
+            <div id={`bb-traffic-date-presets`} className={`bb-traffic-toggle bb-traffic-date-presets`} aria-label={`Reporting Period`}>
+              {[1, 3, 5, 7, 30, 90].map((days) => <button key={days} type={`button`} disabled={loading} onClick={() => setPreset(days)} id={`bb-traffic-date-preset-${days}`} aria-pressed={selectedDays === days && filters.to === today} className={`bb-traffic-toggle-button${selectedDays === days && filters.to === today ? ` is-active` : ``}`}>{days} {days === 1 ? `Day` : `Days`}</button>)}
             </div>
             <form id={`bb-traffic-date-form`} className={`bb-traffic-date-form`} onSubmit={applyDates}>
               <label htmlFor={`bb-traffic-date-from`} id={`bb-traffic-date-from-label`} className={`bb-traffic-date-label`}><span id={`bb-traffic-date-from-caption`} className={`bb-traffic-caption`}>From</span><input required type={`date`} min={oldest} max={customTo || today} disabled={loading} value={customFrom} id={`bb-traffic-date-from`} className={`bb-traffic-input`} onChange={(event) => setCustomFrom(event.target.value)} aria-describedby={dateError ? `bb-traffic-date-error` : undefined} /></label>

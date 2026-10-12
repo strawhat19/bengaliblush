@@ -1,5 +1,7 @@
 'use client';
 
+import { useAuth } from '@/shared/authContext/useAuth';
+import { useFeatureFlags } from '@/shared/featureFlags/useFeatureFlags';
 import type { Notification, NotificationSnapshot } from './notification-types';
 import { createContext, useContext, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { subscribeNotifications, markNotificationRead, markAllNotificationsRead, type NotificationReadSnapshot } from './notification-service';
@@ -19,15 +21,19 @@ const NotificationsContext = createContext<NotificationsContextValue | null>(nul
 type NotificationWatch = { failed: boolean; ready: Promise<void>; stop: () => void; finish: () => void };
 
 export const NotificationsProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
+  const { flags } = useFeatureFlags();
+  const viewerScope = `${user?.id ?? `guest`}:${user?.role ?? `guest`}:${flags.notifications}`;
   const mountedRef = useRef(false);
   const subscriptionRef = useRef<NotificationWatch | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [receivedScope, setReceivedScope] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const reload = useCallback(async () => {
-    if (!mountedRef.current) return;
+    if (!mountedRef.current || !flags.notifications) return;
     const previous = subscriptionRef.current;
     if (previous && !previous.failed) return previous.ready;
     previous?.stop();
@@ -41,6 +47,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
       if (!mountedRef.current || subscriptionRef.current !== watch) return;
       watch.failed = false;
       setNotice(snapshot.notice);
+      setReceivedScope(viewerScope);
       setLoading(false);
       setError(null);
       setNotifications((current) => {
@@ -52,6 +59,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     const fail = (error: Error) => {
       if (!mountedRef.current || subscriptionRef.current !== watch) return;
       watch.failed = true;
+      setReceivedScope(viewerScope);
       setLoading(false);
       setNotifications([]);
       setError(error.message || `Notifications Could Not Be Loaded`);
@@ -60,7 +68,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     try { watch.stop = subscribeNotifications(receive, fail); }
     catch (error) { fail(error instanceof Error ? error : new Error(`Notifications Could Not Be Loaded`)); }
     return watch.ready;
-  }, []);
+  }, [flags.notifications, viewerScope]);
 
   const applyReadPreferences = useCallback((snapshot: NotificationReadSnapshot) => {
     if (!mountedRef.current) return;
@@ -72,36 +80,49 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   }, []);
 
   const markRead = useCallback(async (id: string) => {
+    if (!flags.notifications) return;
     try { applyReadPreferences(await markNotificationRead(id)); }
     catch { if (mountedRef.current) setNotice(`Read Status Could Not Be Updated For This Visit`); }
-  }, [applyReadPreferences]);
+  }, [applyReadPreferences, flags.notifications]);
 
   const markAllRead = useCallback(async () => {
+    if (!flags.notifications) return;
     try { applyReadPreferences(await markAllNotificationsRead(notifications.map(({ id }) => id))); }
     catch { if (mountedRef.current) setNotice(`Read Status Could Not Be Updated For This Visit`); }
-  }, [notifications, applyReadPreferences]);
+  }, [notifications, applyReadPreferences, flags.notifications]);
 
   useEffect(() => {
+    let active = true;
     mountedRef.current = true;
-    void reload();
+    void Promise.resolve().then(() => {
+      if (!active) return;
+      setNotifications([]);
+      setReceivedScope(null);
+      setNotice(null);
+      setError(null);
+      setLoading(flags.notifications);
+      if (flags.notifications) void reload();
+    });
     return () => {
+      active = false;
       mountedRef.current = false;
       subscriptionRef.current?.stop();
       subscriptionRef.current?.finish();
       subscriptionRef.current = null;
     };
-  }, [reload]);
+  }, [reload, flags.notifications, viewerScope]);
 
+  const scopeReady = flags.notifications && receivedScope === viewerScope;
   const value = useMemo<NotificationsContextValue>(() => ({
-    error,
-    notice,
     reload,
-    loading,
     markRead,
     markAllRead,
-    notifications,
-    unreadCount: loading || error ? 0 : notifications.filter(({ isRead }) => !isRead).length,
-  }), [error, notice, reload, loading, markRead, markAllRead, notifications]);
+    error: scopeReady ? error : null,
+    notice: scopeReady ? notice : null,
+    loading: flags.notifications && (!scopeReady || loading),
+    notifications: scopeReady ? notifications : [],
+    unreadCount: !scopeReady || loading || error ? 0 : notifications.filter(({ isRead }) => !isRead).length,
+  }), [error, notice, reload, loading, markRead, markAllRead, notifications, scopeReady, flags.notifications]);
 
   return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;
 };

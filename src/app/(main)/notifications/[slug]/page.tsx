@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import FeatureAccess from '@/app/components/feature-access/feature-access';
 import { getNotificationHref } from '@/shared/notifications/notification-utils';
 import BengaliBlushLanding from '@/app/components/landing/bengali-blush-landing';
 import CatalogNotificationDetails from '@/app/components/notifications/notification-details/catalog-notification-details';
@@ -12,7 +13,7 @@ export const generateMetadata = async ({ params }: NotificationDetailsRouteProps
 
 const NotificationDetailsRoute = async ({ params }: NotificationDetailsRouteProps) => {
   const { slug } = await params;
-  return <BengaliBlushLanding><CatalogNotificationDetails slug={slug} /></BengaliBlushLanding>;
+  return <BengaliBlushLanding><FeatureAccess feature={`notifications`}><CatalogNotificationDetails slug={slug} /></FeatureAccess></BengaliBlushLanding>;
 };
 
 export default NotificationDetailsRoute;

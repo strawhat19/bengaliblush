@@ -1,7 +1,7 @@
 .bb-account-shell {
   overflow: clip;
-  --bb-account-header-height: 89px;
-  --bb-account-sidebar-width: 318px;
+  --bb-account-header-height: var(--bb-header-height, 89px);
+  --bb-account-sidebar-width: var(--bb-header-brand-width, 220px);
   --bb-account-icon-center: 31.5px;
   --bb-dashboard-gutter: clamp(18px, 2.4vw, 40px);
 
@@ -21,7 +21,7 @@
   .bb-owner-dashboard,
   .bb-account-access {
     min-height: 100dvh;
-    padding: 120px 0 clamp(32px, 4vw, 56px);
+    padding: calc(var(--bb-account-header-height) + 24px) 0 clamp(32px, 4vw, 56px);
   }
 
   .bb-profile-page,
@@ -60,6 +60,10 @@
     background-image: url('/favicon.svg?v=bb-arc');
   }
 
+  .bb-logo-text {
+    color: var(--bb-brand-ink, hsl(var(--foreground)));
+  }
+
   .bb-header-actions .bb-bag-button:not(.is-filled) {
     color: var(--bb-highlight, hsl(var(--primary)));
     border-color: var(--bb-panel-border, hsl(var(--border)));
@@ -79,6 +83,8 @@
 
   &.is-menu-open::before,
   &.is-sticky.is-scrolled::before { background: hsl(var(--baby-pink) / .86); }
+
+  .bb-logo-text { color: var(--bb-panel-text); }
 }
 
 @media (min-width: 651px) {
@@ -88,13 +94,9 @@
       --bb-account-icon-center: calc((var(--bb-account-sidebar-width) - 1px) / 2);
     }
 
-    .bb-header {
-      height: var(--bb-account-header-height);
-    }
-
     .bb-header-inner.is-full-width {
-      height: 100%;
-      padding-block: 0;
+      min-height: 89px;
+      padding-block: 20px;
       padding-inline-start: calc(var(--bb-account-icon-center) - 20px);
       transition: padding-inline-start .3s cubic-bezier(.22, 1, .36, 1);
     }
@@ -138,7 +140,7 @@
       height: calc(100dvh - var(--bb-account-header-height));
       transition: width .3s cubic-bezier(.22, 1, .36, 1), background-color .35s ease, border-color .35s ease, color .35s ease;
 
-      &:not(.is-collapsed) { padding: 9px 8px 5px; }
+      &:not(.is-collapsed) { padding: var(--bb-navigation-heading-gap, 9px) 8px 5px; }
     }
 
     &:has(.bb-account-navigation) .bb-footer {
@@ -148,12 +150,19 @@
   }
 }
 
+@media (min-width: 1101px) {
+  .bb-account-shell .bb-profile-sidebar {
+    top: calc(var(--bb-account-header-height) + 24px);
+    max-height: calc(100dvh - var(--bb-account-header-height) - 48px);
+  }
+}
+
 @media (max-width: 650px) {
   .bb-account-shell {
     .bb-profile-page,
     .bb-owner-dashboard,
     .bb-account-access {
-      padding-top: 104px;
+      padding-top: calc(var(--bb-account-header-height) + 24px);
     }
 
     .bb-profile-layout {

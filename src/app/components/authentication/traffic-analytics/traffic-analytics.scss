@@ -13,6 +13,7 @@
 .bb-traffic-filters { display: grid; min-width: 0; gap: 14px; border: 1px solid hsl(var(--primary) / .12); border-radius: 12px; padding: 16px; background: var(--bb-panel-surface, hsl(var(--card))); }
 .bb-traffic-range-controls { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .bb-traffic-toggle { display: inline-flex; flex: none; gap: 2px; border: 1px solid hsl(var(--primary) / .12); border-radius: 8px; padding: 3px; background: hsl(var(--primary) / .035); }
+.bb-traffic-date-presets { max-width: 100%; flex-wrap: wrap; }
 .bb-traffic-toggle-button { min-height: 28px; border-color: transparent; border-radius: 5px; padding: 6px 9px; background: transparent; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); }
 .bb-traffic-toggle-button.is-active { border-color: hsl(var(--primary) / .08); background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-highlight, hsl(var(--primary))); box-shadow: 0 1px 4px hsl(var(--primary) / .06); }
 .bb-traffic-date-form { display: flex; min-width: 0; flex-wrap: wrap; align-items: flex-end; gap: 8px; }

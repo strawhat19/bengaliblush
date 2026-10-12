@@ -4,7 +4,9 @@ import type { User } from '@/shared/models/users/User';
 import { createRecordId, getNextNumber } from './records';
 import { AccountDeletionPending } from './account-actions';
 import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
+import { readFeatureSettings, getTransactionFeatureRole } from '@/shared/featureFlags/firebase';
 import type { ContactSubmissionInput, AppointmentSubmissionInput } from '@/shared/models/submissions/Submission';
+import { isFeatureEligible, defaultFeatureValues, featureSettingsId, featureSettingsCollection } from '@/shared/featureFlags/values';
 
 const normalizeText = (value: string, label: string, maximum: number, optional = false) => {
   const text = value?.trim() ?? ``;
@@ -26,8 +28,14 @@ const saveSubmission = async (collectionName: string, type: string, name: string
   }
   await runTransaction(database, async (transaction) => {
     if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
+    if (collectionName === `contactSubmissions`) {
+      const settings = readFeatureSettings(await transaction.get(doc(database, featureSettingsCollection, featureSettingsId)));
+      const role = await getTransactionFeatureRole(transaction, firebaseUid);
+      if (!isFeatureEligible(settings?.features.contact ?? defaultFeatureValues.contact, role)) throw new Error(`Contact Is Unavailable`);
+    }
     const counterRef = doc(database, `counters`, collectionName);
     const number = getNextNumber(await transaction.get(counterRef));
+    if (auth.currentUser?.uid !== firebaseUid) throw new Error(`Your Account Changed, Try Again`);
     const id = createRecordId(type, number, name || account?.name || `Guest`);
     const recordRef = doc(database, collectionName, id);
     transaction.set(recordRef, {

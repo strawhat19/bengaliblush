@@ -4,6 +4,12 @@
 
 A Next.js, TypeScript, Sass, and PWA storefront for Bengali Blush Atelier. Lash & Beauty Studio. Salon Studios.
 
+## License
+
+Original project software and documentation are licensed under the [MIT License](./LICENSE), copyright (c) 2026 strawhat19. This grant covers only material the copyright holder owns or is authorized to license.
+
+Bengali Blush branding, logos, photographs, product artwork, editorial content, and user-supplied content are excluded unless separately licensed. Dependencies and vendored materials retain their own licenses and notices, including the existing notices under `ai/` and `public/analytics/`. The MIT license does not grant rights to third-party trademarks or content.
+
 ## Run Locally
 
 Install dependencies:

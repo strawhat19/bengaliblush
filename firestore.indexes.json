@@ -1,5 +1,7 @@
 {
-  "indexes": [],
+  "indexes": [
+    { "collectionGroup": "notifications", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "status", "order": "ASCENDING" }, { "fieldPath": "number", "order": "DESCENDING" }] }
+  ],
   "fieldOverrides": [
     { "collectionGroup": "users", "fieldPath": "*", "indexes": [] },
     { "collectionGroup": "users", "fieldPath": "email", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
@@ -18,6 +20,7 @@
     { "collectionGroup": "services", "fieldPath": "number", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }, { "order": "DESCENDING", "queryScope": "COLLECTION" }] },
     { "collectionGroup": "counters", "fieldPath": "*", "indexes": [] },
     { "collectionGroup": "catalogSlugs", "fieldPath": "*", "indexes": [] },
+    { "collectionGroup": "featureSettings", "fieldPath": "*", "indexes": [] },
     { "collectionGroup": "events", "fieldPath": "*", "indexes": [] },
     { "collectionGroup": "events", "fieldPath": "number", "indexes": [{ "order": "ASCENDING", "queryScope": "COLLECTION" }] },
     { "collectionGroup": "accountAccess", "fieldPath": "*", "indexes": [] },

@@ -1,0 +1,13 @@
+.bb-feature-editor .bb-feature-editor-title { display: flex; align-items: center; gap: 10px; font-size: 24px; }
+.bb-feature-editor-icon { flex: none; }
+.bb-feature-editor .bb-feature-editor-fields { grid-template-columns: minmax(0, 1fr); }
+.bb-feature-editor-roles { display: flex; flex-wrap: wrap; gap: 6px; }
+.bb-feature-editor-role { display: inline-flex; min-height: 34px; align-items: center; justify-content: center; gap: 5px; border: 1px solid hsl(var(--primary) / .18); border-radius: 7px; padding: 6px 10px; background: transparent; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.bb-feature-editor-role.is-active { border-color: var(--bb-highlight, hsl(var(--primary))); background: hsl(var(--primary) / .1); color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-feature-editor-role:hover:not(:disabled) { border-color: var(--bb-highlight, hsl(var(--primary))); color: var(--bb-highlight, hsl(var(--primary))); }
+.bb-feature-editor-role:focus-visible { outline: 2px solid var(--bb-highlight, hsl(var(--primary))); outline-offset: 3px; }
+.bb-feature-editor-role:disabled { cursor: wait; opacity: .5; }
+.bb-feature-editor-note { margin: 0; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; line-height: 1.7; }
+.bb-feature-editor > .bb-feature-editor-note { margin-top: 20px; }
+@media (pointer: coarse) { .bb-feature-editor-role { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .bb-feature-editor-role { transition: none; } }
