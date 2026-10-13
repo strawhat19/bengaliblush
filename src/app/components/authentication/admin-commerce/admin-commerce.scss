@@ -5,6 +5,11 @@
 .bb-commerce-add { min-height: 38px; padding: 10px 14px; font-size: 10px; }
 .bb-commerce-add:disabled { cursor: default; opacity: .5; transform: none; }
 .bb-commerce-note { margin: 12px 0 22px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 11px; line-height: 1.7; }
+.bb-commerce-source-panel { min-width: 0; }
+.bb-commerce-source-tabs { display: inline-flex; gap: 4px; margin: 0 0 18px; border: 1px solid hsl(var(--primary) / .2); border-radius: 9px; padding: 4px; background: var(--bb-panel-surface, hsl(var(--card))); }
+.bb-commerce-source-tab { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; border: 0; border-radius: 6px; padding: 8px 15px; background: transparent; color: var(--bb-panel-text, hsl(var(--foreground))); font-size: 11px; transition: background-color .2s ease, color .2s ease; }
+.bb-commerce-source-tab.is-active { background: hsl(var(--primary)); color: var(--bb-brand-cream); }
+.bb-commerce-source-tab:focus-visible { outline: 2px solid var(--bb-highlight, hsl(var(--primary))); outline-offset: 3px; }
 .bb-commerce-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 16px; }
 .bb-commerce-filter-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; margin-left: auto; }
 .bb-commerce-filter-actions .bb-commerce-results { width: auto; margin: 0; white-space: nowrap; }
@@ -34,4 +39,4 @@
 @media (min-width: 651px) { .bb-page:has(> .bb-admin-commerce) { overflow: clip; } }
 @media (max-width: 800px) { .bb-commerce-summary-value { font-size: 26px; } }
 @media (max-width: 480px) { .bb-commerce-summary { grid-template-columns: minmax(0, 1fr); } .bb-commerce-summary-card { grid-template-columns: 1fr auto; align-items: center; } .bb-commerce-table th, .bb-commerce-table td { padding: 13px; } .bb-commerce-search-input, .bb-commerce-filter { font-size: 16px; } .bb-commerce-filter-actions { width: 100%; justify-content: space-between; } .bb-commerce-results { width: 100%; margin: 0; } }
-@media (prefers-reduced-motion: reduce) { .bb-commerce-table tbody tr { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .bb-commerce-source-tab, .bb-commerce-table tbody tr { transition: none; } }

@@ -19,6 +19,7 @@ import { startPageTransition } from '@/shared/navigation/page-transition';
 import LiquidPanelEdge from '@/app/components/effects/liquid-panel-edge';
 import BookingForm from '@/app/components/booking/booking-form/booking-form';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
+import ProductSettingsButton from '@/app/components/shop/product-settings/product-settings-button';
 import OrnamentalArch from '@/app/components/effects/ornamental-arch/ornamental-arch';
 import LandingServices from '@/app/components/services/landing-services/landing-services';
 import { ShopProvider, getCartLines, removeCartProduct, decrementCartProduct, getUnavailableCartProductIds, removeUnavailableCartProducts } from '@/shared/shop/shop-context';
@@ -309,6 +310,7 @@ function Shop({ cart, onAdd, onDecrement }: { cart: Product[]; onAdd: (product: 
               >
                 {category.products.map((product) => (
                   <article className="bb-product-card" id={`product-${product.id}`} key={product.id} data-testid={`card-product-${product.id}`}>
+                    <ProductSettingsButton product={product} idPrefix={`bb-landing-product`} sectionLabel={`Landing Shop`} />
                     <Link
                       href={getProductHref(product)}
                       id={`product-detail-link-${product.id}`}

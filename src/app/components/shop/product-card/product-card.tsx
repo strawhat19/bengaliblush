@@ -6,6 +6,7 @@ import Link from '@/app/components/navigation/page-link/page-link';
 import { ArrowUpRight, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { formatPrice, getProductHref } from '@/shared/shop/shop-utils';
 import ProductArtwork from '@/app/components/shop/product-artwork/product-artwork';
+import ProductSettingsButton from '@/app/components/shop/product-settings/product-settings-button';
 
 type ProductCardProps = {
   product: Product;
@@ -23,6 +24,7 @@ const ProductCard = ({ product, idPrefix = `bb-shop-card` }: ProductCardProps) =
       className={`bb-shop-card`}
       aria-labelledby={`${cardId}-title`}
     >
+      <ProductSettingsButton product={product} idPrefix={idPrefix} />
       <Link
         id={`${cardId}-artwork-link`}
         href={getProductHref(product)}
