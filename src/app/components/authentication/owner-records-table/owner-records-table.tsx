@@ -91,7 +91,7 @@ const OwnerRecordsTable = ({ kind, limit, overview, disabled, savingId, paginati
               </tr>
             </thead>
             <tbody id={`${tableId}-table-body`} className={`bb-owner-table-body`}>
-              {kind === `users` && users.slice(0, limit).sort(compareRecordNumbers).map((user) => <OwnerUserRow key={user.id} user={user} />)}
+              {kind === `users` && users.slice(0, limit).sort(compareRecordNumbers).map((user) => <OwnerUserRow key={user.id} user={user} disabled={disabled || Boolean(savingId)} />)}
               {kind === `contacts` && contacts.slice(0, limit).sort(compareRecordNumbers).map((submission) => (
                 <OwnerSubmissionCard
                   kind={`contact`}

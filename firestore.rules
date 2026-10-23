@@ -122,6 +122,7 @@ service cloud.firestore {
             && data.created_at == request.time && data.updated_at == request.time)
           || (collectionName in ['events', 'products', 'services', 'reviews', 'paymentMethods', 'notifications'] && isAdmin()
             && data.created_at == request.time && data.updated_at == request.time)
+          || (collectionName == 'roleChanges' && validRoleChange(data, id) && authorizedRoleChange(data))
           || (collectionName == 'featureSettings' && isOwner() && number == 1 && validFeatureSettings(data, id)
             && freeFeaturePlans(data) && data.created_at == request.time && data.updated_at == request.time));
     }
@@ -135,6 +136,37 @@ service cloud.firestore {
         && (!data.keys().hasAny(['theme_mode']) || data.theme_mode in ['light', 'dark'])
         && (!data.keys().hasAny(['account_status']) || data.account_status in ['active', 'deactivated', 'deleting'])
         && data.created_at is timestamp && data.updated_at is timestamp;
+    }
+    function validRoleChange(data, id) {
+      return exactKeys(data, ['id', 'number', 'actor_id', 'target_id', 'actor_firebase_uid', 'previous_role', 'next_role', 'created_at'])
+        && validIdentity(data, id, 'RoleChange')
+        && validText(data.actor_id, 1, 200) && validText(data.target_id, 1, 200)
+        && validText(data.actor_firebase_uid, 1, 128) && data.created_at is timestamp
+        && data.previous_role in ['subscriber', 'admin', 'owner'] && data.next_role in ['subscriber', 'admin', 'owner']
+        && data.previous_role != data.next_role;
+    }
+    function authorizedRoleChange(data) {
+      let actorId = get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id;
+      let actorAfter = getAfter(/databases/$(database)/documents/users/$(actorId)).data;
+      let previous = get(/databases/$(database)/documents/users/$(data.target_id)).data;
+      let next = getAfter(/databases/$(database)/documents/users/$(data.target_id)).data;
+      return isOwner() && actorAfter.role == 'owner' && hasStatus(actorAfter, 'active')
+        && data.actor_id == actorId && data.actor_firebase_uid == request.auth.uid && data.target_id != actorId
+        && previous.firebase_uid != request.auth.uid && !hasStatus(previous, 'deleting')
+        && data.previous_role == previous.role && data.next_role == next.role && data.created_at == request.time
+        && next.updated_at == request.time && next.diff(previous).affectedKeys().hasOnly(['role', 'updated_at']);
+    }
+    function auditedRoleUpdate(data, id) {
+      let counter = getAfter(/databases/$(database)/documents/counters/roleChanges).data;
+      let change = getAfter(/databases/$(database)/documents/roleChanges/$(counter.record_id)).data;
+      return !ownProfile(id) && resource.data.firebase_uid != request.auth.uid
+        && data.diff(resource.data).affectedKeys().hasOnly(['role', 'updated_at'])
+        && !exists(/databases/$(database)/documents/roleChanges/$(counter.record_id))
+        && validRoleChange(change, counter.record_id) && change.target_id == id
+        && change.actor_id == get(/databases/$(database)/documents/accountAccess/$(request.auth.uid)).data.user_id
+        && change.actor_firebase_uid == request.auth.uid && change.created_at == request.time
+        && change.previous_role == resource.data.role && change.next_role == data.role
+        && matchingCounter('roleChanges', counter.record_id, change.number);
     }
     function validSubmission(data, id, type) {
       return validIdentity(data, id, type)
@@ -342,11 +374,11 @@ service cloud.firestore {
     match /counters/{collectionName} {
       allow get: if collectionName in ['contactSubmissions', 'appointmentSubmissions', 'orders']
         || (collectionName in ['events', 'products', 'services', 'reviews', 'paymentMethods', 'notifications'] && isAdmin())
-        || (collectionName == 'featureSettings' && isOwner())
+        || (collectionName in ['roleChanges', 'featureSettings'] && isOwner())
         || (signedIn() && collectionName == 'users'
           && (!exists(/databases/$(database)/documents/accountAccess/$(request.auth.uid)) || activeAccount()));
       allow list: if boundedList(100) && isOwner();
-      allow create, update: if collectionName in ['events', 'users', 'contactSubmissions', 'appointmentSubmissions', 'orders', 'products', 'services', 'reviews', 'paymentMethods', 'notifications', 'featureSettings']
+      allow create, update: if collectionName in ['events', 'users', 'contactSubmissions', 'appointmentSubmissions', 'orders', 'products', 'services', 'reviews', 'paymentMethods', 'notifications', 'roleChanges', 'featureSettings']
         && exactKeys(request.resource.data, ['number', 'record_id'])
         && request.resource.data.number is int
         && request.resource.data.number == (exists(/databases/$(database)/documents/counters/$(collectionName)) ? resource.data.number + 1 : 1)
@@ -385,12 +417,20 @@ service cloud.firestore {
         && request.resource.data.id == resource.data.id && request.resource.data.number == resource.data.number
         && request.resource.data.firebase_uid == resource.data.firebase_uid && request.resource.data.provider == resource.data.provider
         && request.resource.data.created_at == resource.data.created_at && request.resource.data.updated_at == request.time
-        && ((isOwner() && !hasStatus(resource.data, 'deleting') && hasStatus(request.resource.data, resource.data.get('account_status', 'active')))
+        && ((isOwner() && !hasStatus(resource.data, 'deleting') && hasStatus(request.resource.data, resource.data.get('account_status', 'active'))
+            && (request.resource.data.role == resource.data.role || auditedRoleUpdate(request.resource.data, id)))
           || (activeAccount() && ownProfile(id) && resource.data.firebase_uid == request.auth.uid
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'photo_url', 'theme_mode', 'updated_at']))
           || ownLifecycleUpdate(request.resource.data, id));
       allow delete: if (isOwner() && !hasStatus(resource.data, 'deleting'))
         || (ownProfile(id) && resource.data.firebase_uid == request.auth.uid && hasStatus(resource.data, 'deleting') && deletingAccount() && recentlyAuthenticated());
+    }
+    match /roleChanges/{id} {
+      allow get: if isOwner();
+      allow list: if boundedList(100) && isOwner();
+      allow create: if validRoleChange(request.resource.data, id) && authorizedRoleChange(request.resource.data)
+        && matchingCounter('roleChanges', id, request.resource.data.number);
+      allow update, delete: if false;
     }
     match /contactSubmissions/{id} {
       allow get: if signedIn() && (resource.data.firebase_uid == request.auth.uid || isAdmin());

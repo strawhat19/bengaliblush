@@ -2,14 +2,14 @@
 
 import './owner-user-row.scss';
 import Image from 'next/image';
-import { roleLabels } from '@/types/types';
+import { roleLabels, type Roles } from '@/types/types';
 import { useOwnerUserRow } from './use-owner-user-row';
 import type { User } from '@/shared/models/users/User';
 import { getStatusLabel } from '../status-cell/status-cell';
 import { formatRecordDate } from '../owner-dashboard/dashboard-data';
 
-const OwnerUserRow = ({ user }: { user: User }) => {
-  const { initial, photoUrl, handlePhotoError } = useOwnerUserRow(user);
+const OwnerUserRow = ({ user, disabled }: { user: User; disabled?: boolean }) => {
+  const { initial, isOwner, photoUrl, saveRole, roleState, savingRole, roleDisabled, handlePhotoError, roleDisabledReason } = useOwnerUserRow(user, disabled);
   const status = user.account_status ?? `active`;
   const statusColor = status === `active` ? `green` : status === `deleting` ? `red` : `gray`;
   return (
@@ -38,7 +38,30 @@ const OwnerUserRow = ({ user }: { user: User }) => {
           </div>
         </div>
       </td>
-      <td id={`bb-owner-user-role-${user.id}`} className={`bb-owner-user-role`}>{roleLabels[user.role]}</td>
+      <td id={`bb-owner-user-role-${user.id}`} className={`bb-owner-user-role`}>
+        {isOwner ? (
+          <div id={`bb-owner-user-role-control-${user.id}`} className={`bb-owner-user-role-control`} aria-busy={savingRole}>
+            <select
+              value={user.role}
+              disabled={roleDisabled}
+              title={roleDisabledReason || undefined}
+              id={`bb-owner-user-role-select-${user.id}`}
+              className={`bb-owner-user-role-select`}
+              aria-label={`Change Role For ${user.name}`}
+              aria-describedby={roleState?.message || savingRole ? `bb-owner-user-role-feedback-${user.id}` : undefined}
+              onChange={(event) => { void saveRole(event.currentTarget.value as Roles); }}
+            >
+              {Object.entries(roleLabels).map(([role, label]) => <option key={role} value={role} id={`bb-owner-user-role-option-${user.id}-${role}`}>{label}</option>)}
+            </select>
+            <span
+              aria-atomic={`true`}
+              role={roleState?.error ? `alert` : `status`}
+              id={`bb-owner-user-role-feedback-${user.id}`}
+              className={`bb-owner-user-role-feedback${roleState?.error ? ` is-error` : ``}`}
+            >{savingRole ? `Saving Role` : roleState?.message}</span>
+          </div>
+        ) : roleLabels[user.role]}
+      </td>
       <td id={`bb-owner-user-provider-${user.id}`} className={`bb-owner-user-provider`}>{getStatusLabel(user.provider)}</td>
       <td id={`bb-owner-user-status-cell-${user.id}`} className={`bb-owner-user-status`}>
         <div id={`bb-owner-user-actions-${user.id}`} className={`actionsCell`}>

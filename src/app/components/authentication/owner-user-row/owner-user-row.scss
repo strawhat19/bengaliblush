@@ -3,3 +3,13 @@
 .bb-owner-user-avatar { position: relative; display: grid; width: 38px; height: 38px; flex: none; overflow: hidden; place-items: center; border: 1px solid hsl(var(--secondary) / .5); border-radius: 50%; background: hsl(var(--secondary)); color: hsl(var(--primary)); font-size: 16px; font-weight: 600; }
 .bb-owner-user-initial { display: grid; width: 100%; height: 100%; place-items: center; }
 .bb-owner-user-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.bb-owner-user-role-control { display: grid; gap: 6px; min-width: 125px; }
+.bb-owner-user-role-select { width: 100%; min-height: 32px; border: 1px solid hsl(var(--primary) / .2); border-radius: 6px; padding: 6px 8px; background: var(--bb-panel-surface, hsl(var(--card))); color: var(--bb-panel-text, hsl(var(--foreground))); font: inherit; font-size: 10px; cursor: pointer; transition: border-color .2s ease, opacity .2s ease; }
+.bb-owner-user-role-select:disabled { opacity: .6; cursor: not-allowed; }
+.bb-owner-user-role-control[aria-busy='true'] .bb-owner-user-role-select { cursor: wait; }
+.bb-owner-user-role-select:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.bb-owner-user-role-feedback { max-width: 180px; color: var(--bb-panel-muted, hsl(var(--muted-foreground))); font-size: 9px; line-height: 1.5; white-space: normal; overflow-wrap: anywhere; }
+.bb-owner-user-role-feedback:empty { display: none; }
+.bb-owner-user-role-feedback.is-error { color: hsl(var(--destructive)); }
+@media (max-width: 480px) { .bb-owner-user-role-select { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { .bb-owner-user-role-select { transition: none; } }
