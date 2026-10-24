@@ -16,7 +16,7 @@
 
 > Set up the connected account system from ai/adoption.md in this project
 
-[Its scope and detailed prompt](../adoption.md#connected-account-system-prompt) include Profile/private Connections, Firebase/Firestore sync, the shared sidebar/submenus, Owner Features with role/minimum-plan controls, root admin routes, and Traffic/Health reports/charts. Preserve the destination's theme, framework, product data and narrower permissions. Real cloud/provider setup still uses that project's authorized resources.
+[Its scope and detailed prompt](../adoption.md#connected-account-system-prompt) include Profile/private Connections, Firebase/Firestore sync, the full-width account header/canvas, slim logo-plus-wordmark measured rail, shared sidebar/submenus and avatar role pills for every role and trusted-plan pills only for non-Owners. Only active trusted Owners receive ADMIN/Dashboard/Feedback by default; all other roles see Profile only at top level with supported private tools inside it. Include Owner Features, root admin routes and Traffic/Health reports/charts. Preserve the destination's palette/fonts, framework, product data and narrower permissions; broaden administrative roles only when explicitly requested. Real cloud/provider setup still uses that project's authorized resources.
 
 9. For the complete common-core starter, use [the full-system prompt](../skills/app-system/system.md#one-adoption-prompt) after copying the files. It extends the account scope with the complete public/chat/pricing/blog modules.
 
@@ -31,3 +31,9 @@ For focused follow-ups, use concise requests such as:
 - "Use available root admin page URLs and preserve existing links through redirects"
 
 10. For detailed connected adoption, follow [adoption](../adoption.md) and the Admin [Firestore](../skills/admin/references/firestore.md), [workflow](../skills/admin/references/workflows.md), and [analytics](../skills/admin/references/analytics.md) contracts. Map the actual schema, permitted role operations, atomic identities, rules/indexes, environment boundaries and provider access outside ai/. Complete requested real actions and account-scoped subscriptions; report current local/reference gaps and external setup separately.
+
+11. For real payments, use [the Stripe adoption prompt](../adoption.md#stripe-payments-and-subscriptions-prompt) and [Payments](../skills/payments/SKILL.md). Reuse the actual catalog/auth/database; connect private billing records, trusted webhooks/entitlements and authoritative feature/limit enforcement. A pricing-only task does not enable billing, and source preparation does not authorize a live charge.
+
+12. For business payment charts, use [the Owner reports prompt](../adoption.md#owner-payment-reports-prompt). Include the requested Payments page and compact panels, private app-scoped aggregates, meaningful units/statuses and honest null/coverage/freshness. Reports do not require a new purchase flow or expanded payment write permissions.
+
+13. For production hosting, use [the custom-domain prompt](../adoption.md#custom-domain-and-detachable-redirects-prompt) and [Deployment](../skills/deployment/SKILL.md). Connect the intended Git branch and primary domain; make only the selected secondary hostnames independent redirects with a documented detach path. Preserve DNS/email, auth origins and provider return/webhook configuration, and distinguish source, push, deployment, DNS and observed HTTPS behavior.

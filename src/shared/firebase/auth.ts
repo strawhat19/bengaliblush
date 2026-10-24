@@ -11,6 +11,7 @@ import {
   signInWithPopup,
   onAuthStateChanged,
   GoogleAuthProvider,
+  getAdditionalUserInfo,
   sendEmailVerification,
   sendPasswordResetEmail,
   type User as FirebaseUser,
@@ -109,10 +110,50 @@ const loadAccount = async (firebaseUser: FirebaseUser): Promise<User> => {
   return loadMappedAccount(firebaseUser, userId);
 };
 
+const readGooglePhotoUrl = (...values: unknown[]) => {
+  for (const value of values) {
+    if (typeof value !== `string`) continue;
+    const photoUrl = value.trim();
+    if (!photoUrl || photoUrl.length > 2048) continue;
+    try {
+      const url = new URL(photoUrl);
+      if (url.protocol === `https:` && !url.username && !url.password) return url.href;
+    } catch {
+      continue;
+    }
+  }
+  return ``;
+};
+
+const syncGoogleAccountPhoto = async (firebaseUser: FirebaseUser, account: User, providerPhoto?: unknown): Promise<User> => {
+  const { auth, database } = getFirebaseClient();
+  const googleProfile = firebaseUser.providerData?.find((profile) => profile?.providerId === `google.com`);
+  const isCurrentAccount = () => auth.currentUser === firebaseUser && account.firebase_uid === firebaseUser.uid;
+  if (!googleProfile || account.provider !== `google` || !isCurrentAccount() || (account.account_status && account.account_status !== `active`)) return account;
+  const photoUrl = readGooglePhotoUrl(providerPhoto, googleProfile.photoURL, firebaseUser.photoURL);
+  if (!photoUrl || photoUrl === account.photo_url) return account;
+  try {
+    const accountRef = doc(database, `users`, account.id);
+    await runTransaction(database, async (transaction) => {
+      const savedAccount = readUser(await transaction.get(accountRef));
+      if (!isCurrentAccount()) throw new Error(`Your Account Changed, Try Again`);
+      if (savedAccount.firebase_uid !== firebaseUser.uid) throw new Error(`Account Data Needs Attention`);
+      if (savedAccount.account_status && savedAccount.account_status !== `active`) return;
+      if (savedAccount.photo_url === photoUrl) return;
+      transaction.update(accountRef, { photo_url: photoUrl, updated_at: serverTimestamp() });
+    });
+    if (!isCurrentAccount()) return account;
+    return await loadMappedAccount(firebaseUser, account.id);
+  } catch (error) {
+    console.warn(`Google Profile Photo Sync Failed`, getAuthErrorMessage(error));
+    return account;
+  }
+};
+
 const ensureAccount = (firebaseUser: FirebaseUser): Promise<User> => {
   const pending = pendingAccounts.get(firebaseUser.uid);
   if (pending) return pending;
-  const operation: Promise<User> = loadAccount(firebaseUser).finally(() => {
+  const operation: Promise<User> = loadAccount(firebaseUser).then((account) => syncGoogleAccountPhoto(firebaseUser, account)).finally(() => {
     if (pendingAccounts.get(firebaseUser.uid) === operation) pendingAccounts.delete(firebaseUser.uid);
   });
   pendingAccounts.set(firebaseUser.uid, operation);
@@ -169,7 +210,8 @@ export const signInWithGoogle = async (): Promise<User> => {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: `select_account` });
   const credential = await signInWithPopup(auth, provider);
-  return finishSignIn(credential.user);
+  const account = await finishSignIn(credential.user);
+  return syncGoogleAccountPhoto(credential.user, account, getAdditionalUserInfo(credential)?.profile?.picture);
 };
 
 export const signInWithEmail = async (input: EmailSignInInput): Promise<User> => {
